@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mazestudio · estudio de automatización</title>
+<script>document.documentElement.classList.add('js');</script><!-- si el JS no corre, el contenido se ve igual (no se oculta) -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;450;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* ——— PALETA · Azul Cobalto (profesional) ———
+       Para cambiar de paleta, edita SOLO este bloque.
+       Alternativas listas: ver comentarios al final del :root. */
+    --bg:#F4F5F7;          /* fondo · papel frío */
+    --surface:#FFFFFF;     /* tarjetas */
+    --ink:#14151A;         /* tinta · casi negro */
+    --ink-2:#0E0F13;       /* secciones más oscuras */
+    --accent:#2D4ECC;      /* acento · azul cobalto (el punto) */
+    --accent-strong:#2440B0;/* cobalto profundo · hovers */
+    --accent-soft:#7C8EE8; /* cobalto claro · apoyo */
+    --accent-wash:#E9ECFA; /* lavado para fondos suaves */
+    --muted:#666A77;       /* texto apagado */
+    --line:#E3E4E8;        /* hairlines */
+    --on-dark:#EAEBF1;     /* texto sobre oscuro */
+    --on-dark-mut:#9094A4; /* texto apagado sobre oscuro */
+
+    /* — Alt "Klein": --accent:#2026C4; --accent-strong:#171CA0; --accent-soft:#7B7FE0; --accent-wash:#E7E8FB;
+       — Alt "Índigo": --accent:#4F46E5; --accent-strong:#4038C4; --accent-soft:#9A93F0; --accent-wash:#ECEBFC;
+       — Alt "Monocromo": --accent:#14151A; --accent-strong:#000; --accent-soft:#9598A2; --accent-wash:#ECEDEF; */
+
+    --display:'Space Grotesk', system-ui, sans-serif;
+    --sans:'Inter', system-ui, sans-serif;
+    --mono:'JetBrains Mono', ui-monospace, monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);color:var(--ink);font-family:var(--sans);
+    line-height:1.55;-webkit-font-smoothing:antialiased;letter-spacing:-.005em;
+    overflow-x:hidden;   /* evita scroll horizontal por el laberinto del hero en móvil */
+  }
+  img,svg,iframe{max-width:100%;}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 28px;}
+  a{color:inherit;text-decoration:none;}
+  .mono{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);}
+
+  /* ——— LOGO (hilo + palabra) ——— */
+  .logo{display:inline-flex;align-items:center;gap:13px;}
+  .logo svg{display:block;height:24px;width:auto;overflow:visible;}
+  .logo .hilo{fill:none;stroke:var(--ink);stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round;}
+  .logo .nd{fill:var(--bg);stroke:var(--ink);stroke-width:2.4;}        /* nodo en la juntura */
+  .logo .nd.end{fill:var(--accent);stroke:none;}                        /* nodo-salida (acento) */
+  .logo .wm{font-family:var(--display);font-weight:600;font-size:22px;letter-spacing:-.02em;color:var(--ink);}
+  .logo .wm .dot{color:var(--accent);}
+  .logo.rev .hilo{stroke:var(--on-dark);}
+  .logo.rev .nd{fill:var(--ink-2);stroke:var(--on-dark);}
+  .logo.rev .nd.end{fill:var(--accent-soft);}
+  .logo.rev .wm{color:var(--on-dark);}
+
+  /* ——— BOTONES ——— */
+  .btn{font-family:var(--sans);font-size:14.5px;font-weight:500;cursor:pointer;
+    display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:10px;
+    background:var(--ink);color:var(--bg);border:1px solid var(--ink);transition:transform .18s, background .18s, box-shadow .18s;}
+  .btn:hover{transform:translateY(-2px);}
+  .btn.accent{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 10px 24px -12px var(--accent);}
+  .btn.accent:hover{background:var(--accent-strong);border-color:var(--accent-strong);}
+  .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);}
+  .btn.ghost:hover{background:#fff;border-color:#cfd0d6;}
+  .arrow{font-family:var(--mono);}
+
+  /* ——— NAV ——— */
+  header.nav{position:sticky;top:0;z-index:50;background:rgba(244,245,247,.78);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);}
+  .nav .bar{display:flex;align-items:center;justify-content:space-between;height:70px;}
+  .nav ul{list-style:none;display:flex;gap:30px;}
+  .nav ul a{font-size:14.5px;color:var(--ink);opacity:.78;transition:opacity .2s;}
+  .nav ul a:hover{opacity:1;}
+  .nav .right{display:flex;align-items:center;gap:14px;}
+  .menu-toggle{display:none;background:none;border:none;font-size:22px;color:var(--ink);cursor:pointer;}
+  .nav-cta-li{display:none;}   /* CTA del menú móvil; oculto en escritorio */
+
+  /* ——— HERO ——— */
+  /* zona hero+servicios: comparten el laberinto de fondo, que desciende hasta la banda oscura */
+  .hero-zone{position:relative;overflow:hidden;}
+  #servicios{position:relative;z-index:1;}   /* el contenido va por encima del laberinto */
+  .hero{position:relative;padding:96px 0 92px;}
+  /* fondo del hero: laberinto + nodos, anclado a la derecha y tenue (estático, para animar después) */
+  .flow-anim{position:absolute;inset:0;width:100%;height:100%;z-index:0;opacity:1;
+    -webkit-mask-image:linear-gradient(90deg,transparent 0%,transparent 30%,#000 58%,#000 100%);
+    mask-image:linear-gradient(90deg,transparent 0%,transparent 30%,#000 58%,#000 100%);}
+  .flow-anim .conn{fill:none;stroke:var(--accent);stroke-width:2;opacity:.30;stroke-linecap:round;stroke-linejoin:round;}
+  .flow-anim .nd{fill:var(--bg);stroke:var(--accent);stroke-width:2;opacity:.55;}
+  .flow-anim .nd-acc{fill:var(--accent);stroke:none;opacity:.72;}
+  /* —— ANIMACIÓN AL SCROLL ——
+     El laberinto se dibuja conforme se baja por el hero (lo controla el JS del final).
+     Capa 1 = dibujado (stroke-dashoffset por línea) · Capa 2 = pulsos de datos en bucle. */
+  .flow-anim.scrub .conn{stroke-dasharray:1;}            /* JS fija el dashoffset de cada línea */
+  .flow-anim .pulse{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent-soft));}
+  .flow-anim.scrub .pulse{opacity:.9;}                   /* el grupo .pulses lo atenúa el JS según el scroll */
+  .flow-anim .pulses{transition:opacity .25s linear;}
+  .hero .wrap{position:relative;z-index:1;}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;margin-bottom:26px;
+    font-family:var(--mono);font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);
+    background:var(--surface);border:1px solid var(--line);border-radius:30px;padding:7px 14px;}
+  .eyebrow .d{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--accent-wash);}
+  h1.hl{font-family:var(--display);font-weight:600;font-size:clamp(40px,6.4vw,80px);line-height:1.02;letter-spacing:-.03em;max-width:16ch;}
+  h1.hl em{font-style:normal;color:var(--accent);}
+  .hero .sub{margin-top:26px;max-width:52ch;font-size:19px;color:#3C3E47;}
+  .hero .cta-row{margin-top:36px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+  .hero .meta{margin-top:20px;font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;color:var(--muted);}
+  .hero .kpis{margin-top:56px;display:flex;gap:46px;flex-wrap:wrap;}
+  .hero .kpi b{font-family:var(--display);font-weight:600;font-size:30px;letter-spacing:-.02em;display:block;}
+  .hero .kpi span{font-size:13.5px;color:var(--muted);}
+  .hero .kpi b .u{color:var(--accent);}
+
+  /* ——— BAND ——— */
+  .band{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--surface);}
+  .band .wrap{display:flex;align-items:center;gap:30px;padding:30px 28px;flex-wrap:wrap;}
+  .band .tag{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);white-space:nowrap;}
+  .band p{font-family:var(--display);font-weight:500;font-size:clamp(18px,2.2vw,24px);line-height:1.3;letter-spacing:-.01em;color:var(--ink);}
+
+  /* ——— SECCIONES ——— */
+  section{padding:96px 0;}
+  .sec-head{margin-bottom:48px;max-width:62ch;}
+  .sec-head .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block;}
+  .sec-head h2{font-family:var(--display);font-weight:600;font-size:clamp(28px,4vw,44px);line-height:1.08;letter-spacing:-.025em;}
+  .sec-head .note{margin-top:16px;font-size:16.5px;color:var(--muted);max-width:48ch;}
+
+  /* servicios */
+  .svc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;}
+  .svc-card{background:var(--surface);border:1px solid #d7d9e0;border-radius:14px;padding:30px;
+    box-shadow:0 1px 0 rgba(20,21,26,.04), 0 14px 34px -24px rgba(20,21,26,.30);
+    transition:transform .22s, box-shadow .22s, border-color .22s;}
+  .svc-card:hover{transform:translateY(-4px);box-shadow:0 30px 56px -30px rgba(20,21,26,.45);border-color:var(--accent-soft);}
+  .svc-card .fn{font-family:var(--mono);font-size:12.5px;color:var(--accent);}
+  .svc-card h3{font-family:var(--display);font-weight:600;font-size:21px;margin:14px 0 9px;letter-spacing:-.01em;}
+  .svc-card p{font-size:15.5px;color:#3C3E47;}
+
+  /* —— FLOW: "así se ve una automación" —— */
+  .flow{background:var(--ink-2);color:var(--on-dark);border-radius:0;}
+  .flow .sec-head h2{color:var(--on-dark);}
+  .flow .sec-head .note{color:var(--on-dark-mut);}
+  .flow .sec-head .kicker{color:var(--accent-soft);}
+  .pipe{display:grid;grid-template-columns:repeat(4,1fr);gap:0;align-items:stretch;position:relative;}
+  .pipe-step{position:relative;padding:24px 22px;border:1px solid rgba(234,235,241,.14);border-radius:14px;background:rgba(255,255,255,.02);margin-right:34px;}
+  .pipe-step:last-child{margin-right:0;}
+  .pipe-step::after{content:"";position:absolute;top:50%;right:-34px;width:34px;height:2px;
+    background:repeating-linear-gradient(90deg,var(--accent-soft),var(--accent-soft) 5px,transparent 5px,transparent 10px);opacity:.7;}
+  .pipe-step:last-child::after{display:none;}
+  .pipe-dot{position:absolute;top:50%;right:-34px;width:7px;height:7px;border-radius:50%;background:var(--accent);margin-top:-3px;
+    box-shadow:0 0 8px var(--accent-soft);animation:run 2.6s linear infinite;}
+  .pipe-step:nth-child(2) .pipe-dot{animation-delay:.6s;}
+  .pipe-step:nth-child(3) .pipe-dot{animation-delay:1.2s;}
+  .pipe-step:last-child .pipe-dot{display:none;}
+  @keyframes run{0%{transform:translateX(0);opacity:0;}10%{opacity:1;}90%{opacity:1;}100%{transform:translateX(34px);opacity:0;}}
+  .pipe-step .ix{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-soft);}
+  .pipe-step h4{font-family:var(--display);font-weight:600;font-size:18px;margin:12px 0 8px;}
+  .pipe-step p{font-size:13.5px;color:var(--on-dark-mut);line-height:1.5;}
+  .pipe-step .tools{margin-top:14px;display:flex;flex-wrap:wrap;gap:6px;}
+  .pipe-step .tools span{font-family:var(--mono);font-size:10.5px;color:var(--on-dark);background:rgba(234,235,241,.08);border:1px solid rgba(234,235,241,.12);border-radius:6px;padding:3px 8px;}
+  .flow .foot{margin-top:34px;font-family:var(--mono);font-size:12px;color:var(--on-dark-mut);}
+  .flow .foot b{color:var(--accent-soft);font-weight:500;}
+
+  /* soluciones */
+  .sol-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .sol-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:26px 24px;display:flex;flex-direction:column;transition:transform .22s,box-shadow .22s,border-color .22s;}
+  .sol-card:hover{transform:translateY(-4px);box-shadow:0 26px 50px -34px rgba(20,21,26,.45);border-color:#d4d6dd;}
+  .sol-card .fn{font-family:var(--mono);font-size:12px;color:var(--accent);}
+  .sol-card h3{font-family:var(--display);font-weight:600;font-size:18.5px;margin:11px 0 9px;letter-spacing:-.01em;}
+  .sol-card p{font-size:14.5px;color:#3C3E47;margin-bottom:16px;}
+  .sol-card .metric{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--accent);background:var(--accent-wash);border-radius:8px;padding:6px 11px;}
+  /* pie de tarjeta: métrica + (si hay demo) botón "Ver demo" */
+  .sol-card .sol-foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+  .sol-demo{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);
+    display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:8px;padding:6px 11px;
+    transition:background .18s, border-color .18s, transform .18s;white-space:nowrap;}
+  .sol-demo:hover{background:var(--accent-wash);border-color:var(--accent-soft);transform:translateY(-1px);}
+  .sol-demo .ar{font-family:var(--mono);}
+
+  /* resultados */
+  .dark{background:var(--ink);color:var(--on-dark);}
+  .dark .sec-head h2{color:var(--on-dark);}
+  .dark .sec-head .note{color:var(--on-dark-mut);}
+  .dark .sec-head .kicker{color:var(--accent-soft);}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  .stat{border-top:1px solid rgba(234,235,241,.16);padding-top:24px;}
+  .stat .big{font-family:var(--display);font-weight:600;font-size:clamp(46px,6.5vw,70px);line-height:1;letter-spacing:-.03em;}
+  .stat .big .u{color:var(--accent-soft);}
+  .stat .lab{margin-top:10px;font-size:15px;color:var(--on-dark-mut);}
+  .dark .disc{margin-top:38px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--on-dark-mut);}
+
+  /* proceso */
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;}
+  .step{position:relative;padding-top:8px;}
+  .step .n{font-family:var(--mono);font-size:12px;color:var(--accent);border:1px solid var(--line);background:var(--surface);
+    width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;}
+  .step h4{font-family:var(--display);font-weight:600;font-size:19px;margin:20px 0 8px;}
+  .step p{font-size:14.5px;color:#3C3E47;}
+
+  /* estudio */
+  .about{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:center;}
+  .about .txt h2{font-family:var(--display);font-weight:600;font-size:clamp(28px,4.2vw,46px);line-height:1.08;letter-spacing:-.025em;}
+  .about .txt h2 em{font-style:normal;color:var(--accent);}
+  .about .txt p{margin-top:20px;font-size:17px;color:#3C3E47;max-width:46ch;}
+  .about .panel{aspect-ratio:5/4;border-radius:16px;background:var(--ink-2);position:relative;overflow:hidden;display:flex;align-items:flex-end;padding:28px;}
+  .about .panel::before{content:"";position:absolute;inset:0;
+    background-image:linear-gradient(rgba(234,235,241,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(234,235,241,.06) 1px,transparent 1px);background-size:32px 32px;}
+  .about .panel .coord{position:relative;font-family:var(--mono);font-size:12px;letter-spacing:.12em;color:var(--on-dark);}
+  .about .panel .coord b{display:block;font-family:var(--display);font-weight:600;font-size:28px;letter-spacing:-.01em;margin-bottom:6px;color:var(--on-dark);}
+
+  /* CTA */
+  .cta{background:var(--ink);color:var(--on-dark);text-align:center;padding:108px 0;position:relative;overflow:hidden;}
+  .cta h2{font-family:var(--display);font-weight:600;font-size:clamp(32px,5.2vw,62px);line-height:1.06;letter-spacing:-.03em;max-width:18ch;margin:28px auto 0;}
+  .cta h2 em{font-style:normal;color:var(--accent-soft);}
+  .cta .cta-row{margin-top:36px;display:flex;justify-content:center;gap:14px;flex-wrap:wrap;}
+  .cta .mail{margin-top:24px;font-family:var(--mono);font-size:12.5px;color:var(--on-dark-mut);}
+
+  /* footer */
+  footer{background:var(--ink-2);color:var(--on-dark);padding:54px 0 38px;}
+  footer .top{display:flex;justify-content:space-between;align-items:flex-start;gap:32px;flex-wrap:wrap;padding-bottom:32px;border-bottom:1px solid rgba(234,235,241,.12);}
+  footer nav{display:flex;gap:28px;flex-wrap:wrap;}
+  footer nav a{font-size:14px;color:var(--on-dark-mut);}
+  footer nav a:hover{color:var(--on-dark);}
+  footer .bot{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;padding-top:24px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--on-dark-mut);}
+
+  /* —— VISUALIZADOR DE DEMOS (dentro de "Cómo funciona") —— */
+  .livedemo{margin-top:48px;}
+  .livedemo .ld-intro{font-family:var(--mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--accent-soft);margin-bottom:16px;}
+  .demo-viewer{display:grid;grid-template-columns:1fr minmax(248px,308px);gap:18px;align-items:start;}
+  .demo-list{display:flex;flex-direction:column;gap:10px;}
+  .demo-list .dl-head{font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--on-dark-mut);margin-bottom:2px;}
+  .demo-item{text-align:left;font-family:var(--sans);color:var(--on-dark);background:rgba(255,255,255,.02);border:1px solid rgba(234,235,241,.14);border-radius:12px;padding:13px 15px;cursor:pointer;display:flex;flex-direction:column;gap:5px;transition:border-color .2s, background .2s, transform .2s;}
+  .demo-item:hover{border-color:var(--accent-soft);transform:translateY(-2px);}
+  .demo-item.active{border-color:var(--accent);background:rgba(45,78,204,.13);}
+  .demo-item .di-top{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+  .demo-item .di-name{font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:-.01em;}
+  .demo-item .di-desc{font-size:12.5px;color:var(--on-dark-mut);line-height:1.4;}
+  .demo-item .di-badge{font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;padding:3px 7px;border-radius:20px;white-space:nowrap;}
+  .di-badge.live{color:#fff;background:var(--accent);}
+  .di-badge.soon{color:var(--on-dark-mut);background:rgba(234,235,241,.08);border:1px solid rgba(234,235,241,.14);}
+  .demo-item.soon{cursor:default;opacity:.55;}
+  .demo-item.soon:hover{transform:none;border-color:rgba(234,235,241,.14);}
+  .browser{border:1px solid rgba(234,235,241,.16);border-radius:14px;overflow:hidden;background:rgba(255,255,255,.02);box-shadow:0 44px 90px -50px rgba(0,0,0,.85);}
+  .browser .chrome{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid rgba(234,235,241,.12);background:rgba(255,255,255,.03);}
+  .browser .chrome .dots{display:flex;gap:6px;}
+  .browser .chrome .dots i{width:10px;height:10px;border-radius:50%;background:rgba(234,235,241,.18);}
+  .browser .chrome .url{flex:1;font-family:var(--mono);font-size:11px;color:var(--on-dark-mut);background:rgba(0,0,0,.28);border-radius:7px;padding:5px 12px;text-align:center;}
+  .ld-stage{position:relative;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;
+    background:radial-gradient(125% 95% at 50% 40%, rgba(45,78,204,.26), rgba(45,78,204,0) 58%), linear-gradient(180deg,#16171D 0%, #0C0D11 100%);}
+  /* halo del acento que late suavemente tras el botón, intensificándose al pasar */
+  .ld-stage::before{content:"";position:absolute;width:340px;height:340px;border-radius:50%;
+    background:radial-gradient(closest-side, rgba(124,142,232,.30), rgba(124,142,232,0));filter:blur(8px);opacity:.65;transition:opacity .3s, transform .3s;}
+  .ld-stage:hover::before{opacity:1;transform:scale(1.08);}
+  .ld-stage .play{position:relative;display:flex;flex-direction:column;align-items:center;gap:13px;text-align:center;transition:transform .2s;}
+  .ld-stage:hover .play{transform:translateY(-3px);}
+  .ld-stage .play .circ{width:66px;height:66px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:0 18px 44px -12px var(--accent);transition:background .2s;}
+  .ld-stage:hover .play .circ{background:var(--accent-strong);}
+  .ld-stage .play .circ svg{width:24px;height:24px;fill:#fff;margin-left:4px;}
+  .ld-stage .play .t{font-family:var(--display);font-weight:600;font-size:20px;color:var(--on-dark);letter-spacing:-.01em;}
+  .ld-stage .play .s{font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--on-dark-mut);}
+  .demo-open-row{margin-top:14px;}
+  .demo-open-row a{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--accent-soft);transition:color .2s;}
+  .demo-open-row a:hover{color:var(--on-dark);}
+  /* modal a pantalla casi completa */
+  .demo-modal{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:30px;background:rgba(8,9,13,.82);backdrop-filter:blur(6px);}
+  .demo-modal.open{display:flex;}
+  .demo-modal .frame{position:relative;width:100%;max-width:880px;height:92vh;background:var(--bg);border-radius:14px;overflow:hidden;box-shadow:0 40px 110px -30px rgba(0,0,0,.7);}
+  .demo-modal iframe{width:100%;height:100%;border:0;display:block;background:var(--bg);}
+  /* X dentro del marco (con offset negativo la recortaba el overflow:hidden) */
+  .demo-modal .x{position:absolute;top:12px;right:12px;z-index:2;width:40px;height:40px;border-radius:50%;background:rgba(20,21,26,.72);color:#fff;border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(4px);font-size:17px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .18s, background .18s;}
+  .demo-modal .x:hover{transform:scale(1.08);background:var(--ink);}
+  @media(max-width:880px){ .demo-modal{padding:0;} .demo-modal .frame{height:100vh;height:100dvh;border-radius:0;} }
+
+  /* reveal — solo se ocultan si hay JS; sin JS (o si falla) el contenido se ve siempre */
+  .js .reveal{opacity:0;transform:translateY(22px);transition:opacity .65s ease, transform .65s ease;}
+  .js .reveal.in{opacity:1;transform:none;}
+
+  @media(max-width:880px){
+    .nav ul{display:none;}
+    .nav ul.open{display:flex;position:absolute;top:70px;left:0;right:0;flex-direction:column;gap:0;background:var(--bg);padding:6px 28px 18px;border-bottom:1px solid var(--line);z-index:60;box-shadow:0 16px 28px -20px rgba(20,21,26,.5);}
+    /* cada opción del menú móvil en su fila, separada por una línea fina */
+    .nav ul.open li:not(.nav-cta-li){border-bottom:1px solid var(--line);}
+    .nav ul.open li:not(.nav-cta-li) a{display:block;padding:15px 2px;font-size:16px;opacity:1;}
+    .nav ul.open .nav-cta-li{margin-top:18px;}
+    .menu-toggle{display:block;font-size:27px;line-height:1;padding:6px 4px;margin-right:-4px;}
+    .nav .right .btn.accent{display:none;}   /* el CTA grande se mueve al menú desplegable */
+    .nav-cta-li{display:block;}
+    .nav ul.open .nav-cta{margin-top:6px;opacity:1;color:#fff;}
+    .svc-grid,.stats,.steps,.sol-grid,.pipe{grid-template-columns:1fr;}
+    .demo-viewer{grid-template-columns:1fr;}
+    .pipe-step{margin-right:0;margin-bottom:18px;}
+    .pipe-step::after,.pipe-dot{display:none;}
+    .about{grid-template-columns:1fr;gap:32px;}
+    section{padding:66px 0;}
+    .hero{padding:60px 0 56px;}
+    .hero .sub{font-size:17px;}
+    .hero .kpis{gap:30px;}
+    /* el laberinto del hero, más tenue para que no compita con el texto en pantallas estrechas */
+    .flow-anim{opacity:.5;-webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 70%,#000 100%);mask-image:linear-gradient(90deg,transparent 0%,#000 70%,#000 100%);}
+    .demo-viewer{gap:14px;}
+    .demo-list{order:-1;flex-direction:row;flex-wrap:wrap;}   /* el selector de demos va ENCIMA del reproductor */
+    .demo-item{flex:1 1 220px;}
+    /* "cómo trabajamos": línea de tiempo vertical en móvil (en vez de 4 bloques sueltos) */
+    .steps{gap:0;}
+    .step{display:grid;grid-template-columns:44px 1fr;grid-template-areas:"n h" "n p";column-gap:16px;row-gap:4px;padding:0 0 26px;position:relative;}
+    .step:last-child{padding-bottom:0;}
+    .step:not(:last-child)::before{content:"";position:absolute;left:21px;top:50px;bottom:-2px;width:2px;background:linear-gradient(var(--accent-soft),var(--line));}
+    .step .n{grid-area:n;position:relative;z-index:1;}
+    .step h4{grid-area:h;margin:0;align-self:center;}
+    .step p{grid-area:p;margin:0;}
+  }
+  @media(max-width:560px){
+    .wrap{padding:0 18px;}
+    h1.hl{font-size:clamp(33px,9vw,46px);}
+    .hero .sub{font-size:16px;}
+    .hero .cta-row{gap:10px;}
+    .hero .cta-row .btn{flex:1 1 auto;justify-content:center;}
+    .hero .kpis{gap:18px 26px;}
+    .hero .kpi b{font-size:25px;}
+    .band .wrap{gap:12px;padding:22px 18px;}
+    .svc-card,.sol-card{padding:22px 20px;}
+    .sec-head{margin-bottom:34px;}
+    .stat .big{font-size:clamp(40px,14vw,56px);}
+    .demo-list{flex-direction:column;}
+    .demo-item{flex:1 1 auto;}
+    .sol-foot{gap:10px;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .js .reveal{opacity:1;transform:none;transition:none;}
+    .pipe-dot{animation:none;}
+    .flow-anim .pulse{display:none;}   /* el laberinto queda dibujado entero (el JS no arranca el scrub) */
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<header class="nav">
+  <div class="wrap bar">
+    <a class="logo" href="#top" aria-label="Mazestudio">
+      <svg viewBox="0 0 132 52" aria-hidden="true">
+        <path class="hilo" d="M3 44 L3 31 L19 31 L19 15 L33 15 L33 35 L47 35 L47 9 L61 9 L61 27 L75 27 L75 44 L129 44"/>
+        <circle class="nd" cx="3"  cy="44" r="4"/>
+        <circle class="nd" cx="33" cy="15" r="3.2"/>
+        <circle class="nd" cx="47" cy="9"  r="3.2"/>
+        <circle class="nd" cx="75" cy="44" r="3.2"/>
+        <circle class="nd end" cx="129" cy="44" r="4.4"/>
+      </svg>
+      <span class="wm">Mazestudio<span class="dot">.</span></span>
+    </a>
+    <ul>
+      <li><a href="#servicios">Servicios</a></li>
+      <li><a href="#como">Cómo funciona</a></li>
+      <li><a href="#soluciones">Soluciones</a></li>
+      <li><a href="#resultados">Resultados</a></li>
+      <li><a href="#estudio">Estudio</a></li>
+      <li class="nav-cta-li"><a class="btn accent nav-cta" href="#contacto"><span class="arrow">→</span> Hablemos</a></li>
+    </ul>
+    <div class="right">
+      <a class="btn accent" href="#contacto"><span class="arrow">→</span> Hablemos</a>
+      <button class="menu-toggle" aria-label="menú">☰</button>
+    </div>
+  </div>
+</header>
+
+<!-- HERO + SERVICIOS comparten el laberinto de fondo -->
+<div class="hero-zone">
+
+  <!-- fondo: laberinto que se resuelve, se endereza y desciende ramificándose hasta la banda oscura -->
+  <svg class="flow-anim" viewBox="0 0 1200 1080" preserveAspectRatio="xMidYMin slice" aria-hidden="true">
+    <!-- laberinto principal → se endereza y sale por la derecha -->
+    <path id="maze-main" class="conn" pathLength="1" d="M540 470 V330 H660 V210 H770 V360 H890 V160 H1010 V320 H1130 H1200"/>
+    <!-- rama inferior (red de conexiones) -->
+    <path id="maze-low" class="conn" pathLength="1" d="M540 470 H690 V540 H850 V470 H980"/>
+    <!-- ramales con nodos colgando -->
+    <path id="maze-up" class="conn" pathLength="1" d="M770 210 V120 H910"/>
+    <path id="maze-br" class="conn" pathLength="1" d="M1010 320 V410 H1110"/>
+    <!-- ramales que descienden (red inferior) -->
+    <path id="maze-dl" class="conn" pathLength="1" d="M660 330 V500 H540 V575"/>
+    <path id="maze-dm" class="conn" pathLength="1" d="M850 540 V578 H1010"/>
+    <path id="maze-dr" class="conn" pathLength="1" d="M980 470 V560 H1130"/>
+    <!-- descenso largo: la red baja por servicios y llega hasta la banda oscura -->
+    <path id="maze-down1" class="conn" pathLength="1" d="M540 575 V740 H680 V900 H600 V1040"/>
+    <path id="maze-down2" class="conn" pathLength="1" d="M1010 578 V700 H870 V880 H980 V1040"/>
+    <path id="maze-down3" class="conn" pathLength="1" d="M1130 560 V820 H1040 V1040"/>
+    <path id="maze-base"  class="conn" pathLength="1" d="M600 1040 H1040"/>
+    <!-- nodos sobre las junturas -->
+    <circle class="nd" cx="540"  cy="470" r="6"/>
+    <circle class="nd" cx="660"  cy="330" r="5"/>
+    <circle class="nd" cx="770"  cy="210" r="5"/>
+    <circle class="nd nd-acc" cx="890" cy="160" r="6.5"/>
+    <circle class="nd" cx="1010" cy="320" r="5"/>
+    <circle class="nd" cx="910"  cy="120" r="4.5"/>
+    <circle class="nd" cx="1110" cy="410" r="4.5"/>
+    <circle class="nd" cx="850"  cy="540" r="4.5"/>
+    <circle class="nd nd-acc" cx="980" cy="470" r="5"/>
+    <!-- nodo-salida -->
+    <circle class="nd nd-acc" cx="1180" cy="320" r="7.5"/>
+    <!-- nodos de los ramales inferiores -->
+    <circle class="nd" cx="660"  cy="500" r="4.5"/>
+    <circle class="nd" cx="540"  cy="575" r="4.5"/>
+    <circle class="nd" cx="1010" cy="578" r="4.5"/>
+    <circle class="nd" cx="980"  cy="560" r="4"/>
+    <circle class="nd" cx="1130" cy="560" r="4.5"/>
+    <!-- nodos del descenso hasta la banda -->
+    <circle class="nd" cx="540"  cy="740" r="4"/>
+    <circle class="nd" cx="680"  cy="740" r="4"/>
+    <circle class="nd" cx="680"  cy="900" r="4"/>
+    <circle class="nd" cx="600"  cy="900" r="4"/>
+    <circle class="nd nd-acc" cx="600" cy="1040" r="5"/>
+    <circle class="nd" cx="1010" cy="700" r="4"/>
+    <circle class="nd" cx="870"  cy="700" r="4"/>
+    <circle class="nd" cx="870"  cy="880" r="4"/>
+    <circle class="nd" cx="980"  cy="880" r="4"/>
+    <circle class="nd nd-acc" cx="980" cy="1040" r="5.5"/>
+    <circle class="nd" cx="1130" cy="820" r="4"/>
+    <circle class="nd" cx="1040" cy="820" r="4"/>
+    <circle class="nd nd-acc" cx="1040" cy="1040" r="5"/>
+
+    <!-- pulsos de datos (recorren las líneas). Invisibles hasta que el <svg> tenga la clase "play" -->
+    <g class="pulses">
+      <circle class="pulse" r="4"  ><animateMotion dur="4.2s" begin="0s"   repeatCount="indefinite" calcMode="linear"><mpath href="#maze-main"/></animateMotion></circle>
+      <circle class="pulse" r="3.5"><animateMotion dur="3.6s" begin="1s"   repeatCount="indefinite" calcMode="linear"><mpath href="#maze-low"/></animateMotion></circle>
+      <circle class="pulse" r="3"  ><animateMotion dur="3s"   begin="1.8s" repeatCount="indefinite" calcMode="linear"><mpath href="#maze-up"/></animateMotion></circle>
+      <circle class="pulse" r="3"  ><animateMotion dur="3s"   begin="2.4s" repeatCount="indefinite" calcMode="linear"><mpath href="#maze-br"/></animateMotion></circle>
+      <circle class="pulse" r="3"  ><animateMotion dur="3.4s" begin="2.8s" repeatCount="indefinite" calcMode="linear"><mpath href="#maze-dl"/></animateMotion></circle>
+      <circle class="pulse" r="3"  ><animateMotion dur="3.2s" begin="2.2s" repeatCount="indefinite" calcMode="linear"><mpath href="#maze-dm"/></animateMotion></circle>
+      <circle class="pulse" r="3"  ><animateMotion dur="3.6s" begin="3.2s" repeatCount="indefinite" calcMode="linear"><mpath href="#maze-dr"/></animateMotion></circle>
+      <circle class="pulse" r="3"  ><animateMotion dur="4.4s" begin="3s"   repeatCount="indefinite" calcMode="linear"><mpath href="#maze-down1"/></animateMotion></circle>
+      <circle class="pulse" r="3"  ><animateMotion dur="4s"   begin="2.6s" repeatCount="indefinite" calcMode="linear"><mpath href="#maze-down2"/></animateMotion></circle>
+      <circle class="pulse" r="3"  ><animateMotion dur="3.8s" begin="3.4s" repeatCount="indefinite" calcMode="linear"><mpath href="#maze-down3"/></animateMotion></circle>
+      <circle class="pulse" r="2.6"><animateMotion dur="3.4s" begin="3.8s" repeatCount="indefinite" calcMode="linear"><mpath href="#maze-base"/></animateMotion></circle>
+    </g>
+  </svg>
+
+<section class="hero" id="top">
+
+  <div class="wrap">
+    <span class="eyebrow"><span class="d"></span>estudio de automatización · sur de Tenerife</span>
+    <h1 class="hl" id="heroTitle">Automatizamos el trabajo que <em>no deberías estar haciendo.</em></h1>
+    <script>
+    /* Alterna el titular del hero en cada carga: 1ª visita frase A, 2ª frase B, y repite. */
+    (function(){
+      try{
+        var phrases = [
+          'Automatizamos el trabajo que <em>no deberías estar haciendo.</em>',
+          'Te devolvemos <em>las horas</em> que el trabajo repetitivo te roba.'
+        ];
+        var KEY = 'mz-hero-phrase';
+        var i = parseInt(localStorage.getItem(KEY) || '0', 10);
+        if (isNaN(i) || i < 0 || i >= phrases.length) i = 0;
+        var el = document.getElementById('heroTitle');
+        if (el) el.innerHTML = phrases[i];
+        localStorage.setItem(KEY, String((i + 1) % phrases.length));
+      } catch (e) {}
+    })();
+    </script>
+    <p class="sub">Conectamos tus herramientas y construimos flujos a medida — desde facturas, citas o correos hasta procesos enteros de tu negocio. Tú nos cuentas cómo trabajas; el resto pasa sin que lo toques.</p>
+    <div class="cta-row">
+      <a class="btn accent" href="#contacto"><span class="arrow">→</span> Empezar conversación</a>
+      <a class="btn ghost" href="#como">Ver cómo funciona</a>
+    </div>
+    <p class="meta">45 min · sin guion · sin compromiso</p>
+  </div>
+</section>
+
+<!-- SERVICIOS -->
+<section id="servicios">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="kicker">servicios</span>
+      <h2>Lo que hacemos, en cuatro pasos claros.</h2>
+      <p class="note">Sin paquetes raros ni jerga. Cada servicio es una función con un resultado concreto.</p>
+    </div>
+    <div class="svc-grid">
+      <div class="svc-card reveal"><span class="fn">audit()</span><h3>Auditoría de procesos</h3><p>Miramos cómo trabajas hoy y encontramos exactamente dónde se te escapan las horas.</p></div>
+      <div class="svc-card reveal"><span class="fn">design()</span><h3>Diseño de flujos</h3><p>Dibujamos el camino más corto entre el problema y el resultado, y te lo enseñamos en claro.</p></div>
+      <div class="svc-card reveal"><span class="fn">integrate()</span><h3>Integración de sistemas</h3><p>Conectamos tus herramientas para que hablen entre ellas y dejes de copiar y pegar.</p></div>
+      <div class="svc-card reveal"><span class="fn">operate()</span><h3>Operación continua</h3><p>Lo mantenemos funcionando y mejorando mes a mes. Tú a lo tuyo.</p></div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /hero-zone -->
+
+<!-- CÓMO FUNCIONA: pipeline -->
+<section id="como" class="flow">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="kicker">cómo funciona</span>
+      <h2>Así se ve una automación por dentro.</h2>
+      <p class="note">Un disparador la enciende, la lógica decide, tus apps se coordinan y el resultado llega solo. Tú no tocas nada.</p>
+    </div>
+    <div class="pipe">
+      <div class="pipe-step reveal">
+        <span class="pipe-dot"></span>
+        <span class="ix">01 · disparador</span>
+        <h4>Algo ocurre</h4>
+        <p>Entra un correo, se cierra una venta, llega un formulario o son las 9:00 de un lunes.</p>
+        <div class="tools"><span>Gmail</span><span>Formulario</span><span>Horario</span></div>
+      </div>
+      <div class="pipe-step reveal">
+        <span class="pipe-dot"></span>
+        <span class="ix">02 · lógica</span>
+        <h4>Se decide</h4>
+        <p>Clasifica, filtra y enruta. Si es una factura va por aquí; si es un cliente VIP, por allá.</p>
+        <div class="tools"><span>IA</span><span>Reglas</span><span>Filtros</span></div>
+      </div>
+      <div class="pipe-step reveal">
+        <span class="pipe-dot"></span>
+        <span class="ix">03 · integraciones</span>
+        <h4>Se coordina</h4>
+        <p>Tus herramientas se hablan: CRM, calendario, hojas, contabilidad, WhatsApp.</p>
+        <div class="tools"><span>Sheets</span><span>Calendar</span><span>Holded</span><span>WhatsApp</span></div>
+      </div>
+      <div class="pipe-step reveal">
+        <span class="pipe-dot"></span>
+        <span class="ix">04 · resultado</span>
+        <h4>Llega solo</h4>
+        <p>Factura enviada, cita confirmada, informe en tu bandeja, dato registrado. Sin manos.</p>
+        <div class="tools"><span>Email</span><span>PDF</span><span>Aviso</span></div>
+      </div>
+    </div>
+    <p class="foot reveal">// construido sobre <b>tus herramientas actuales</b> — sin cambiar de software ni dependencias eternas</p>
+
+    <!-- VISUALIZADOR DE DEMOS: reproductor + lista (la lista la rellena el JS desde el array DEMOS) -->
+    <div class="livedemo reveal">
+      <p class="ld-intro">// y esto no es un esquema — pruébalo tú</p>
+      <div class="demo-viewer">
+        <div class="browser">
+          <div class="chrome">
+            <span class="dots"><i></i><i></i><i></i></span>
+            <span class="url" id="demoUrl">gestion.demos.mazestudio.site</span>
+          </div>
+          <div class="ld-stage" id="demoStage" role="button" tabindex="0" aria-label="Reproducir la demo seleccionada">
+            <div class="play">
+              <span class="circ"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
+              <span class="t" id="demoTitle">Míralo funcionar</span>
+              <span class="s" id="demoDesc">facturas y nóminas que se archivan solas · ~60 s</span>
+            </div>
+          </div>
+        </div>
+        <aside class="demo-list" id="demoList" aria-label="Lista de demos disponibles"></aside>
+      </div>
+      <div class="demo-open-row"><a id="demoOpen" href="https://gestion.demos.mazestudio.site/" target="_blank" rel="noopener">o ábrela a pantalla completa ↗</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUCIONES -->
+<section id="soluciones">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="kicker">soluciones</span>
+      <h2>Automatizaciones que ya hemos resuelto.</h2>
+      <p class="note">Casos concretos, con resultado medible. Si el tuyo no está aquí, te lo diseñamos.</p>
+    </div>
+    <div class="sol-grid">
+      <article class="sol-card reveal">
+        <span class="fn">facturacion()</span>
+        <h3>Facturas y cobros automáticos</h3>
+        <p>Genera, envía y archiva facturas sin tocar nada. Avisa por WhatsApp si una lleva +15 días sin pagar.</p>
+        <div class="sol-foot"><span class="metric">3–6 h/mes recuperadas</span></div>
+      </article>
+      <article class="sol-card reveal">
+        <span class="fn">agenda()</span>
+        <h3>Reservas y citas sin fricción</h3>
+        <p>El cliente elige hueco con disponibilidad real, confirma solo y recibe recordatorios automáticos.</p>
+        <div class="sol-foot">
+          <span class="metric">2–4 h/mes recuperadas</span>
+          <a class="sol-demo" href="https://inmobiliaria-demo.demos.mazestudio.site" target="_blank" rel="noopener">Ver demo <span class="ar">→</span></a>
+        </div>
+      </article>
+      <article class="sol-card reveal">
+        <span class="fn">email()</span>
+        <h3>Bandejas sin colapso</h3>
+        <p>Clasificación, respuestas automáticas y rutas según el tipo de mensaje. Alertas si un VIP escribe urgente.</p>
+        <div class="sol-foot">
+          <span class="metric">5–10 h/mes recuperadas</span>
+          <!-- DEMO PENDIENTE DE PUBLICAR (atencion-cliente / clinica-dental). Al publicarla con la skill publicar-demo, descomenta y ajusta la URL si el subdominio difiere:
+          <a class="sol-demo" href="https://clinica-dental.demos.mazestudio.site" target="_blank" rel="noopener">Ver demo <span class="ar">→</span></a>
+          -->
+        </div>
+      </article>
+      <article class="sol-card reveal">
+        <span class="fn">documental()</span>
+        <h3>Documentos en orden solos</h3>
+        <p>Facturas y nóminas de proveedores clasificadas, archivadas en Drive y enviadas a la asesoría.</p>
+        <div class="sol-foot">
+          <span class="metric">Cero documentos perdidos</span>
+          <a class="sol-demo" href="https://gestion.demos.mazestudio.site" target="_blank" rel="noopener">Ver demo <span class="ar">→</span></a>
+        </div>
+      </article>
+      <article class="sol-card reveal">
+        <span class="fn">leads()</span>
+        <h3>Primer contacto al instante</h3>
+        <p>El lead entra, recibe bienvenida, se cualifica y aterriza en el CRM. Respuesta en minutos, no días.</p>
+        <div class="sol-foot"><span class="metric">0 leads enfriados</span></div>
+      </article>
+      <article class="sol-card reveal">
+        <span class="fn">informes()</span>
+        <h3>Informes automáticos</h3>
+        <p>Cada lunes, un resumen de ventas y tareas en tu bandeja o Slack. Dashboard en tiempo real.</p>
+        <div class="sol-foot"><span class="metric">4–8 h/mes recuperadas</span></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- RESULTADOS -->
+<section id="resultados" class="dark">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="kicker">resultados</span>
+      <h2>Lo que recuperas.</h2>
+      <p class="note">Tiempo, tranquilidad y un negocio que no depende de que estés delante.</p>
+    </div>
+    <div class="stats">
+      <div class="stat reveal"><div class="big">+20<span class="u">h</span></div><div class="lab">recuperadas al mes por persona</div></div>
+      <div class="stat reveal"><div class="big">−90<span class="u">%</span></div><div class="lab">menos errores manuales</div></div>
+      <div class="stat reveal"><div class="big">24<span class="u">/7</span></div><div class="lab">funcionando, también cuando no estás</div></div>
+    </div>
+    <p class="disc">// cifras ilustrativas — las tuyas las medimos juntos en la auditoría</p>
+  </div>
+</section>
+
+<!-- PROCESO -->
+<section id="proceso">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="kicker">cómo trabajamos</span>
+      <h2>De tu lío de hoy a un negocio que funciona solo.</h2>
+    </div>
+    <div class="steps">
+      <div class="step reveal"><div class="n">01</div><h4>Escuchamos</h4><p>Entendemos tu negocio y tu día a día antes de tocar nada.</p></div>
+      <div class="step reveal"><div class="n">02</div><h4>Diseñamos</h4><p>Te enseñamos el flujo en lenguaje claro, sin tecnicismos.</p></div>
+      <div class="step reveal"><div class="n">03</div><h4>Automatizamos</h4><p>Lo construimos y lo probamos contigo, paso a paso.</p></div>
+      <div class="step reveal"><div class="n">04</div><h4>Cuidamos</h4><p>Seguimos cerca para que dure, crezca y te dé calma.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ESTUDIO -->
+<section id="estudio">
+  <div class="wrap about">
+    <div class="txt reveal">
+      <h2>Desde el sur de Tenerife. Cerca, en tu idioma, <em>sin humo.</em></h2>
+      <p>Creemos en la automatización silenciosa: la que no se nota, pero te devuelve el tiempo y la calma. Nada de soluciones que nadie entiende ni dependencias eternas.</p>
+      <p>Conocemos el laberinto para que tú no tengas que perderte en él.</p>
+    </div>
+    <div class="panel reveal">
+      <div class="coord"><b>28°02′N · 16°34′O</b>sur de Tenerife · Islas Canarias</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta" id="contacto">
+  <div class="wrap">
+    <a class="logo rev" style="justify-content:center" aria-label="Mazestudio">
+      <svg viewBox="0 0 132 52" aria-hidden="true">
+        <path class="hilo" d="M3 44 L3 31 L19 31 L19 15 L33 15 L33 35 L47 35 L47 9 L61 9 L61 27 L75 27 L75 44 L129 44"/>
+        <circle class="nd" cx="3"  cy="44" r="4"/>
+        <circle class="nd" cx="33" cy="15" r="3.2"/>
+        <circle class="nd" cx="47" cy="9"  r="3.2"/>
+        <circle class="nd" cx="75" cy="44" r="3.2"/>
+        <circle class="nd end" cx="129" cy="44" r="4.4"/>
+      </svg>
+      <span class="wm">Mazestudio<span class="dot">.</span></span>
+    </a>
+    <h2>¿Hablamos de lo que te <em>quita tiempo?</em></h2>
+    <div class="cta-row">
+      <a class="btn accent" href="#"><span class="arrow">→</span> Empezar conversación</a>
+      <a class="btn ghost" style="color:var(--on-dark);border-color:rgba(234,235,241,.28)" href="#">Escríbenos</a>
+    </div>
+    <p class="mail">hola@mazestudio.es · respondemos en 24 h</p>
+  </div>
+</section>
+
+<!-- MODAL DEMO EN VIVO (el iframe se carga al abrir, se descarga al cerrar) -->
+<div class="demo-modal" id="demoModal" aria-hidden="true">
+  <div class="frame">
+    <button class="x" id="demoClose" aria-label="Cerrar demo">✕</button>
+    <iframe id="demoFrame" title="Demo · gestión documental" loading="lazy" allow="fullscreen"></iframe>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="top">
+      <a class="logo rev" aria-label="Mazestudio">
+        <svg viewBox="0 0 132 52" aria-hidden="true">
+        <path class="hilo" d="M3 44 L3 31 L19 31 L19 15 L33 15 L33 35 L47 35 L47 9 L61 9 L61 27 L75 27 L75 44 L129 44"/>
+        <circle class="nd" cx="3"  cy="44" r="4"/>
+        <circle class="nd" cx="33" cy="15" r="3.2"/>
+        <circle class="nd" cx="47" cy="9"  r="3.2"/>
+        <circle class="nd" cx="75" cy="44" r="3.2"/>
+        <circle class="nd end" cx="129" cy="44" r="4.4"/>
+      </svg>
+        <span class="wm">Mazestudio<span class="dot">.</span></span>
+      </a>
+      <nav>
+        <a href="#servicios">Servicios</a>
+        <a href="#como">Cómo funciona</a>
+        <a href="#soluciones">Soluciones</a>
+        <a href="#resultados">Resultados</a>
+        <a href="#estudio">Estudio</a>
+      </nav>
+    </div>
+    <div class="bot">
+      <span>© 2026 Mazestudio · estudio de automatización</span>
+      <span>del laberinto, una línea recta — 28°02′N · 16°34′O</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // reveal al hacer scroll (con fallback: si no hay IntersectionObserver, se muestra todo)
+  const reveals = document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+    },{threshold:0, rootMargin:'0px 0px -8% 0px'});
+    reveals.forEach(el=>io.observe(el));
+  } else {
+    reveals.forEach(el=>el.classList.add('in'));
+  }
+</script>
+
+<!-- HERO · laberinto: dibujado al scroll en escritorio · auto-dibujado al cargar en móvil/táctil -->
+<script>
+  (function(){
+    const svg  = document.querySelector('.flow-anim');
+    const hero = document.getElementById('top');
+    if(!svg || !hero) return;
+    const paths  = [...svg.querySelectorAll('.conn')];
+    const pulses = svg.querySelector('.pulses');
+    // tramo de dibujado de cada línea en el progreso global 0..1
+    const segs = [[-0.10,0.34],[0.20,0.52],[0.38,0.66],[0.52,0.82],[0.46,0.78],[0.40,0.72],[0.56,0.86],
+                  [0.62,0.92],[0.66,0.96],[0.70,0.98],[0.82,1.0]];
+    const draw = p => {
+      paths.forEach((path,i)=>{
+        const [s,e] = segs[i] || [0,1];
+        const lp = Math.max(0, Math.min(1, (p - s) / (e - s)));
+        path.style.strokeDashoffset = (1 - lp).toFixed(4);
+      });
+      if(pulses) pulses.style.opacity = Math.min(1, p * 2.4).toFixed(3);
+    };
+    svg.classList.add('scrub');
+
+    // accesibilidad: sin animación el laberinto queda dibujado entero
+    if(matchMedia('(prefers-reduced-motion:reduce)').matches){ draw(1); return; }
+
+    // móvil/táctil: el hero es corto y el scroll-scrub no se aprecia → lo dibujamos solo, al cargar
+    if(matchMedia('(max-width:880px)').matches || matchMedia('(hover:none)').matches){
+      const DUR = 2600, ease = x => 1 - Math.pow(1 - x, 3);
+      let t0 = null;
+      function frame(ts){
+        if(t0 === null) t0 = ts;
+        const p = Math.min(1, (ts - t0) / DUR);
+        draw(ease(p));
+        if(p < 1) requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+      return;
+    }
+
+    // escritorio: el dibujado sigue al scroll del hero
+    let ticking = false;
+    function update(){
+      ticking = false;
+      const r = hero.getBoundingClientRect();
+      const total = r.height || 1;
+      const p = Math.max(0, Math.min(1, -r.top / total)); // 0 arriba del hero → 1 al pasarlo
+      draw(p);
+    }
+    function onScroll(){ if(!ticking){ ticking = true; requestAnimationFrame(update); } }
+    update();
+    addEventListener('scroll', onScroll, {passive:true});
+    addEventListener('resize', onScroll);
+  })();
+</script>
+
+<script>
+  // ——— visualizador de demos (reproductor + lista) ———
+  (function(){
+    // Para añadir una demo nueva: agrega una línea aquí. live:false = aún sin publicar (sale como "pronto").
+    const DEMOS = [
+      {id:'gestion',  name:'Gestión documental', desc:'Facturas y nóminas que se archivan solas',     url:'https://gestion.demos.mazestudio.site/',          live:true},
+      {id:'citas',    name:'Agendado de citas',   desc:'Reserva con disponibilidad real y avisos',      url:'https://inmobiliaria-demo.demos.mazestudio.site/', live:true},
+      {id:'atencion', name:'Atención al cliente', desc:'Responde los emails de clientes con IA',        url:'',                                                 live:false},
+    ];
+    const stage = document.getElementById('demoStage');
+    const list  = document.getElementById('demoList');
+    const modal = document.getElementById('demoModal');
+    const frame = document.getElementById('demoFrame');
+    const close = document.getElementById('demoClose');
+    const urlEl = document.getElementById('demoUrl');
+    const titleEl = document.getElementById('demoTitle');
+    const descEl  = document.getElementById('demoDesc');
+    const openEl  = document.getElementById('demoOpen');
+    if(!stage || !modal || !list) return;
+
+    let active = DEMOS.find(d=>d.live) || DEMOS[0];
+    const host = u => { try{ return new URL(u).host; }catch(e){ return '—'; } };
+
+    function render(){
+      list.innerHTML = '<p class="dl-head">Demos disponibles</p>';
+      DEMOS.forEach(d=>{
+        const item = document.createElement(d.live ? 'button' : 'div');
+        item.className = 'demo-item' + (d.live ? '' : ' soon') + (d === active ? ' active' : '');
+        item.innerHTML = '<span class="di-top"><span class="di-name">' + d.name +
+          '</span><span class="di-badge ' + (d.live ? 'live">en vivo' : 'soon">pronto') +
+          '</span></span><span class="di-desc">' + d.desc + '</span>';
+        if(d.live) item.addEventListener('click', ()=> select(d));
+        list.appendChild(item);
+      });
+    }
+    function select(d){ active = d; updateStage(); render(); }
+    function updateStage(){
+      urlEl.textContent = active.live ? host(active.url) : '—';
+      descEl.textContent = active.desc + (active.live ? ' · ~60 s' : '');
+      if(openEl){ openEl.href = active.url || '#'; openEl.style.visibility = active.live ? 'visible' : 'hidden'; }
+    }
+    function open(){ if(!active.live) return; frame.src = active.url; modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); document.body.style.overflow = 'hidden'; }
+    function shut(){ modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); frame.src = ''; document.body.style.overflow = ''; }
+
+    stage.addEventListener('click', open);
+    stage.addEventListener('keydown', e=>{ if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); open(); } });
+    close.addEventListener('click', shut);
+    modal.addEventListener('click', e=>{ if(e.target === modal) shut(); });
+    addEventListener('keydown', e=>{ if(e.key === 'Escape' && modal.classList.contains('open')) shut(); });
+
+    render(); updateStage();
+  })();
+</script>
+
+<script>
+  // menú móvil (toggle por clase + cierre al tocar un enlace)
+  (function(){
+    const mt = document.querySelector('.menu-toggle');
+    const ul = document.querySelector('.nav ul');
+    if(!mt || !ul) return;
+    mt.addEventListener('click', ()=> ul.classList.toggle('open'));
+    ul.querySelectorAll('a').forEach(a=> a.addEventListener('click', ()=> ul.classList.remove('open')));
+    // cerrar al tocar fuera del menú (el botón ☰ se gestiona aparte, arriba)
+    document.addEventListener('click', e=>{
+      if(ul.classList.contains('open') && !ul.contains(e.target) && !mt.contains(e.target)) ul.classList.remove('open');
+    });
+  })();
+</script>
+</body>
+</html>
