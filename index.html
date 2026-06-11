@@ -331,7 +331,7 @@
   @media (prefers-reduced-motion:reduce){
     .js .reveal{opacity:1;transform:none;transition:none;}
     .pipe-dot{animation:none;}
-    .flow-anim .pulse{display:none;}   /* el laberinto queda dibujado entero (el JS no arranca el scrub) */
+    /* el laberinto del hero SÍ se anima siempre (decisión de marca), aunque el sistema pida reducir movimiento */
   }
 </style>
 </head>
@@ -752,8 +752,7 @@
     };
     svg.classList.add('scrub');
 
-    // accesibilidad: sin animación el laberinto queda dibujado entero
-    if(matchMedia('(prefers-reduced-motion:reduce)').matches){ draw(1); return; }
+    // nota: el laberinto se anima SIEMPRE (decisión de marca), también con 'prefers-reduced-motion'.
 
     // móvil/táctil: el hero es corto y el scroll-scrub no se aprecia → lo dibujamos solo, al cargar
     if(matchMedia('(max-width:880px)').matches || matchMedia('(hover:none)').matches){
