@@ -769,17 +769,33 @@
       return;
     }
 
-    // escritorio: el dibujado sigue al scroll del hero
+    // escritorio: se dibuja solo al cargar (como en móvil) y luego el scroll lo sigue
+    // controlando. El progreso solo AVANZA (max): el scroll puede acelerar el dibujado
+    // pero nunca lo borra → nada de saltos al volver arriba.
+    let drawn = 0;
+    const apply = p => { drawn = Math.max(drawn, p); draw(drawn); };
+
     let ticking = false;
     function update(){
       ticking = false;
       const r = hero.getBoundingClientRect();
       const total = r.height || 1;
       const p = Math.max(0, Math.min(1, -r.top / total)); // 0 arriba del hero → 1 al pasarlo
-      draw(p);
+      apply(p);
     }
     function onScroll(){ if(!ticking){ ticking = true; requestAnimationFrame(update); } }
-    update();
+
+    // intro: dibujado automático 0→1 al cargar la página
+    const DUR = 2600, ease = x => 1 - Math.pow(1 - x, 3);
+    let t0 = null;
+    function intro(ts){
+      if(t0 === null) t0 = ts;
+      const p = Math.min(1, (ts - t0) / DUR);
+      apply(ease(p));
+      if(p < 1) requestAnimationFrame(intro);
+    }
+    update();                       // respeta la posición de scroll inicial (recarga a media página)
+    requestAnimationFrame(intro);
     addEventListener('scroll', onScroll, {passive:true});
     addEventListener('resize', onScroll);
   })();
