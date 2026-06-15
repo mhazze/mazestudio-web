@@ -3,35 +3,33 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mazestudio · estudio de automatización</title>
-<script>document.documentElement.classList.add('js');</script><!-- si el JS no corre, el contenido se ve igual (no se oculta) -->
+<title>Mazestudio · estudio de automatización — propuesta B</title>
+<script>document.documentElement.classList.add('js');</script><!-- sin JS, el contenido se ve igual (no se oculta) -->
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;450;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;450;500;600&family=JetBrains+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
 <style>
   :root{
-    /* ——— PALETA · Azul Cobalto (profesional) ———
-       Para cambiar de paleta, edita SOLO este bloque.
-       Alternativas listas: ver comentarios al final del :root. */
-    --bg:#F4F5F7;          /* fondo · papel frío */
-    --surface:#FFFFFF;     /* tarjetas */
-    --ink:#14151A;         /* tinta · casi negro */
-    --ink-2:#0E0F13;       /* secciones más oscuras */
-    --accent:#2D4ECC;      /* acento · azul cobalto (el punto) */
-    --accent-strong:#2440B0;/* cobalto profundo · hovers */
-    --accent-soft:#7C8EE8; /* cobalto claro · apoyo */
-    --accent-wash:#E9ECFA; /* lavado para fondos suaves */
-    --muted:#666A77;       /* texto apagado */
-    --line:#E3E4E8;        /* hairlines */
-    --on-dark:#EAEBF1;     /* texto sobre oscuro */
-    --on-dark-mut:#9094A4; /* texto apagado sobre oscuro */
-
-    /* — Alt "Klein": --accent:#2026C4; --accent-strong:#171CA0; --accent-soft:#7B7FE0; --accent-wash:#E7E8FB;
-       — Alt "Índigo": --accent:#4F46E5; --accent-strong:#4038C4; --accent-soft:#9A93F0; --accent-wash:#ECEBFC;
-       — Alt "Monocromo": --accent:#14151A; --accent-strong:#000; --accent-soft:#9598A2; --accent-wash:#ECEDEF; */
+    /* ——— PROPUESTA B · oscura · Azul Cobalto ———
+       Misma familia de marca (cobalto #2D4ECC), llevada a un lienzo nocturno.
+       Para cambiar de paleta, edita SOLO este bloque. */
+    --bg:#0B0C10;          /* fondo · casi negro frío */
+    --bg-2:#0F1116;        /* bandas alternas */
+    --surface:#14161E;     /* tarjetas */
+    --surface-2:#191C26;   /* paneles / hover */
+    --ink:#ECEDF2;         /* texto principal */
+    --ink-mut:#9498A8;     /* texto apagado */
+    --ink-dim:#696D7C;     /* texto muy apagado / mono */
+    --line:rgba(255,255,255,.07);   /* hairlines */
+    --line-2:rgba(255,255,255,.14); /* hairlines marcadas */
+    --accent:#4361F0;      /* cobalto vivo (legible sobre oscuro) */
+    --accent-deep:#2D4ECC; /* cobalto de marca */
+    --accent-soft:#8295F2; /* cobalto claro · halos */
+    --accent-wash:rgba(67,97,240,.12);
 
     --display:'Space Grotesk', system-ui, sans-serif;
+    --serif:'Fraunces', 'Times New Roman', Georgia, serif;
     --sans:'Inter', system-ui, sans-serif;
     --mono:'JetBrains Mono', ui-monospace, monospace;
   }
@@ -40,111 +38,134 @@
   body{
     background:var(--bg);color:var(--ink);font-family:var(--sans);
     line-height:1.55;-webkit-font-smoothing:antialiased;letter-spacing:-.005em;
-    overflow-x:hidden;   /* evita scroll horizontal por el laberinto del hero en móvil */
+    overflow-x:hidden;
   }
   img,svg,iframe{max-width:100%;}
   .wrap{max-width:1200px;margin:0 auto;padding:0 28px;}
   a{color:inherit;text-decoration:none;}
-  .mono{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);}
+  .mono{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim);}
+  .page{position:relative;}
+
+  /* ——— EL HILO (spine que recorre toda la página) ——— */
+  .spine{position:absolute;top:0;bottom:0;width:2px;z-index:5;pointer-events:none;
+    left:max(20px, calc((100vw - 1200px)/2 - 26px));}
+  .spine .track{position:absolute;inset:0;background:var(--line-2);}
+  .spine .fill{position:absolute;left:0;right:0;top:0;height:0;
+    background:linear-gradient(var(--accent-soft),var(--accent));box-shadow:0 0 12px var(--accent);}
+  .spine .head{position:absolute;left:50%;top:0;width:11px;height:11px;border-radius:50%;background:var(--accent);
+    transform:translate(-50%,-50%);box-shadow:0 0 16px 3px var(--accent-soft);}
+  .spine .node{position:absolute;left:50%;width:9px;height:9px;border-radius:50%;background:var(--bg);
+    border:2px solid var(--line-2);transform:translate(-50%,-50%);transition:background .3s,border-color .3s,box-shadow .3s;}
+  .spine .node.on{background:var(--accent);border-color:var(--accent);box-shadow:0 0 12px var(--accent-soft);}
 
   /* ——— LOGO (hilo + palabra) ——— */
   .logo{display:inline-flex;align-items:center;gap:13px;}
   .logo svg{display:block;height:24px;width:auto;overflow:visible;}
   .logo .hilo{fill:none;stroke:var(--ink);stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round;}
-  .logo .nd{fill:var(--bg);stroke:var(--ink);stroke-width:2.4;}        /* nodo en la juntura */
-  .logo .nd.end{fill:var(--accent);stroke:none;}                        /* nodo-salida (acento) */
+  .logo .nd{fill:var(--bg);stroke:var(--ink);stroke-width:2.4;}
+  .logo .nd.end{fill:var(--accent);stroke:none;}
   .logo .wm{font-family:var(--display);font-weight:600;font-size:22px;letter-spacing:-.02em;color:var(--ink);}
   .logo .wm .dot{color:var(--accent);}
-  .logo.rev .hilo{stroke:var(--on-dark);}
-  .logo.rev .nd{fill:var(--ink-2);stroke:var(--on-dark);}
-  .logo.rev .nd.end{fill:var(--accent-soft);}
-  .logo.rev .wm{color:var(--on-dark);}
 
   /* ——— BOTONES ——— */
   .btn{font-family:var(--sans);font-size:14.5px;font-weight:500;cursor:pointer;
     display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:10px;
-    background:var(--ink);color:var(--bg);border:1px solid var(--ink);transition:transform .18s, background .18s, box-shadow .18s;}
+    background:var(--ink);color:var(--bg);border:1px solid var(--ink);transition:transform .18s, background .18s, box-shadow .18s, border-color .18s;}
   .btn:hover{transform:translateY(-2px);}
-  .btn.accent{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 10px 24px -12px var(--accent);}
-  .btn.accent:hover{background:var(--accent-strong);border-color:var(--accent-strong);}
-  .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);}
-  .btn.ghost:hover{background:#fff;border-color:#cfd0d6;}
+  .btn.accent{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 12px 30px -12px var(--accent);}
+  .btn.accent:hover{background:var(--accent-deep);border-color:var(--accent-deep);}
+  .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line-2);}
+  .btn.ghost:hover{background:var(--surface);border-color:#3a3e4d;}
   .arrow{font-family:var(--mono);}
 
   /* ——— NAV ——— */
-  header.nav{position:sticky;top:0;z-index:50;background:rgba(244,245,247,.78);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);}
+  header.nav{position:sticky;top:0;z-index:50;background:rgba(11,12,16,.72);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);}
   .nav .bar{display:flex;align-items:center;justify-content:space-between;height:70px;}
   .nav ul{list-style:none;display:flex;gap:30px;}
-  .nav ul a{font-size:14.5px;color:var(--ink);opacity:.78;transition:opacity .2s;}
+  .nav ul a{font-size:14.5px;color:var(--ink);opacity:.74;transition:opacity .2s;}
   .nav ul a:hover{opacity:1;}
   .nav .right{display:flex;align-items:center;gap:14px;}
   .menu-toggle{display:none;background:none;border:none;font-size:22px;color:var(--ink);cursor:pointer;}
-  .nav-cta-li{display:none;}   /* CTA del menú móvil; oculto en escritorio */
+  .nav-cta-li{display:none;}
 
   /* ——— HERO ——— */
-  /* zona hero+servicios: comparten el laberinto de fondo, que desciende hasta la banda oscura */
-  .hero-zone{position:relative;overflow:hidden;}
-  #servicios{position:relative;z-index:1;}   /* el contenido va por encima del laberinto */
-  .hero{position:relative;padding:96px 0 92px;}
-  /* fondo del hero: laberinto + nodos, anclado a la derecha y tenue (estático, para animar después) */
+  .hero-zone{position:relative;overflow:hidden;border-bottom:1px solid var(--line);}
+  .hero{position:relative;padding:104px 0 96px;}
+  /* fondo: el laberinto que se resuelve y sale por la derecha */
   .flow-anim{position:absolute;inset:0;width:100%;height:100%;z-index:0;opacity:1;
-    -webkit-mask-image:linear-gradient(90deg,transparent 0%,transparent 30%,#000 58%,#000 100%);
-    mask-image:linear-gradient(90deg,transparent 0%,transparent 30%,#000 58%,#000 100%);}
-  .flow-anim .conn{fill:none;stroke:var(--accent);stroke-width:2;opacity:.30;stroke-linecap:round;stroke-linejoin:round;}
-  .flow-anim .nd{fill:var(--bg);stroke:var(--accent);stroke-width:2;opacity:.55;}
-  .flow-anim .nd-acc{fill:var(--accent);stroke:none;opacity:.72;}
-  /* —— ANIMACIÓN AL SCROLL ——
-     El laberinto se dibuja conforme se baja por el hero (lo controla el JS del final).
-     Capa 1 = dibujado (stroke-dashoffset por línea) · Capa 2 = pulsos de datos en bucle. */
-  .flow-anim.scrub .conn{stroke-dasharray:1;}            /* JS fija el dashoffset de cada línea */
-  .flow-anim .pulse{fill:var(--accent);opacity:0;filter:drop-shadow(0 0 5px var(--accent-soft));}
-  .flow-anim.scrub .pulse{opacity:.9;}                   /* el grupo .pulses lo atenúa el JS según el scroll */
+    -webkit-mask-image:linear-gradient(90deg,transparent 0%,transparent 26%,#000 56%,#000 100%);
+    mask-image:linear-gradient(90deg,transparent 0%,transparent 26%,#000 56%,#000 100%);}
+  .flow-anim .conn{fill:none;stroke:var(--accent);stroke-width:2;opacity:.38;stroke-linecap:round;stroke-linejoin:round;}
+  .flow-anim .nd{fill:var(--bg);stroke:var(--accent);stroke-width:2;opacity:.6;}
+  .flow-anim .nd-acc{fill:var(--accent);stroke:none;opacity:.85;}
+  .flow-anim.scrub .conn{stroke-dasharray:1;}
+  .flow-anim .pulse{fill:var(--accent-soft);opacity:0;filter:drop-shadow(0 0 6px var(--accent-soft));}
+  .flow-anim.scrub .pulse{opacity:.95;}
   .flow-anim .pulses{transition:opacity .25s linear;}
   .hero .wrap{position:relative;z-index:1;}
-  .eyebrow{display:inline-flex;align-items:center;gap:10px;margin-bottom:26px;
-    font-family:var(--mono);font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);
-    background:var(--surface);border:1px solid var(--line);border-radius:30px;padding:7px 14px;}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;margin-bottom:28px;
+    font-family:var(--mono);font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-mut);
+    background:var(--surface);border:1px solid var(--line-2);border-radius:30px;padding:7px 14px;}
   .eyebrow .d{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--accent-wash);}
-  h1.hl{font-family:var(--display);font-weight:600;font-size:clamp(40px,6.4vw,80px);line-height:1.02;letter-spacing:-.03em;max-width:16ch;}
-  h1.hl em{font-style:normal;color:var(--accent);}
-  .hero .sub{margin-top:26px;max-width:52ch;font-size:19px;color:#3C3E47;}
-  .hero .cta-row{margin-top:36px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
-  .hero .meta{margin-top:20px;font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;color:var(--muted);}
-  .hero .kpis{margin-top:56px;display:flex;gap:46px;flex-wrap:wrap;}
-  .hero .kpi b{font-family:var(--display);font-weight:600;font-size:30px;letter-spacing:-.02em;display:block;}
-  .hero .kpi span{font-size:13.5px;color:var(--muted);}
-  .hero .kpi b .u{color:var(--accent);}
+  h1.hl{font-family:var(--display);font-weight:600;font-size:clamp(40px,6.6vw,82px);line-height:1.0;letter-spacing:-.035em;max-width:15ch;}
+  h1.hl em{font-style:normal;color:var(--accent-soft);}
+  .hero .sub{margin-top:28px;max-width:52ch;font-size:19px;color:var(--ink-mut);}
+  .hero .cta-row{margin-top:38px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+  .hero .meta{margin-top:20px;font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;color:var(--ink-dim);}
 
-  /* ——— BAND ——— */
-  .band{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--surface);}
-  .band .wrap{display:flex;align-items:center;gap:30px;padding:30px 28px;flex-wrap:wrap;}
-  .band .tag{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);white-space:nowrap;}
-  .band p{font-family:var(--display);font-weight:500;font-size:clamp(18px,2.2vw,24px);line-height:1.3;letter-spacing:-.01em;color:var(--ink);}
+
+  /* ——— MANIFIESTO (band) ——— */
+  .band{border-bottom:1px solid var(--line);background:var(--bg-2);}
+  .band .wrap{display:flex;align-items:center;gap:30px;padding:34px 28px;flex-wrap:wrap;}
+  .band .tag{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-soft);white-space:nowrap;}
+  .band p{font-family:var(--display);font-weight:500;font-size:clamp(18px,2.3vw,25px);line-height:1.3;letter-spacing:-.01em;color:var(--ink);}
+  .band p em{font-style:normal;color:var(--accent-soft);}
 
   /* ——— SECCIONES ——— */
-  section{padding:96px 0;}
-  .sec-head{margin-bottom:48px;max-width:62ch;}
-  .sec-head .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:block;}
-  .sec-head h2{font-family:var(--display);font-weight:600;font-size:clamp(28px,4vw,44px);line-height:1.08;letter-spacing:-.025em;}
-  .sec-head .note{margin-top:16px;font-size:16.5px;color:var(--muted);max-width:48ch;}
+  section{padding:100px 0;}
+  .sec-head{margin-bottom:52px;max-width:62ch;}
+  .sec-head .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-soft);margin-bottom:16px;display:block;}
+  .sec-head h2{font-family:var(--display);font-weight:600;font-size:clamp(28px,4vw,46px);line-height:1.07;letter-spacing:-.03em;}
+  .sec-head .note{margin-top:16px;font-size:16.5px;color:var(--ink-mut);max-width:48ch;}
 
-  /* servicios */
-  .svc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;}
-  .svc-card{background:var(--surface);border:1px solid #d7d9e0;border-radius:14px;padding:30px;
-    box-shadow:0 1px 0 rgba(20,21,26,.04), 0 14px 34px -24px rgba(20,21,26,.30);
-    transition:transform .22s, box-shadow .22s, border-color .22s;}
-  .svc-card:hover{transform:translateY(-4px);box-shadow:0 30px 56px -30px rgba(20,21,26,.45);border-color:var(--accent-soft);}
-  .svc-card .fn{font-family:var(--mono);font-size:12.5px;color:var(--accent);}
-  .svc-card h3{font-family:var(--display);font-weight:600;font-size:21px;margin:14px 0 9px;letter-spacing:-.01em;}
-  .svc-card p{font-size:15.5px;color:#3C3E47;}
+  /* ——— SERVICIOS · filas editoriales con hilo conector ——— */
+  .svc-rows{border-top:1px solid var(--line);position:relative;}
+  /* el hilo vertical que recorre los servicios */
+  .svc-rows::before{content:"";position:absolute;left:7px;top:0;bottom:0;width:2px;
+    background:linear-gradient(var(--line-2),var(--line));}
+  .svc-row{display:grid;grid-template-columns:124px minmax(180px,1fr) 1.5fr 44px;gap:28px;align-items:center;
+    padding:32px 0 32px 42px;border-bottom:1px solid var(--line);position:relative;
+    transition:padding-left .32s ease, background .35s ease;}
+  .svc-row:hover{padding-left:54px;background:linear-gradient(90deg,var(--accent-wash),transparent 62%);}
+  /* nodo del hilo · apagado por defecto, se enciende al entrar en pantalla y al hover */
+  .svc-row .node{position:absolute;left:8px;top:50%;width:11px;height:11px;border-radius:50%;
+    background:var(--bg);border:2px solid var(--line-2);transform:translate(-50%,-50%);
+    transition:background .4s ease, border-color .4s ease, box-shadow .4s ease, transform .3s ease;}
+  .svc-row.in .node{background:var(--accent);border-color:var(--accent);box-shadow:0 0 12px var(--accent-soft);}
+  .svc-row:hover .node{box-shadow:0 0 18px 2px var(--accent-soft);transform:translate(-50%,-50%) scale(1.25);}
+  /* numeral · sólido tenue, se tiñe de cobalto al hover */
+  .svc-row .idx{position:relative;}
+  .svc-row .num{display:block;font-family:var(--serif);font-weight:500;font-optical-sizing:auto;
+    font-size:clamp(46px,5.6vw,70px);line-height:.82;letter-spacing:-.01em;font-variant-numeric:lining-nums;
+    color:rgba(236,237,242,.10);
+    transition:color .4s ease, text-shadow .4s ease;}
+  .svc-row.in .num{color:rgba(236,237,242,.15);}
+  .svc-row:hover .num{color:var(--accent);text-shadow:0 0 26px rgba(67,97,240,.45);}
+  .svc-row .fn{font-family:var(--mono);font-size:12.5px;color:var(--ink-dim);display:block;margin-top:12px;
+    transition:color .3s ease;}
+  .svc-row:hover .fn{color:var(--accent-soft);}
+  .svc-row h3{font-family:var(--display);font-weight:600;font-size:23px;letter-spacing:-.015em;
+    transition:transform .32s ease;}
+  .svc-row p{font-size:15.5px;color:var(--ink-mut);}
+  /* flecha que se desliza al hover */
+  .svc-row .go{justify-self:end;font-family:var(--mono);font-size:22px;color:var(--accent);
+    opacity:0;transform:translateX(-10px);transition:opacity .3s ease, transform .3s ease;}
+  .svc-row:hover .go{opacity:1;transform:translateX(0);}
 
-  /* —— FLOW: "así se ve una automación" —— */
-  .flow{background:var(--ink-2);color:var(--on-dark);border-radius:0;}
-  .flow .sec-head h2{color:var(--on-dark);}
-  .flow .sec-head .note{color:var(--on-dark-mut);}
-  .flow .sec-head .kicker{color:var(--accent-soft);}
+  /* —— CÓMO FUNCIONA · pipeline —— */
+  .flow{background:var(--bg-2);}
   .pipe{display:grid;grid-template-columns:repeat(4,1fr);gap:0;align-items:stretch;position:relative;}
-  .pipe-step{position:relative;padding:24px 22px;border:1px solid rgba(234,235,241,.14);border-radius:14px;background:rgba(255,255,255,.02);margin-right:34px;}
+  .pipe-step{position:relative;padding:24px 22px;border:1px solid var(--line-2);border-radius:14px;background:var(--surface);margin-right:34px;}
   .pipe-step:last-child{margin-right:0;}
   .pipe-step::after{content:"";position:absolute;top:50%;right:-34px;width:34px;height:2px;
     background:repeating-linear-gradient(90deg,var(--accent-soft),var(--accent-soft) 5px,transparent 5px,transparent 10px);opacity:.7;}
@@ -157,185 +178,234 @@
   @keyframes run{0%{transform:translateX(0);opacity:0;}10%{opacity:1;}90%{opacity:1;}100%{transform:translateX(34px);opacity:0;}}
   .pipe-step .ix{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-soft);}
   .pipe-step h4{font-family:var(--display);font-weight:600;font-size:18px;margin:12px 0 8px;}
-  .pipe-step p{font-size:13.5px;color:var(--on-dark-mut);line-height:1.5;}
+  .pipe-step p{font-size:13.5px;color:var(--ink-mut);line-height:1.5;}
   .pipe-step .tools{margin-top:14px;display:flex;flex-wrap:wrap;gap:6px;}
-  .pipe-step .tools span{font-family:var(--mono);font-size:10.5px;color:var(--on-dark);background:rgba(234,235,241,.08);border:1px solid rgba(234,235,241,.12);border-radius:6px;padding:3px 8px;}
-  .flow .foot{margin-top:34px;font-family:var(--mono);font-size:12px;color:var(--on-dark-mut);}
+  .pipe-step .tools span{font-family:var(--mono);font-size:10.5px;color:var(--ink);background:rgba(255,255,255,.05);border:1px solid var(--line-2);border-radius:6px;padding:3px 8px;}
+  .flow .foot{margin-top:34px;font-family:var(--mono);font-size:12px;color:var(--ink-dim);}
   .flow .foot b{color:var(--accent-soft);font-weight:500;}
 
-  /* soluciones */
-  .sol-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
-  .sol-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:26px 24px;display:flex;flex-direction:column;transition:transform .22s,box-shadow .22s,border-color .22s;}
-  .sol-card:hover{transform:translateY(-4px);box-shadow:0 26px 50px -34px rgba(20,21,26,.45);border-color:#d4d6dd;}
-  .sol-card .fn{font-family:var(--mono);font-size:12px;color:var(--accent);}
-  .sol-card h3{font-family:var(--display);font-weight:600;font-size:18.5px;margin:11px 0 9px;letter-spacing:-.01em;}
-  .sol-card p{font-size:14.5px;color:#3C3E47;margin-bottom:16px;}
-  .sol-card .metric{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
-    color:var(--accent);background:var(--accent-wash);border-radius:8px;padding:6px 11px;}
-  /* pie de tarjeta: métrica + (si hay demo) botón "Ver demo" */
-  .sol-card .sol-foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
-  .sol-demo{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);
-    display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:8px;padding:6px 11px;
-    transition:background .18s, border-color .18s, transform .18s;white-space:nowrap;}
-  .sol-demo:hover{background:var(--accent-wash);border-color:var(--accent-soft);transform:translateY(-1px);}
-  .sol-demo .ar{font-family:var(--mono);}
-
-  /* resultados */
-  .dark{background:var(--ink);color:var(--on-dark);}
-  .dark .sec-head h2{color:var(--on-dark);}
-  .dark .sec-head .note{color:var(--on-dark-mut);}
-  .dark .sec-head .kicker{color:var(--accent-soft);}
-  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
-  .stat{border-top:1px solid rgba(234,235,241,.16);padding-top:24px;}
-  .stat .big{font-family:var(--display);font-weight:600;font-size:clamp(46px,6.5vw,70px);line-height:1;letter-spacing:-.03em;}
-  .stat .big .u{color:var(--accent-soft);}
-  .stat .lab{margin-top:10px;font-size:15px;color:var(--on-dark-mut);}
-  .dark .disc{margin-top:38px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--on-dark-mut);}
-
-  /* proceso */
-  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;}
-  .step{position:relative;padding-top:8px;}
-  .step .n{font-family:var(--mono);font-size:12px;color:var(--accent);border:1px solid var(--line);background:var(--surface);
-    width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;}
-  .step h4{font-family:var(--display);font-weight:600;font-size:19px;margin:20px 0 8px;}
-  .step p{font-size:14.5px;color:#3C3E47;}
-
-  /* estudio */
-  .about{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:center;}
-  .about .txt h2{font-family:var(--display);font-weight:600;font-size:clamp(28px,4.2vw,46px);line-height:1.08;letter-spacing:-.025em;}
-  .about .txt h2 em{font-style:normal;color:var(--accent);}
-  .about .txt p{margin-top:20px;font-size:17px;color:#3C3E47;max-width:46ch;}
-  .about .panel{aspect-ratio:5/4;border-radius:16px;background:var(--ink-2);position:relative;overflow:hidden;display:flex;align-items:flex-end;padding:28px;}
-  .about .panel::before{content:"";position:absolute;inset:0;
-    background-image:linear-gradient(rgba(234,235,241,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(234,235,241,.06) 1px,transparent 1px);background-size:32px 32px;}
-  .about .panel .coord{position:relative;font-family:var(--mono);font-size:12px;letter-spacing:.12em;color:var(--on-dark);}
-  .about .panel .coord b{display:block;font-family:var(--display);font-weight:600;font-size:28px;letter-spacing:-.01em;margin-bottom:6px;color:var(--on-dark);}
-
-  /* CTA */
-  .cta{background:var(--ink);color:var(--on-dark);text-align:center;padding:108px 0;position:relative;overflow:hidden;}
-  .cta h2{font-family:var(--display);font-weight:600;font-size:clamp(32px,5.2vw,62px);line-height:1.06;letter-spacing:-.03em;max-width:18ch;margin:28px auto 0;}
-  .cta h2 em{font-style:normal;color:var(--accent-soft);}
-  .cta .cta-row{margin-top:36px;display:flex;justify-content:center;gap:14px;flex-wrap:wrap;}
-  .cta .mail{margin-top:24px;font-family:var(--mono);font-size:12.5px;color:var(--on-dark-mut);}
-
-  /* footer */
-  footer{background:var(--ink-2);color:var(--on-dark);padding:54px 0 38px;}
-  footer .top{display:flex;justify-content:space-between;align-items:flex-start;gap:32px;flex-wrap:wrap;padding-bottom:32px;border-bottom:1px solid rgba(234,235,241,.12);}
-  footer nav{display:flex;gap:28px;flex-wrap:wrap;}
-  footer nav a{font-size:14px;color:var(--on-dark-mut);}
-  footer nav a:hover{color:var(--on-dark);}
-  footer .bot{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;padding-top:24px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--on-dark-mut);}
-
-  /* —— VISUALIZADOR DE DEMOS (dentro de "Cómo funciona") —— */
-  .livedemo{margin-top:48px;}
+  /* —— VISOR DE DEMOS —— */
+  .livedemo{margin-top:52px;}
   .livedemo .ld-intro{font-family:var(--mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--accent-soft);margin-bottom:16px;}
   .demo-viewer{display:grid;grid-template-columns:1fr minmax(248px,308px);gap:18px;align-items:start;}
   .demo-list{display:flex;flex-direction:column;gap:10px;}
-  .demo-list .dl-head{font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--on-dark-mut);margin-bottom:2px;}
-  .demo-item{text-align:left;font-family:var(--sans);color:var(--on-dark);background:rgba(255,255,255,.02);border:1px solid rgba(234,235,241,.14);border-radius:12px;padding:13px 15px;cursor:pointer;display:flex;flex-direction:column;gap:5px;transition:border-color .2s, background .2s, transform .2s;}
+  .demo-list .dl-head{font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:2px;}
+  .demo-item{text-align:left;font-family:var(--sans);color:var(--ink);background:var(--surface);border:1px solid var(--line-2);border-radius:12px;padding:13px 15px;cursor:pointer;display:flex;flex-direction:column;gap:5px;transition:border-color .2s, background .2s, transform .2s;}
   .demo-item:hover{border-color:var(--accent-soft);transform:translateY(-2px);}
-  .demo-item.active{border-color:var(--accent);background:rgba(45,78,204,.13);}
+  .demo-item.active{border-color:var(--accent);background:rgba(67,97,240,.14);}
   .demo-item .di-top{display:flex;align-items:center;justify-content:space-between;gap:8px;}
   .demo-item .di-name{font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:-.01em;}
-  .demo-item .di-desc{font-size:12.5px;color:var(--on-dark-mut);line-height:1.4;}
+  .demo-item .di-desc{font-size:12.5px;color:var(--ink-mut);line-height:1.4;}
   .demo-item .di-badge{font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;padding:3px 7px;border-radius:20px;white-space:nowrap;}
   .di-badge.live{color:#fff;background:var(--accent);}
-  .di-badge.soon{color:var(--on-dark-mut);background:rgba(234,235,241,.08);border:1px solid rgba(234,235,241,.14);}
+  .di-badge.soon{color:var(--ink-mut);background:rgba(255,255,255,.06);border:1px solid var(--line-2);}
   .demo-item.soon{cursor:default;opacity:.55;}
-  .demo-item.soon:hover{transform:none;border-color:rgba(234,235,241,.14);}
-  .browser{border:1px solid rgba(234,235,241,.16);border-radius:14px;overflow:hidden;background:rgba(255,255,255,.02);box-shadow:0 44px 90px -50px rgba(0,0,0,.85);}
-  .browser .chrome{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid rgba(234,235,241,.12);background:rgba(255,255,255,.03);}
+  .demo-item.soon:hover{transform:none;border-color:var(--line-2);}
+  .browser{border:1px solid var(--line-2);border-radius:14px;overflow:hidden;background:var(--surface);box-shadow:0 44px 90px -50px rgba(0,0,0,.85);}
+  .browser .chrome{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.03);}
   .browser .chrome .dots{display:flex;gap:6px;}
-  .browser .chrome .dots i{width:10px;height:10px;border-radius:50%;background:rgba(234,235,241,.18);}
-  .browser .chrome .url{flex:1;font-family:var(--mono);font-size:11px;color:var(--on-dark-mut);background:rgba(0,0,0,.28);border-radius:7px;padding:5px 12px;text-align:center;}
+  .browser .chrome .dots i{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.16);}
+  .browser .chrome .url{flex:1;font-family:var(--mono);font-size:11px;color:var(--ink-mut);background:rgba(0,0,0,.34);border-radius:7px;padding:5px 12px;text-align:center;}
   .ld-stage{position:relative;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;
-    background:radial-gradient(125% 95% at 50% 40%, rgba(45,78,204,.26), rgba(45,78,204,0) 58%), linear-gradient(180deg,#16171D 0%, #0C0D11 100%);}
-  /* halo del acento que late suavemente tras el botón, intensificándose al pasar */
+    background:radial-gradient(125% 95% at 50% 40%, rgba(67,97,240,.28), rgba(67,97,240,0) 58%), linear-gradient(180deg,#14161E 0%, #0A0B0F 100%);}
   .ld-stage::before{content:"";position:absolute;width:340px;height:340px;border-radius:50%;
-    background:radial-gradient(closest-side, rgba(124,142,232,.30), rgba(124,142,232,0));filter:blur(8px);opacity:.65;transition:opacity .3s, transform .3s;}
+    background:radial-gradient(closest-side, rgba(130,149,242,.34), rgba(130,149,242,0));filter:blur(8px);opacity:.6;transition:opacity .3s, transform .3s;}
   .ld-stage:hover::before{opacity:1;transform:scale(1.08);}
   .ld-stage .play{position:relative;display:flex;flex-direction:column;align-items:center;gap:13px;text-align:center;transition:transform .2s;}
   .ld-stage:hover .play{transform:translateY(-3px);}
   .ld-stage .play .circ{width:66px;height:66px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:0 18px 44px -12px var(--accent);transition:background .2s;}
-  .ld-stage:hover .play .circ{background:var(--accent-strong);}
+  .ld-stage:hover .play .circ{background:var(--accent-deep);}
   .ld-stage .play .circ svg{width:24px;height:24px;fill:#fff;margin-left:4px;}
-  .ld-stage .play .t{font-family:var(--display);font-weight:600;font-size:20px;color:var(--on-dark);letter-spacing:-.01em;}
-  .ld-stage .play .s{font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--on-dark-mut);}
+  .ld-stage .play .t{font-family:var(--display);font-weight:600;font-size:20px;color:var(--ink);letter-spacing:-.01em;}
+  .ld-stage .play .s{font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--ink-mut);}
   .demo-open-row{margin-top:14px;}
   .demo-open-row a{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--accent-soft);transition:color .2s;}
-  .demo-open-row a:hover{color:var(--on-dark);}
-  /* modal a pantalla casi completa */
-  .demo-modal{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:30px;background:rgba(8,9,13,.82);backdrop-filter:blur(6px);}
+  .demo-open-row a:hover{color:var(--ink);}
+  .demo-modal{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:30px;background:rgba(4,5,8,.86);backdrop-filter:blur(6px);}
   .demo-modal.open{display:flex;}
-  .demo-modal .frame{position:relative;width:100%;max-width:880px;height:92vh;background:var(--bg);border-radius:14px;overflow:hidden;box-shadow:0 40px 110px -30px rgba(0,0,0,.7);}
-  .demo-modal iframe{width:100%;height:100%;border:0;display:block;background:var(--bg);}
-  /* X dentro del marco (con offset negativo la recortaba el overflow:hidden) */
+  .demo-modal .frame{position:relative;width:100%;max-width:880px;height:92vh;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 40px 110px -30px rgba(0,0,0,.7);}
+  .demo-modal iframe{width:100%;height:100%;border:0;display:block;background:#fff;}
   .demo-modal .x{position:absolute;top:12px;right:12px;z-index:2;width:40px;height:40px;border-radius:50%;background:rgba(20,21,26,.72);color:#fff;border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(4px);font-size:17px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .18s, background .18s;}
-  .demo-modal .x:hover{transform:scale(1.08);background:var(--ink);}
+  .demo-modal .x:hover{transform:scale(1.08);background:#000;}
   @media(max-width:880px){ .demo-modal{padding:0;} .demo-modal .frame{height:100vh;height:100dvh;border-radius:0;} }
 
-  /* reveal — solo se ocultan si hay JS; sin JS (o si falla) el contenido se ve siempre */
+  /* —— SOLUCIONES —— */
+  .sol-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .sol-card{background:var(--surface);border:1px solid var(--line-2);border-radius:14px;padding:26px 24px;display:flex;flex-direction:column;transition:transform .22s,box-shadow .22s,border-color .22s;}
+  .sol-card:hover{transform:translateY(-4px);box-shadow:0 26px 50px -30px rgba(0,0,0,.7);border-color:var(--accent-soft);}
+  .sol-card .fn{font-family:var(--mono);font-size:12px;color:var(--accent-soft);}
+  .sol-card h3{font-family:var(--display);font-weight:600;font-size:18.5px;margin:11px 0 9px;letter-spacing:-.01em;}
+  .sol-card p{font-size:14.5px;color:var(--ink-mut);margin-bottom:16px;}
+  .sol-card .metric{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--accent-soft);background:var(--accent-wash);border-radius:8px;padding:6px 11px;}
+  .sol-card .sol-foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+  .sol-demo{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent-soft);
+    display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line-2);border-radius:8px;padding:6px 11px;
+    transition:background .18s, border-color .18s, transform .18s;white-space:nowrap;}
+  .sol-demo:hover{background:var(--accent-wash);border-color:var(--accent-soft);transform:translateY(-1px);}
+
+
+
+  /* —— PROCESO —— */
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;}
+  .step{position:relative;padding-top:8px;}
+  .step .n{font-family:var(--mono);font-size:12px;color:var(--accent-soft);border:1px solid var(--line-2);background:var(--surface);
+    width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;}
+  .step h4{font-family:var(--display);font-weight:600;font-size:19px;margin:20px 0 8px;}
+  .step p{font-size:14.5px;color:var(--ink-mut);}
+
+  /* —— ESTUDIO —— */
+  .about{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:center;}
+  .about .txt h2{font-family:var(--display);font-weight:600;font-size:clamp(28px,4.2vw,46px);line-height:1.07;letter-spacing:-.03em;}
+  .about .txt h2 em{font-style:normal;color:var(--accent-soft);}
+  .about .txt p{margin-top:20px;font-size:17px;color:var(--ink-mut);max-width:46ch;}
+  .about .panel{aspect-ratio:5/4;border-radius:16px;background:var(--surface-2);border:1px solid var(--line);position:relative;overflow:hidden;display:flex;align-items:flex-end;padding:28px;}
+  .about .panel::before{content:"";position:absolute;inset:0;
+    background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:32px 32px;}
+  .about .panel .coord{position:relative;font-family:var(--mono);font-size:12px;letter-spacing:.12em;color:var(--ink-mut);}
+  .about .panel .coord b{display:block;font-family:var(--display);font-weight:600;font-size:28px;letter-spacing:-.01em;margin-bottom:6px;color:var(--ink);}
+  .about .panel .maze-solve{position:absolute;inset:24px 24px 76px 24px;width:auto;height:auto;overflow:visible;z-index:1;}
+  .about .panel .maze-solve .wall{fill:none;stroke:var(--ink);stroke-width:2;opacity:.1;stroke-linecap:round;}
+  .about .panel .maze-solve .thread{fill:none;stroke:var(--accent-soft);stroke-linecap:round;stroke-linejoin:round;}
+  .about .panel .maze-solve .tangle{stroke-width:2.4;opacity:.9;transition:stroke-dashoffset 1.3s ease;}
+  .about .panel .maze-solve .straight{stroke-width:3;transition:stroke-dashoffset 1s ease 1.15s;}
+  .js .about .panel .maze-solve .thread{stroke-dasharray:1;stroke-dashoffset:1;}
+  .about .panel.in .maze-solve .thread{stroke-dashoffset:0;}
+  .about .panel .maze-solve .nd-start{fill:var(--surface-2);stroke:var(--accent-soft);stroke-width:2;opacity:.5;}
+  .about .panel .maze-solve .nd-end{fill:var(--accent-soft);filter:drop-shadow(0 0 7px var(--accent-soft));}
+  .js .about .panel .maze-solve .nd-end{opacity:0;}
+  .about .panel.in .maze-solve .nd-end{opacity:1;transition:opacity .55s ease 1.95s;}
+  .about .panel .maze-solve .dot{fill:#fff;opacity:0;filter:drop-shadow(0 0 5px var(--accent-soft));}
+  .about .panel.in .maze-solve .dot{opacity:.9;transition:opacity .4s ease 2.2s;}
+
+  /* —— CTA —— */
+  .cta{background:linear-gradient(180deg,var(--bg-2),var(--bg));text-align:center;padding:112px 0;position:relative;overflow:hidden;border-top:1px solid var(--line);}
+  .cta h2{font-family:var(--display);font-weight:600;font-size:clamp(32px,5.2vw,62px);line-height:1.05;letter-spacing:-.035em;max-width:18ch;margin:28px auto 0;}
+  .cta h2 em{font-style:normal;color:var(--accent-soft);}
+  .cta .cta-row{margin-top:36px;display:flex;justify-content:center;gap:14px;flex-wrap:wrap;}
+  .cta .mail{margin-top:24px;font-family:var(--mono);font-size:12.5px;color:var(--ink-mut);}
+
+  /* —— FOOTER —— */
+  footer{background:#08090C;color:var(--ink);padding:54px 0 38px;border-top:1px solid var(--line);}
+  footer .top{display:flex;justify-content:space-between;align-items:flex-start;gap:32px;flex-wrap:wrap;padding-bottom:32px;border-bottom:1px solid var(--line);}
+  footer nav{display:flex;gap:28px;flex-wrap:wrap;}
+  footer nav a{font-size:14px;color:var(--ink-mut);}
+  footer nav a:hover{color:var(--ink);}
+  footer .bot{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;padding-top:24px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--ink-dim);}
+
+  /* reveal — solo se ocultan con JS */
   .js .reveal{opacity:0;transform:translateY(22px);transition:opacity .65s ease, transform .65s ease;}
   .js .reveal.in{opacity:1;transform:none;}
 
   @media(max-width:880px){
+    .spine{display:none;}            /* el hilo lateral se oculta en móvil/tablet (su JS ya estaba desactivado) */
     .nav ul{display:none;}
-    .nav ul.open{display:flex;position:absolute;top:70px;left:0;right:0;flex-direction:column;gap:0;background:var(--bg);padding:6px 28px 18px;border-bottom:1px solid var(--line);z-index:60;box-shadow:0 16px 28px -20px rgba(20,21,26,.5);}
-    /* cada opción del menú móvil en su fila, separada por una línea fina */
+    .nav ul.open{display:flex;position:absolute;top:70px;left:0;right:0;flex-direction:column;gap:0;background:var(--bg);padding:6px 28px 18px;border-bottom:1px solid var(--line);z-index:60;box-shadow:0 16px 28px -20px rgba(0,0,0,.7);}
     .nav ul.open li:not(.nav-cta-li){border-bottom:1px solid var(--line);}
     .nav ul.open li:not(.nav-cta-li) a{display:block;padding:15px 2px;font-size:16px;opacity:1;}
     .nav ul.open .nav-cta-li{margin-top:18px;}
     .menu-toggle{display:block;font-size:27px;line-height:1;padding:6px 4px;margin-right:-4px;}
-    .nav .right .btn.accent{display:none;}   /* el CTA grande se mueve al menú desplegable */
+    .nav .right .btn.accent{display:none;}
     .nav-cta-li{display:block;}
-    .nav ul.open .nav-cta{margin-top:6px;opacity:1;color:#fff;}
-    .svc-grid,.stats,.steps,.sol-grid,.pipe{grid-template-columns:1fr;}
-    .demo-viewer{grid-template-columns:1fr;}
+    .svc-row{grid-template-columns:1fr;gap:8px;padding-left:34px;align-items:start;}
+    .svc-row:hover{padding-left:40px;}
+    .svc-row .node{top:46px;}
+    .svc-row .num{font-size:40px;}
+    .svc-row .go{display:none;}
+    .steps,.sol-grid,.pipe{grid-template-columns:1fr;}
+    .demo-viewer{grid-template-columns:1fr;gap:14px;}
     .pipe-step{margin-right:0;margin-bottom:18px;}
     .pipe-step::after,.pipe-dot{display:none;}
     .about{grid-template-columns:1fr;gap:32px;}
-    section{padding:66px 0;}
-    .hero{padding:60px 0 56px;}
+    section{padding:68px 0;}
+    .hero{padding:64px 0 58px;}
     .hero .sub{font-size:17px;}
-    .hero .kpis{gap:30px;}
-    /* el laberinto del hero, más tenue para que no compita con el texto en pantallas estrechas */
     .flow-anim{opacity:.5;-webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 70%,#000 100%);mask-image:linear-gradient(90deg,transparent 0%,#000 70%,#000 100%);}
-    .demo-viewer{gap:14px;}
-    .demo-list{order:-1;flex-direction:row;flex-wrap:wrap;}   /* el selector de demos va ENCIMA del reproductor */
+    .demo-list{order:-1;flex-direction:row;flex-wrap:wrap;}
     .demo-item{flex:1 1 220px;}
-    /* "cómo trabajamos": línea de tiempo vertical en móvil (en vez de 4 bloques sueltos) */
     .steps{gap:0;}
     .step{display:grid;grid-template-columns:44px 1fr;grid-template-areas:"n h" "n p";column-gap:16px;row-gap:4px;padding:0 0 26px;position:relative;}
     .step:last-child{padding-bottom:0;}
-    .step:not(:last-child)::before{content:"";position:absolute;left:21px;top:50px;bottom:-2px;width:2px;background:linear-gradient(var(--accent-soft),var(--line));}
+    .step:not(:last-child)::before{content:"";position:absolute;left:21px;top:50px;bottom:-2px;width:2px;background:linear-gradient(var(--accent-soft),var(--line-2));}
     .step .n{grid-area:n;position:relative;z-index:1;}
     .step h4{grid-area:h;margin:0;align-self:center;}
     .step p{grid-area:p;margin:0;}
   }
   @media(max-width:560px){
-    .wrap{padding:0 18px;}
+    .wrap{padding:0 20px;}
+    section{padding:62px 0;}
     h1.hl{font-size:clamp(33px,9vw,46px);}
-    .hero .sub{font-size:16px;}
-    .hero .cta-row{gap:10px;}
-    .hero .cta-row .btn{flex:1 1 auto;justify-content:center;}
-    .hero .kpis{gap:18px 26px;}
-    .hero .kpi b{font-size:25px;}
-    .band .wrap{gap:12px;padding:22px 18px;}
-    .svc-card,.sol-card{padding:22px 20px;}
-    .sec-head{margin-bottom:34px;}
-    .stat .big{font-size:clamp(40px,14vw,56px);}
+    .hero{padding:52px 0 50px;}
+    .hero .eyebrow{margin-bottom:22px;letter-spacing:.10em;}
+    .hero .sub{font-size:16px;margin-top:22px;}
+    .hero .cta-row{margin-top:30px;flex-direction:column;gap:11px;align-items:stretch;}
+    .hero .cta-row .btn{width:100%;justify-content:center;padding:14px 18px;}
+    /* el laberinto de fondo pasa a textura sutil: se desvanece bajo el titular y no compite con el texto */
+    .flow-anim{opacity:.2;
+      -webkit-mask-image:linear-gradient(180deg,transparent 0%,transparent 50%,#000 97%);
+      mask-image:linear-gradient(180deg,transparent 0%,transparent 50%,#000 97%);}
+
+    .band .wrap{gap:12px;padding:24px 20px;}
+    .sol-card{padding:22px 20px;}
+    .sec-head{margin-bottom:38px;}
     .demo-list{flex-direction:column;}
     .demo-item{flex:1 1 auto;}
-    .sol-foot{gap:10px;}
+
+    /* ESTUDIO · el panel se hace más alto para que el mapa y las coordenadas no se pisen */
+    .about .panel{aspect-ratio:auto;min-height:300px;padding:24px;}
+    .about .panel .maze-solve{inset:24px 24px 100px 24px;}
+    .about .panel .coord b{font-size:22px;}
+
+    .cta{padding:82px 0;}
+    .cta .cta-row .btn{width:100%;max-width:360px;justify-content:center;}
   }
   @media (prefers-reduced-motion:reduce){
     .js .reveal{opacity:1;transform:none;transition:none;}
     .pipe-dot{animation:none;}
-    /* el laberinto del hero SÍ se anima siempre (decisión de marca), aunque el sistema pida reducir movimiento */
   }
+
+  /* ——— GRANO / textura de film ——— */
+  .grain{
+    position:fixed; inset:-50%; z-index:9998; pointer-events:none;
+    width:200%; height:200%; opacity:.05; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-size:160px 160px;
+  }
+  @media (prefers-reduced-motion:no-preference){
+    .grain{animation:grain 1.1s steps(5) infinite;}
+  }
+  @keyframes grain{
+    0%{transform:translate(0,0)} 20%{transform:translate(-4%,3%)}
+    40%{transform:translate(3%,-4%)} 60%{transform:translate(-3%,2%)}
+    80%{transform:translate(4%,-2%)} 100%{transform:translate(0,0)}
+  }
+
+  /* ——— CURSOR premium · cobalto · punto preciso + anillo con inercia ——— */
+  .cur-dot,.cur-ring{position:fixed;top:0;left:0;z-index:10000;pointer-events:none;
+    border-radius:50%;transform:translate(-50%,-50%);opacity:0;will-change:transform;}
+  .cur-dot{width:6px;height:6px;background:var(--accent);
+    box-shadow:0 0 10px 1px var(--accent-soft);transition:opacity .25s ease;}
+  .cur-ring{width:34px;height:34px;border:1.5px solid var(--accent-soft);
+    background:var(--accent-wash);
+    transition:width .3s cubic-bezier(.22,1,.36,1), height .3s cubic-bezier(.22,1,.36,1),
+               border-color .3s ease, background .3s ease, opacity .3s ease;}
+  .cur-ring.hover{width:60px;height:60px;border-color:var(--accent);
+    background:rgba(67,97,240,.18);box-shadow:0 0 22px -4px var(--accent);}
+  .cur-ring.down{width:26px;height:26px;background:rgba(67,97,240,.26);}
+  .cur-dot.hover{opacity:0;}
+  html.cursor-on, html.cursor-on *{cursor:none !important;}
+  @media (pointer:coarse){ .cur-dot,.cur-ring{display:none;} }
 </style>
 </head>
 <body>
+<div class="page">
+
+  <!-- EL HILO · spine que recorre toda la página (lo rellena el JS del final) -->
+  <div class="spine" id="spine" aria-hidden="true">
+    <span class="track"></span>
+    <span class="fill"></span>
+    <span class="head"></span>
+  </div>
 
 <!-- NAV -->
 <header class="nav">
@@ -355,7 +425,6 @@
       <li><a href="#servicios">Servicios</a></li>
       <li><a href="#como">Cómo funciona</a></li>
       <li><a href="#soluciones">Soluciones</a></li>
-      <li><a href="#resultados">Resultados</a></li>
       <li><a href="#estudio">Estudio</a></li>
       <li class="nav-cta-li"><a class="btn accent nav-cta" href="#contacto"><span class="arrow">→</span> Hablemos</a></li>
     </ul>
@@ -366,128 +435,103 @@
   </div>
 </header>
 
-<!-- HERO + SERVICIOS comparten el laberinto de fondo -->
-<div class="hero-zone">
-
-  <!-- fondo: laberinto que se resuelve, se endereza y desciende ramificándose hasta la banda oscura -->
-  <svg class="flow-anim" viewBox="0 0 1200 1080" preserveAspectRatio="xMidYMin slice" aria-hidden="true">
-    <!-- laberinto principal → se endereza y sale por la derecha -->
-    <path id="maze-main" class="conn" pathLength="1" d="M540 470 V330 H660 V210 H770 V360 H890 V160 H1010 V320 H1130 H1200"/>
-    <!-- rama inferior (red de conexiones) -->
-    <path id="maze-low" class="conn" pathLength="1" d="M540 470 H690 V540 H850 V470 H980"/>
-    <!-- ramales con nodos colgando -->
-    <path id="maze-up" class="conn" pathLength="1" d="M770 210 V120 H910"/>
-    <path id="maze-br" class="conn" pathLength="1" d="M1010 320 V410 H1110"/>
-    <!-- ramales que descienden (red inferior) -->
-    <path id="maze-dl" class="conn" pathLength="1" d="M660 330 V500 H540 V575"/>
-    <path id="maze-dm" class="conn" pathLength="1" d="M850 540 V578 H1010"/>
-    <path id="maze-dr" class="conn" pathLength="1" d="M980 470 V560 H1130"/>
-    <!-- descenso largo: la red baja por servicios y llega hasta la banda oscura -->
-    <path id="maze-down1" class="conn" pathLength="1" d="M540 575 V740 H680 V900 H600 V1040"/>
-    <path id="maze-down2" class="conn" pathLength="1" d="M1010 578 V700 H870 V880 H980 V1040"/>
-    <path id="maze-down3" class="conn" pathLength="1" d="M1130 560 V820 H1040 V1040"/>
-    <path id="maze-base"  class="conn" pathLength="1" d="M600 1040 H1040"/>
-    <!-- nodos sobre las junturas -->
-    <circle class="nd" cx="540"  cy="470" r="6"/>
-    <circle class="nd" cx="660"  cy="330" r="5"/>
-    <circle class="nd" cx="770"  cy="210" r="5"/>
+<!-- HERO -->
+<div class="hero-zone" data-spine>
+  <!-- fondo: laberinto que se resuelve y sale por la derecha -->
+  <svg class="flow-anim" viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <path id="m1" class="conn" pathLength="1" d="M540 470 V330 H660 V210 H770 V360 H890 V160 H1010 V320 H1130 H1200"/>
+    <path id="m2" class="conn" pathLength="1" d="M540 470 H690 V540 H850 V470 H980"/>
+    <path id="m3" class="conn" pathLength="1" d="M770 210 V120 H910"/>
+    <path id="m4" class="conn" pathLength="1" d="M1010 320 V410 H1110"/>
+    <path id="m5" class="conn" pathLength="1" d="M660 330 V500 H560 V560"/>
+    <path id="m6" class="conn" pathLength="1" d="M850 540 V600 H1010"/>
+    <circle class="nd" cx="540" cy="470" r="6"/>
+    <circle class="nd" cx="660" cy="330" r="5"/>
+    <circle class="nd" cx="770" cy="210" r="5"/>
     <circle class="nd nd-acc" cx="890" cy="160" r="6.5"/>
     <circle class="nd" cx="1010" cy="320" r="5"/>
-    <circle class="nd" cx="910"  cy="120" r="4.5"/>
+    <circle class="nd" cx="910" cy="120" r="4.5"/>
     <circle class="nd" cx="1110" cy="410" r="4.5"/>
-    <circle class="nd" cx="850"  cy="540" r="4.5"/>
+    <circle class="nd" cx="850" cy="540" r="4.5"/>
     <circle class="nd nd-acc" cx="980" cy="470" r="5"/>
-    <!-- nodo-salida -->
     <circle class="nd nd-acc" cx="1180" cy="320" r="7.5"/>
-    <!-- nodos de los ramales inferiores -->
-    <circle class="nd" cx="660"  cy="500" r="4.5"/>
-    <circle class="nd" cx="540"  cy="575" r="4.5"/>
-    <circle class="nd" cx="1010" cy="578" r="4.5"/>
-    <circle class="nd" cx="980"  cy="560" r="4"/>
-    <circle class="nd" cx="1130" cy="560" r="4.5"/>
-    <!-- nodos del descenso hasta la banda -->
-    <circle class="nd" cx="540"  cy="740" r="4"/>
-    <circle class="nd" cx="680"  cy="740" r="4"/>
-    <circle class="nd" cx="680"  cy="900" r="4"/>
-    <circle class="nd" cx="600"  cy="900" r="4"/>
-    <circle class="nd nd-acc" cx="600" cy="1040" r="5"/>
-    <circle class="nd" cx="1010" cy="700" r="4"/>
-    <circle class="nd" cx="870"  cy="700" r="4"/>
-    <circle class="nd" cx="870"  cy="880" r="4"/>
-    <circle class="nd" cx="980"  cy="880" r="4"/>
-    <circle class="nd nd-acc" cx="980" cy="1040" r="5.5"/>
-    <circle class="nd" cx="1130" cy="820" r="4"/>
-    <circle class="nd" cx="1040" cy="820" r="4"/>
-    <circle class="nd nd-acc" cx="1040" cy="1040" r="5"/>
-
-    <!-- pulsos de datos (recorren las líneas). Invisibles hasta que el <svg> tenga la clase "play" -->
+    <circle class="nd" cx="560" cy="560" r="4.5"/>
+    <circle class="nd" cx="1010" cy="600" r="4.5"/>
     <g class="pulses">
-      <circle class="pulse" r="4"  ><animateMotion dur="4.2s" begin="0s"   repeatCount="indefinite" calcMode="linear"><mpath href="#maze-main"/></animateMotion></circle>
-      <circle class="pulse" r="3.5"><animateMotion dur="3.6s" begin="1s"   repeatCount="indefinite" calcMode="linear"><mpath href="#maze-low"/></animateMotion></circle>
-      <circle class="pulse" r="3"  ><animateMotion dur="3s"   begin="1.8s" repeatCount="indefinite" calcMode="linear"><mpath href="#maze-up"/></animateMotion></circle>
-      <circle class="pulse" r="3"  ><animateMotion dur="3s"   begin="2.4s" repeatCount="indefinite" calcMode="linear"><mpath href="#maze-br"/></animateMotion></circle>
-      <circle class="pulse" r="3"  ><animateMotion dur="3.4s" begin="2.8s" repeatCount="indefinite" calcMode="linear"><mpath href="#maze-dl"/></animateMotion></circle>
-      <circle class="pulse" r="3"  ><animateMotion dur="3.2s" begin="2.2s" repeatCount="indefinite" calcMode="linear"><mpath href="#maze-dm"/></animateMotion></circle>
-      <circle class="pulse" r="3"  ><animateMotion dur="3.6s" begin="3.2s" repeatCount="indefinite" calcMode="linear"><mpath href="#maze-dr"/></animateMotion></circle>
-      <circle class="pulse" r="3"  ><animateMotion dur="4.4s" begin="3s"   repeatCount="indefinite" calcMode="linear"><mpath href="#maze-down1"/></animateMotion></circle>
-      <circle class="pulse" r="3"  ><animateMotion dur="4s"   begin="2.6s" repeatCount="indefinite" calcMode="linear"><mpath href="#maze-down2"/></animateMotion></circle>
-      <circle class="pulse" r="3"  ><animateMotion dur="3.8s" begin="3.4s" repeatCount="indefinite" calcMode="linear"><mpath href="#maze-down3"/></animateMotion></circle>
-      <circle class="pulse" r="2.6"><animateMotion dur="3.4s" begin="3.8s" repeatCount="indefinite" calcMode="linear"><mpath href="#maze-base"/></animateMotion></circle>
+      <circle class="pulse" r="4"  ><animateMotion dur="4.2s" begin="0s"   repeatCount="indefinite" calcMode="linear"><mpath href="#m1"/></animateMotion></circle>
+      <circle class="pulse" r="3.5"><animateMotion dur="3.6s" begin="1s"   repeatCount="indefinite" calcMode="linear"><mpath href="#m2"/></animateMotion></circle>
+      <circle class="pulse" r="3"  ><animateMotion dur="3s"   begin="1.8s" repeatCount="indefinite" calcMode="linear"><mpath href="#m3"/></animateMotion></circle>
+      <circle class="pulse" r="3"  ><animateMotion dur="3s"   begin="2.4s" repeatCount="indefinite" calcMode="linear"><mpath href="#m4"/></animateMotion></circle>
+      <circle class="pulse" r="3"  ><animateMotion dur="3.4s" begin="2.8s" repeatCount="indefinite" calcMode="linear"><mpath href="#m5"/></animateMotion></circle>
+      <circle class="pulse" r="3"  ><animateMotion dur="3.2s" begin="2.2s" repeatCount="indefinite" calcMode="linear"><mpath href="#m6"/></animateMotion></circle>
     </g>
   </svg>
 
-<section class="hero" id="top">
-
-  <div class="wrap">
-    <span class="eyebrow"><span class="d"></span>estudio de automatización · sur de Tenerife</span>
-    <h1 class="hl" id="heroTitle">Automatizamos el trabajo que <em>no deberías estar haciendo.</em></h1>
-    <script>
-    /* Alterna el titular del hero en cada carga: 1ª visita frase A, 2ª frase B, y repite. */
-    (function(){
-      try{
-        var phrases = [
-          'Automatizamos el trabajo que <em>no deberías estar haciendo.</em>',
-          'Te devolvemos <em>las horas</em> que el trabajo repetitivo te roba.'
-        ];
-        var KEY = 'mz-hero-phrase';
-        var i = parseInt(localStorage.getItem(KEY) || '0', 10);
-        if (isNaN(i) || i < 0 || i >= phrases.length) i = 0;
-        var el = document.getElementById('heroTitle');
-        if (el) el.innerHTML = phrases[i];
-        localStorage.setItem(KEY, String((i + 1) % phrases.length));
-      } catch (e) {}
-    })();
-    </script>
-    <p class="sub">Conectamos tus herramientas y construimos flujos a medida — desde facturas, citas o correos hasta procesos enteros de tu negocio. Tú nos cuentas cómo trabajas; el resto pasa sin que lo toques.</p>
-    <div class="cta-row">
-      <a class="btn accent" href="#contacto"><span class="arrow">→</span> Empezar conversación</a>
-      <a class="btn ghost" href="#como">Ver cómo funciona</a>
+  <section class="hero" id="top">
+    <div class="wrap">
+      <span class="eyebrow"><span class="d"></span>estudio de automatización · sur de Tenerife</span>
+      <h1 class="hl">Del laberinto de tu operativa, <em>una línea recta.</em></h1>
+      <p class="sub">Conectamos tus herramientas y construimos flujos a medida — desde facturas, citas o correos hasta procesos enteros de tu negocio. Tú nos cuentas cómo trabajas; el resto pasa sin que lo toques.</p>
+      <div class="cta-row">
+        <a class="btn accent" href="#contacto"><span class="arrow">→</span> Empezar conversación</a>
+        <a class="btn ghost" href="#como">Ver cómo funciona</a>
+      </div>
+      <p class="meta">45 min · sin guion · sin compromiso</p>
     </div>
-    <p class="meta">45 min · sin guion · sin compromiso</p>
+  </section>
+</div><!-- /hero-zone -->
+
+<!-- MANIFIESTO -->
+<div class="band" data-spine>
+  <div class="wrap">
+    <span class="tag">// manifiesto</span>
+    <p>No te vendemos software. Conectamos el que <em>ya usas</em> para que el trabajo repetitivo pase solo — silencioso, sin que se note.</p>
   </div>
-</section>
+</div>
 
 <!-- SERVICIOS -->
-<section id="servicios">
+<section id="servicios" data-spine>
   <div class="wrap">
     <div class="sec-head reveal">
       <span class="kicker">servicios</span>
       <h2>Lo que hacemos, en cuatro pasos claros.</h2>
       <p class="note">Sin paquetes raros ni jerga. Cada servicio es una función con un resultado concreto.</p>
     </div>
-    <div class="svc-grid">
-      <div class="svc-card reveal"><span class="fn">audit()</span><h3>Auditoría de procesos</h3><p>Miramos cómo trabajas hoy y encontramos exactamente dónde se te escapan las horas.</p></div>
-      <div class="svc-card reveal"><span class="fn">design()</span><h3>Diseño de flujos</h3><p>Dibujamos el camino más corto entre el problema y el resultado, y te lo enseñamos en claro.</p></div>
-      <div class="svc-card reveal"><span class="fn">integrate()</span><h3>Integración de sistemas</h3><p>Conectamos tus herramientas para que hablen entre ellas y dejes de copiar y pegar.</p></div>
-      <div class="svc-card reveal"><span class="fn">operate()</span><h3>Operación continua</h3><p>Lo mantenemos funcionando y mejorando mes a mes. Tú a lo tuyo.</p></div>
+    <div class="svc-rows">
+      <div class="svc-row reveal">
+        <span class="node" aria-hidden="true"></span>
+        <div class="idx"><span class="num">01</span><b class="fn">audit()</b></div>
+        <div><h3>Auditoría de procesos</h3></div>
+        <p>Miramos cómo trabajas hoy y encontramos exactamente dónde se te escapan las horas.</p>
+        <span class="go" aria-hidden="true">→</span>
+      </div>
+      <div class="svc-row reveal">
+        <span class="node" aria-hidden="true"></span>
+        <div class="idx"><span class="num">02</span><b class="fn">design()</b></div>
+        <div><h3>Diseño de flujos</h3></div>
+        <p>Dibujamos el camino más corto entre el problema y el resultado, y te lo enseñamos en claro.</p>
+        <span class="go" aria-hidden="true">→</span>
+      </div>
+      <div class="svc-row reveal">
+        <span class="node" aria-hidden="true"></span>
+        <div class="idx"><span class="num">03</span><b class="fn">integrate()</b></div>
+        <div><h3>Integración de sistemas</h3></div>
+        <p>Conectamos tus herramientas para que hablen entre ellas y dejes de copiar y pegar.</p>
+        <span class="go" aria-hidden="true">→</span>
+      </div>
+      <div class="svc-row reveal">
+        <span class="node" aria-hidden="true"></span>
+        <div class="idx"><span class="num">04</span><b class="fn">operate()</b></div>
+        <div><h3>Operación continua</h3></div>
+        <p>Lo mantenemos funcionando y mejorando mes a mes. Tú a lo tuyo.</p>
+        <span class="go" aria-hidden="true">→</span>
+      </div>
     </div>
   </div>
 </section>
 
-</div><!-- /hero-zone -->
-
-<!-- CÓMO FUNCIONA: pipeline -->
-<section id="como" class="flow">
+<!-- CÓMO FUNCIONA -->
+<section id="como" class="flow" data-spine>
   <div class="wrap">
     <div class="sec-head reveal">
       <span class="kicker">cómo funciona</span>
@@ -526,7 +570,7 @@
     </div>
     <p class="foot reveal">// construido sobre <b>tus herramientas actuales</b> — sin cambiar de software ni dependencias eternas</p>
 
-    <!-- VISUALIZADOR DE DEMOS: reproductor + lista (la lista la rellena el JS desde el array DEMOS) -->
+    <!-- VISOR DE DEMOS -->
     <div class="livedemo reveal">
       <p class="ld-intro">// y esto no es un esquema — pruébalo tú</p>
       <div class="demo-viewer">
@@ -551,7 +595,7 @@
 </section>
 
 <!-- SOLUCIONES -->
-<section id="soluciones">
+<section id="soluciones" data-spine>
   <div class="wrap">
     <div class="sec-head reveal">
       <span class="kicker">soluciones</span>
@@ -578,12 +622,7 @@
         <span class="fn">email()</span>
         <h3>Bandejas sin colapso</h3>
         <p>Clasificación, respuestas automáticas y rutas según el tipo de mensaje. Alertas si un VIP escribe urgente.</p>
-        <div class="sol-foot">
-          <span class="metric">5–10 h/mes recuperadas</span>
-          <!-- DEMO PENDIENTE DE PUBLICAR (atencion-cliente / clinica-dental). Al publicarla con la skill publicar-demo, descomenta y ajusta la URL si el subdominio difiere:
-          <a class="sol-demo" href="https://clinica-dental.demos.mazestudio.site" target="_blank" rel="noopener">Ver demo <span class="ar">→</span></a>
-          -->
-        </div>
+        <div class="sol-foot"><span class="metric">5–10 h/mes recuperadas</span></div>
       </article>
       <article class="sol-card reveal">
         <span class="fn">documental()</span>
@@ -610,25 +649,9 @@
   </div>
 </section>
 
-<!-- RESULTADOS -->
-<section id="resultados" class="dark">
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <span class="kicker">resultados</span>
-      <h2>Lo que recuperas.</h2>
-      <p class="note">Tiempo, tranquilidad y un negocio que no depende de que estés delante.</p>
-    </div>
-    <div class="stats">
-      <div class="stat reveal"><div class="big">+20<span class="u">h</span></div><div class="lab">recuperadas al mes por persona</div></div>
-      <div class="stat reveal"><div class="big">−90<span class="u">%</span></div><div class="lab">menos errores manuales</div></div>
-      <div class="stat reveal"><div class="big">24<span class="u">/7</span></div><div class="lab">funcionando, también cuando no estás</div></div>
-    </div>
-    <p class="disc">// cifras ilustrativas — las tuyas las medimos juntos en la auditoría</p>
-  </div>
-</section>
 
 <!-- PROCESO -->
-<section id="proceso">
+<section id="proceso" data-spine>
   <div class="wrap">
     <div class="sec-head reveal">
       <span class="kicker">cómo trabajamos</span>
@@ -644,7 +667,7 @@
 </section>
 
 <!-- ESTUDIO -->
-<section id="estudio">
+<section id="estudio" data-spine>
   <div class="wrap about">
     <div class="txt reveal">
       <h2>Del laberinto a <em>una línea recta.</em></h2>
@@ -652,15 +675,26 @@
       <p>Conocemos el laberinto para que tú no tengas que perderte en él.</p>
     </div>
     <div class="panel reveal">
+      <svg class="maze-solve" viewBox="0 0 300 210" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
+        <path class="wall" d="M52 60 V38"/>
+        <path class="wall" d="M90 120 V150"/>
+        <path class="wall" d="M128 48 H158"/>
+        <path class="thread tangle"   pathLength="1" d="M18 165 V60 H52 V120 H90 V48 H128 V165"/>
+        <path class="thread straight" pathLength="1" d="M128 165 H284"/>
+        <path id="solveFull" fill="none" stroke="none" d="M18 165 V60 H52 V120 H90 V48 H128 V165 H284"/>
+        <circle class="nd-start" cx="18"  cy="165" r="3.4"/>
+        <circle class="nd-end"   cx="284" cy="165" r="5.5"/>
+        <circle class="dot" r="3.2"><animateMotion dur="4.6s" begin="0s" repeatCount="indefinite" calcMode="linear"><mpath href="#solveFull"/></animateMotion></circle>
+      </svg>
       <div class="coord"><b>28°02′N · 16°34′O</b>sur de Tenerife · Islas Canarias</div>
     </div>
   </div>
 </section>
 
 <!-- CTA -->
-<section class="cta" id="contacto">
+<section class="cta" id="contacto" data-spine>
   <div class="wrap">
-    <a class="logo rev" style="justify-content:center" aria-label="Mazestudio">
+    <a class="logo" style="justify-content:center" aria-label="Mazestudio">
       <svg viewBox="0 0 132 52" aria-hidden="true">
         <path class="hilo" d="M3 44 L3 31 L19 31 L19 15 L33 15 L33 35 L47 35 L47 9 L61 9 L61 27 L75 27 L75 44 L129 44"/>
         <circle class="nd" cx="3"  cy="44" r="4"/>
@@ -673,26 +707,17 @@
     </a>
     <h2>¿Hablamos de lo que te <em>quita tiempo?</em></h2>
     <div class="cta-row">
-      <a class="btn accent" href="#"><span class="arrow">→</span> Empezar conversación</a>
-      <a class="btn ghost" style="color:var(--on-dark);border-color:rgba(234,235,241,.28)" href="#">Escríbenos</a>
+      <a class="btn accent" href="hablemos.html"><span class="arrow">→</span> Empezar conversación</a>
     </div>
-    <p class="mail">hola@mazestudio.es · respondemos en 24 h</p>
+    <p class="mail">info@mazestudio.site · respondemos en 24 h</p>
   </div>
 </section>
-
-<!-- MODAL DEMO EN VIVO (el iframe se carga al abrir, se descarga al cerrar) -->
-<div class="demo-modal" id="demoModal" aria-hidden="true">
-  <div class="frame">
-    <button class="x" id="demoClose" aria-label="Cerrar demo">✕</button>
-    <iframe id="demoFrame" title="Demo · gestión documental" loading="lazy" allow="fullscreen"></iframe>
-  </div>
-</div>
 
 <!-- FOOTER -->
 <footer>
   <div class="wrap">
     <div class="top">
-      <a class="logo rev" aria-label="Mazestudio">
+      <a class="logo" aria-label="Mazestudio">
         <svg viewBox="0 0 132 52" aria-hidden="true">
         <path class="hilo" d="M3 44 L3 31 L19 31 L19 15 L33 15 L33 35 L47 35 L47 9 L61 9 L61 27 L75 27 L75 44 L129 44"/>
         <circle class="nd" cx="3"  cy="44" r="4"/>
@@ -707,7 +732,6 @@
         <a href="#servicios">Servicios</a>
         <a href="#como">Cómo funciona</a>
         <a href="#soluciones">Soluciones</a>
-        <a href="#resultados">Resultados</a>
         <a href="#estudio">Estudio</a>
       </nav>
     </div>
@@ -718,8 +742,18 @@
   </div>
 </footer>
 
+</div><!-- /page -->
+
+<!-- MODAL DEMO EN VIVO -->
+<div class="demo-modal" id="demoModal" aria-hidden="true">
+  <div class="frame">
+    <button class="x" id="demoClose" aria-label="Cerrar demo">✕</button>
+    <iframe id="demoFrame" title="Demo en vivo" loading="lazy" allow="fullscreen"></iframe>
+  </div>
+</div>
+
 <script>
-  // reveal al hacer scroll (con fallback: si no hay IntersectionObserver, se muestra todo)
+  // reveal al hacer scroll (fallback: si no hay IntersectionObserver, se muestra todo)
   const reveals = document.querySelectorAll('.reveal');
   if('IntersectionObserver' in window){
     const io = new IntersectionObserver((entries)=>{
@@ -731,17 +765,57 @@
   }
 </script>
 
-<!-- HERO · laberinto: dibujado al scroll en escritorio · auto-dibujado al cargar en móvil/táctil -->
 <script>
+  // ——— EL HILO · spine que se dibuja con el scroll y enciende un nodo por sección ———
   (function(){
-    const svg  = document.querySelector('.flow-anim');
-    const hero = document.getElementById('top');
-    if(!svg || !hero) return;
+    const page  = document.querySelector('.page');
+    const spine = document.getElementById('spine');
+    if(!page || !spine) return;
+    if(!matchMedia('(min-width:881px)').matches) return;  // en móvil el hilo se oculta
+
+    const fill = spine.querySelector('.fill');
+    const head = spine.querySelector('.head');
+    const secs = [...page.querySelectorAll('[data-spine]')];
+    let nodes = [];
+
+    function build(){
+      nodes.forEach(n=>n.el.remove()); nodes = [];
+      const pageTop = page.getBoundingClientRect().top + window.scrollY;
+      secs.forEach(s=>{
+        const r = s.getBoundingClientRect();
+        const y = (r.top + window.scrollY - pageTop) + Math.min(64, r.height*0.18);
+        const el = document.createElement('span');
+        el.className = 'node';
+        el.style.top = y + 'px';
+        spine.appendChild(el);
+        nodes.push({el, y});
+      });
+    }
+    function update(){
+      const y = window.scrollY + window.innerHeight*0.5;   // posición de "lectura"
+      fill.style.height = y + 'px';
+      head.style.top = y + 'px';
+      nodes.forEach(n=> n.el.classList.toggle('on', y >= n.y));
+    }
+    let ticking = false;
+    function onScroll(){ if(!ticking){ ticking = true; requestAnimationFrame(()=>{ ticking=false; update(); }); } }
+
+    build(); update();
+    addEventListener('scroll', onScroll, {passive:true});
+    addEventListener('resize', ()=>{ build(); update(); });
+    // por si las fuentes/imágenes cambian la altura tras cargar
+    addEventListener('load', ()=>{ build(); update(); });
+  })();
+</script>
+
+<script>
+  // ——— HERO · el laberinto se dibuja solo al cargar, luego viven los pulsos ———
+  (function(){
+    const svg = document.querySelector('.flow-anim');
+    if(!svg) return;
     const paths  = [...svg.querySelectorAll('.conn')];
     const pulses = svg.querySelector('.pulses');
-    // tramo de dibujado de cada línea en el progreso global 0..1
-    const segs = [[-0.10,0.34],[0.20,0.52],[0.38,0.66],[0.52,0.82],[0.46,0.78],[0.40,0.72],[0.56,0.86],
-                  [0.62,0.92],[0.66,0.96],[0.70,0.98],[0.82,1.0]];
+    const segs = [[-0.10,0.40],[0.18,0.58],[0.36,0.70],[0.46,0.80],[0.40,0.74],[0.52,0.88]];
     const draw = p => {
       paths.forEach((path,i)=>{
         const [s,e] = segs[i] || [0,1];
@@ -751,63 +825,25 @@
       if(pulses) pulses.style.opacity = Math.min(1, p * 2.4).toFixed(3);
     };
     svg.classList.add('scrub');
-
-    // nota: el laberinto se anima SIEMPRE (decisión de marca), también con 'prefers-reduced-motion'.
-
-    // móvil/táctil: el hero es corto y el scroll-scrub no se aprecia → lo dibujamos solo, al cargar
-    if(matchMedia('(max-width:880px)').matches || matchMedia('(hover:none)').matches){
-      const DUR = 2600, ease = x => 1 - Math.pow(1 - x, 3);
-      let t0 = null;
-      function frame(ts){
-        if(t0 === null) t0 = ts;
-        const p = Math.min(1, (ts - t0) / DUR);
-        draw(ease(p));
-        if(p < 1) requestAnimationFrame(frame);
-      }
-      requestAnimationFrame(frame);
-      return;
-    }
-
-    // escritorio: se dibuja solo al cargar (como en móvil) y luego el scroll lo sigue
-    // controlando. El progreso solo AVANZA (max): el scroll puede acelerar el dibujado
-    // pero nunca lo borra → nada de saltos al volver arriba.
-    let drawn = 0;
-    const apply = p => { drawn = Math.max(drawn, p); draw(drawn); };
-
-    let ticking = false;
-    function update(){
-      ticking = false;
-      const r = hero.getBoundingClientRect();
-      const total = r.height || 1;
-      const p = Math.max(0, Math.min(1, -r.top / total)); // 0 arriba del hero → 1 al pasarlo
-      apply(p);
-    }
-    function onScroll(){ if(!ticking){ ticking = true; requestAnimationFrame(update); } }
-
-    // intro: dibujado automático 0→1 al cargar la página
     const DUR = 2600, ease = x => 1 - Math.pow(1 - x, 3);
     let t0 = null;
-    function intro(ts){
+    function frame(ts){
       if(t0 === null) t0 = ts;
       const p = Math.min(1, (ts - t0) / DUR);
-      apply(ease(p));
-      if(p < 1) requestAnimationFrame(intro);
+      draw(ease(p));
+      if(p < 1) requestAnimationFrame(frame);
     }
-    update();                       // respeta la posición de scroll inicial (recarga a media página)
-    requestAnimationFrame(intro);
-    addEventListener('scroll', onScroll, {passive:true});
-    addEventListener('resize', onScroll);
+    requestAnimationFrame(frame);
   })();
 </script>
 
 <script>
   // ——— visualizador de demos (reproductor + lista) ———
   (function(){
-    // Para añadir una demo nueva: agrega una línea aquí. live:false = aún sin publicar (sale como "pronto").
     const DEMOS = [
-      {id:'gestion',  name:'Gestión documental', desc:'Facturas y nóminas que se archivan solas',     url:'https://gestion.demos.mazestudio.site/',          live:true},
-      {id:'citas',    name:'Agendado de citas',   desc:'Reserva con disponibilidad real y avisos',      url:'https://inmobiliaria-demo.demos.mazestudio.site/', live:true},
-      {id:'atencion', name:'Atención al cliente', desc:'Responde los emails de clientes con IA',        url:'',                                                 live:false},
+      {id:'gestion',  name:'Gestión documental', desc:'Facturas y nóminas que se archivan solas', url:'https://gestion.demos.mazestudio.site/',          live:true},
+      {id:'citas',    name:'Agendado de citas',   desc:'Reserva con disponibilidad real y avisos',  url:'https://inmobiliaria-demo.demos.mazestudio.site/', live:true},
+      {id:'atencion', name:'Atención al cliente', desc:'Responde los emails de clientes con IA',    url:'',                                                 live:false},
     ];
     const stage = document.getElementById('demoStage');
     const list  = document.getElementById('demoList');
@@ -815,7 +851,6 @@
     const frame = document.getElementById('demoFrame');
     const close = document.getElementById('demoClose');
     const urlEl = document.getElementById('demoUrl');
-    const titleEl = document.getElementById('demoTitle');
     const descEl  = document.getElementById('demoDesc');
     const openEl  = document.getElementById('demoOpen');
     if(!stage || !modal || !list) return;
@@ -855,18 +890,562 @@
 </script>
 
 <script>
-  // menú móvil (toggle por clase + cierre al tocar un enlace)
+  // menú móvil
   (function(){
     const mt = document.querySelector('.menu-toggle');
     const ul = document.querySelector('.nav ul');
     if(!mt || !ul) return;
     mt.addEventListener('click', ()=> ul.classList.toggle('open'));
     ul.querySelectorAll('a').forEach(a=> a.addEventListener('click', ()=> ul.classList.remove('open')));
-    // cerrar al tocar fuera del menú (el botón ☰ se gestiona aparte, arriba)
     document.addEventListener('click', e=>{
       if(ul.classList.contains('open') && !ul.contains(e.target) && !mt.contains(e.target)) ul.classList.remove('open');
     });
   })();
+</script>
+
+<script>
+/* ——— MAZE INTRO · narrativa ——— */
+(function(){
+  'use strict';
+
+  /* Al ir a una página interna (p.ej. hablemos.html), deja una marca para
+     que la intro NO se reproduzca al volver. */
+  document.querySelectorAll('a[href*="hablemos"]').forEach(function(a){
+    a.addEventListener('click',function(){ try{ sessionStorage.setItem('mz_skip_intro','1'); }catch(e){} });
+  });
+
+  /* Si venimos de vuelta desde una página interna, saltar la intro por completo. */
+  try{
+    var _fromQuery = /[?&]skipintro/.test(location.search);
+    if(_fromQuery || sessionStorage.getItem('mz_skip_intro')==='1'){
+      try{ sessionStorage.removeItem('mz_skip_intro'); }catch(e){}
+      try{ if(_fromQuery) history.replaceState(null,'',location.pathname+location.hash); }catch(e){} // limpia la URL
+      return; // no se crea el overlay: la web se muestra directamente
+    }
+  }catch(e){}
+
+  function mk(tag,css,txt){
+    const el=document.createElement(tag);
+    el.style.cssText=css;
+    if(txt!==undefined) el.textContent=txt;
+    return el;
+  }
+
+  const BG  ='#0B0C10';
+  const COB ='#4361F0';
+  const SOFT='#8295F2';
+  const DR=[-1,0,1,0], DC=[0,1,0,-1], OP=[2,3,0,1];
+
+  /* ——— OVERLAY ——— */
+  const ov=mk('div',`position:fixed;inset:0;z-index:2000;background:${BG};overflow:hidden;cursor:pointer;`);
+
+  const cv=mk('canvas','position:absolute;inset:0;display:block');
+  ov.appendChild(cv);
+  const cx=cv.getContext('2d');
+
+  /* ——— TEXTOS NARRATIVOS ——— */
+  /* Acto 1: el problema */
+  const txOp=mk('div',`
+    position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    font-family:'JetBrains Mono',ui-monospace,monospace;
+    font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+    color:rgba(130,149,242,0);transition:color 1s ease;
+    white-space:nowrap;pointer-events:none;text-align:center;
+  `,'// tu operativa, hoy');
+
+  /* Acto 3: la solución */
+  const solBox=mk('div',`
+    position:absolute;top:50%;left:50%;
+    transform:translate(-50%,-50%);
+    display:flex;flex-direction:column;align-items:center;gap:8px;
+    pointer-events:none;text-align:center;width:90vw;
+  `);
+  const txL=mk('div',`
+    font-family:'Space Grotesk',system-ui,sans-serif;
+    font-weight:600;font-size:clamp(26px,4.6vw,58px);
+    letter-spacing:-.03em;line-height:1.05;
+    color:rgba(236,237,242,0);transition:color .65s ease;
+  `,'Del laberinto,');
+  const txR=mk('div',`
+    font-family:'Space Grotesk',system-ui,sans-serif;
+    font-weight:600;font-size:clamp(26px,4.6vw,58px);
+    letter-spacing:-.03em;line-height:1.05;
+    color:rgba(130,149,242,0);transition:color .65s ease;
+  `,'una línea recta.');
+  solBox.appendChild(txL); solBox.appendChild(txR);
+
+  /* hint */
+  const hint=mk('div',`
+    position:absolute;bottom:62px;left:50%;transform:translateX(-50%);
+    font-family:'JetBrains Mono',ui-monospace,monospace;
+    font-size:11px;letter-spacing:.15em;text-transform:uppercase;
+    color:transparent;transition:color .5s;
+    white-space:nowrap;pointer-events:none;
+  `,'// toca para resolver');
+
+  /* logo (aparece al final) */
+  const logoDiv=mk('div',`
+    position:absolute;bottom:52px;left:50%;transform:translateX(-50%);
+    display:flex;align-items:center;gap:17px;
+    opacity:0;transition:opacity 1.1s ease;pointer-events:none;
+  `);
+  logoDiv.innerHTML=`
+    <svg viewBox="0 0 132 52" style="height:32px;overflow:visible" aria-hidden="true">
+      <path fill="none" stroke="rgba(236,237,242,.8)" stroke-width="3.2"
+            stroke-linecap="round" stroke-linejoin="round"
+            d="M3 44L3 31 19 31 19 15 33 15 33 35 47 35 47 9 61 9 61 27 75 27 75 44 129 44"/>
+      <circle fill="${BG}" stroke="rgba(236,237,242,.8)" stroke-width="2.4" cx="3"  cy="44" r="4"/>
+      <circle fill="${BG}" stroke="rgba(236,237,242,.8)" stroke-width="2.4" cx="33" cy="15" r="3.2"/>
+      <circle fill="${BG}" stroke="rgba(236,237,242,.8)" stroke-width="2.4" cx="47" cy="9"  r="3.2"/>
+      <circle fill="${BG}" stroke="rgba(236,237,242,.8)" stroke-width="2.4" cx="75" cy="44" r="3.2"/>
+      <circle fill="${COB}" cx="129" cy="44" r="4.4"/>
+    </svg>
+    <span style="font-family:'Space Grotesk',system-ui,sans-serif;font-weight:600;font-size:33px;letter-spacing:-.02em;color:rgba(236,237,242,.85)">Mazestudio<span style="color:${COB}">.</span></span>`;
+
+  /* skip */
+  const skipBtn=mk('button',`
+    position:absolute;bottom:20px;right:22px;
+    background:transparent;border:1px solid rgba(255,255,255,.13);
+    border-radius:8px;color:rgba(148,152,168,.72);
+    font-family:'JetBrains Mono',ui-monospace,monospace;
+    font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+    padding:7px 14px;cursor:pointer;
+    opacity:0;transition:opacity .5s,background .2s;
+  `,'saltar →');
+
+  [txOp,solBox,hint,logoDiv,skipBtn].forEach(el=>ov.appendChild(el));
+  document.body.prepend(ov);
+
+  /* ——— ESTADO ——— */
+  let COLS,ROWS,GRID,DPR;
+  let CXW,CZW;                 // centro del laberinto (mundo)
+  let S=1,ox=0,oy=0;          // escala y offset de proyección
+  let yaw=0;                   // ángulo de órbita de cámara
+  let maze=[],path=[],walls=[];
+  let phase='building';        // building|idle|solving|dissolving|done
+  let buildP=0, solveT=0, dissP=0, lastT=-1, txLshown=false;
+  const SOLVE_DUR=1100;
+  const WALL_H=0.92;           // altura de pared (en celdas)
+  const ISO=0.56;             // achatado vertical axonométrico
+  const PATH_Y=0.06;          // el hilo flota apenas sobre el suelo
+  const ORBIT=0.000135;        // velocidad de órbita (rad/ms)
+
+  /* ——— PROYECCIÓN 3D (axonométrica con órbita) ——— */
+  function projRaw(x,y,z){
+    const dx=x-CXW, dz=z-CZW;
+    const c=Math.cos(yaw), s=Math.sin(yaw);
+    const rx=dx*c - dz*s, rz=dx*s + dz*c;
+    return { u:(rx-rz), v:(rx+rz)*ISO - y, d:(rx+rz) };
+  }
+  const P=(x,y,z)=>{ const p=projRaw(x,y,z); return { x:ox+p.u*S, y:oy+p.v*S }; };
+
+  /* ——— GENERACIÓN (recursive backtracker) ——— */
+  function genMaze(){
+    maze=Array.from({length:ROWS},()=>
+      Array.from({length:COLS},()=>({w:[1,1,1,1],vis:false})));
+    const stk=[{r:0,c:0}]; maze[0][0].vis=true;
+    while(stk.length){
+      const cur=stk[stk.length-1], nb=[];
+      for(let d=0;d<4;d++){
+        const nr=cur.r+DR[d],nc=cur.c+DC[d];
+        if(nr>=0&&nr<ROWS&&nc>=0&&nc<COLS&&!maze[nr][nc].vis) nb.push({d,nr,nc});
+      }
+      if(nb.length){
+        const pk=nb[0|Math.random()*nb.length];
+        maze[cur.r][cur.c].w[pk.d]=0;
+        maze[pk.nr][pk.nc].w[OP[pk.d]]=0;
+        maze[pk.nr][pk.nc].vis=true;
+        stk.push({r:pk.nr,c:pk.nc});
+      } else stk.pop();
+    }
+    maze[0][0].w[0]=0; maze[ROWS-1][COLS-1].w[2]=0;
+  }
+
+  /* ——— BFS SOLVE ——— */
+  function solveMaze(){
+    const vis=Array.from({length:ROWS},()=>Array(COLS).fill(false));
+    const par=Array.from({length:ROWS},()=>Array(COLS).fill(null));
+    const q=[{r:0,c:0}]; vis[0][0]=true;
+    outer: while(q.length){
+      const{r,c}=q.shift();
+      for(let d=0;d<4;d++){
+        if(!maze[r][c].w[d]){
+          const nr=r+DR[d],nc=c+DC[d];
+          if(nr>=0&&nr<ROWS&&nc>=0&&nc<COLS&&!vis[nr][nc]){
+            vis[nr][nc]=true; par[nr][nc]={r,c}; q.push({r:nr,c:nc});
+            if(nr===ROWS-1&&nc===COLS-1) break outer;
+          }
+        }
+      }
+    }
+    const p=[]; let cur={r:ROWS-1,c:COLS-1};
+    while(cur){p.unshift(cur);cur=par[cur.r][cur.c];}
+    return p;
+  }
+
+  /* ——— SEGMENTOS DE PARED EN 3D (coords de rejilla: x=col, z=fila) ——— */
+  function buildWalls(){
+    const s=[];
+    for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){
+      const m=maze[r][c];
+      if(m.w[0]) s.push({x1:c,  z1:r,  x2:c+1,z2:r});            // norte
+      if(m.w[3]) s.push({x1:c,  z1:r,  x2:c,  z2:r+1});          // oeste
+      if(c===COLS-1&&m.w[1]) s.push({x1:c+1,z1:r,  x2:c+1,z2:r+1}); // este (borde)
+      if(r===ROWS-1&&m.w[2]) s.push({x1:c,  z1:r+1,x2:c+1,z2:r+1}); // sur (borde)
+    }
+    const maxD=Math.hypot(COLS/2,ROWS/2)||1;
+    s.forEach(w=>{
+      w.mx=(w.x1+w.x2)/2; w.mz=(w.z1+w.z2)/2;
+      const dist=Math.hypot(w.mx-CXW,w.mz-CZW);
+      w.rise=(dist/maxD)*0.55 + Math.random()*0.10; // las del centro suben primero
+      w.sink=Math.random()*0.28;                     // derrumbe escalonado
+    });
+    return s;
+  }
+
+  const cXY=(r,c)=>({x:c+0.5,z:r+0.5});   // centro de celda (coords mundo)
+
+  /* ——— AJUSTE A PANTALLA (cabe durante toda la órbita) ——— */
+  function fit(){
+    const W=window.innerWidth,H=window.innerHeight;
+    let minU=1e9,maxU=-1e9,minV=1e9,maxV=-1e9;
+    const corners=[[0,0],[COLS,0],[COLS,ROWS],[0,ROWS]];
+    const keep=yaw;
+    for(let a=0;a<Math.PI*2;a+=Math.PI/24){
+      yaw=a;
+      for(const[xw,zw] of corners) for(const hy of [0,WALL_H]){
+        const p=projRaw(xw,hy,zw);
+        if(p.u<minU)minU=p.u; if(p.u>maxU)maxU=p.u;
+        if(p.v<minV)minV=p.v; if(p.v>maxV)maxV=p.v;
+      }
+    }
+    yaw=keep;
+    const spanU=(maxU-minU)||1, spanV=(maxV-minV)||1;
+    const wf = W<560 ? 0.92 : 0.80;   // en móvil el laberinto ocupa más ancho (más inmersivo)
+    const hf = W<560 ? 0.64 : 0.70;
+    S=Math.min(W*wf/spanU, H*hf/spanV);
+    ox=W/2 - (minU+maxU)/2*S;
+    oy=H/2 - (minV+maxV)/2*S;
+  }
+
+  /* ——— SETUP ——— */
+  function setup(){
+    DPR=window.devicePixelRatio||1;
+    const W=window.innerWidth,H=window.innerHeight;
+    cv.width=W*DPR; cv.height=H*DPR;
+    cv.style.width=W+'px'; cv.style.height=H+'px';
+    cx.setTransform(DPR,0,0,DPR,0,0);
+    GRID = W<560?11 : W<1024?13 : 16;
+    COLS=GRID; ROWS=GRID;
+    CXW=COLS/2; CZW=ROWS/2;
+    genMaze(); path=solveMaze(); walls=buildWalls();
+    fit();
+  }
+
+  /* ——— REDIMENSIONAR (sin regenerar el laberinto) ——— */
+  function resize(){
+    DPR=window.devicePixelRatio||1;
+    const W=window.innerWidth,H=window.innerHeight;
+    cv.width=W*DPR; cv.height=H*DPR;
+    cv.style.width=W+'px'; cv.style.height=H+'px';
+    cx.setTransform(DPR,0,0,DPR,0,0);
+    fit();
+  }
+
+  /* ——— RENDER: suelo (resplandor + rejilla del plano) ——— */
+  function renderFloor(alpha){
+    if(alpha<0.01) return;
+    const W=window.innerWidth,H=window.innerHeight;
+    const ctr=P(CXW,0,CZW);
+    const g=cx.createRadialGradient(ctr.x,ctr.y,0,ctr.x,ctr.y,Math.max(W,H)*0.45);
+    g.addColorStop(0,`rgba(67,97,240,${0.10*alpha})`);
+    g.addColorStop(0.5,`rgba(67,97,240,${0.03*alpha})`);
+    g.addColorStop(1,'rgba(67,97,240,0)');
+    cx.fillStyle=g; cx.fillRect(0,0,W,H);
+    cx.save();
+    cx.strokeStyle=`rgba(130,149,242,${0.06*alpha})`;
+    cx.lineWidth=1; cx.beginPath();
+    for(let i=0;i<=COLS;i++){ const a=P(i,0,0),b=P(i,0,ROWS); cx.moveTo(a.x,a.y); cx.lineTo(b.x,b.y); }
+    for(let j=0;j<=ROWS;j++){ const a=P(0,0,j),b=P(COLS,0,j); cx.moveTo(a.x,a.y); cx.lineTo(b.x,b.y); }
+    cx.stroke(); cx.restore();
+  }
+
+  /* ——— RENDER: paredes 3D (paneles de cristal + borde de neón) ——— */
+  function renderWalls(hFn,aFn){
+    const order=walls.map((w,i)=>i).sort((a,b)=>
+      projRaw(walls[a].mx,0,walls[a].mz).d - projRaw(walls[b].mx,0,walls[b].mz).d);
+    cx.save(); cx.lineJoin='round';
+    for(const i of order){
+      const w=walls[i];
+      const a=aFn(w); if(a<=0.01) continue;
+      const h=hFn(w); if(h<=0.001) continue;
+      const b1=P(w.x1,0,w.z1), b2=P(w.x2,0,w.z2);
+      const t1=P(w.x1,h,w.z1), t2=P(w.x2,h,w.z2);
+      const g=cx.createLinearGradient((b1.x+b2.x)/2,(b1.y+b2.y)/2,(t1.x+t2.x)/2,(t1.y+t2.y)/2);
+      g.addColorStop(0,`rgba(15,19,33,${0.62*a})`);
+      g.addColorStop(0.72,`rgba(42,60,150,${0.22*a})`);
+      g.addColorStop(1,`rgba(99,126,255,${0.34*a})`);
+      cx.fillStyle=g;
+      cx.beginPath();
+      cx.moveTo(b1.x,b1.y); cx.lineTo(b2.x,b2.y);
+      cx.lineTo(t2.x,t2.y); cx.lineTo(t1.x,t1.y); cx.closePath(); cx.fill();
+      cx.strokeStyle=`rgba(146,164,255,${0.55*a})`; cx.lineWidth=1.4;
+      cx.beginPath(); cx.moveTo(t1.x,t1.y); cx.lineTo(t2.x,t2.y); cx.stroke();
+    }
+    cx.restore();
+  }
+
+  /* ——— RENDER: hilo solución 3D (halo · cobalto · filamento blanco) ——— */
+  function easeOut(t){return 1-Math.pow(1-t,2.5);}
+  function pathPts(steps,straight){
+    const n=path.length, lim=Math.max(0,Math.min(n,steps));
+    const W=window.innerWidth,H=window.innerHeight;
+    const Lx=W*0.13, Rx=W*0.87, Ly=H*0.5, pts=[];
+    for(let i=0;i<lim;i++){
+      const{r,c}=path[i], q=cXY(r,c);
+      let s=P(q.x,PATH_Y,q.z);
+      if(straight>0){
+        const tx=Lx+(i/(n-1))*(Rx-Lx);
+        s={x:s.x+(tx-s.x)*straight, y:s.y+(Ly-s.y)*straight};
+      }
+      pts.push(s);
+    }
+    return pts;
+  }
+  function strokePts(pts,w,col){
+    cx.lineWidth=w; cx.strokeStyle=col;
+    cx.beginPath(); cx.moveTo(pts[0].x,pts[0].y);
+    for(let i=1;i<pts.length;i++) cx.lineTo(pts[i].x,pts[i].y);
+    cx.stroke();
+  }
+  function renderPath(steps,alpha,straight){
+    const pts=pathPts(steps,straight||0);
+    if(pts.length<2) return;
+    cx.save(); cx.lineCap='round'; cx.lineJoin='round';
+    cx.shadowBlur=26; cx.shadowColor=SOFT;
+    strokePts(pts,S*0.34,`rgba(130,149,242,${0.34*alpha})`);
+    cx.shadowBlur=12; cx.shadowColor=COB;
+    strokePts(pts,S*0.13,`rgba(67,97,240,${0.88*alpha})`);
+    cx.shadowBlur=0;
+    strokePts(pts,S*0.045,`rgba(255,255,255,${0.9*alpha})`);
+    if(steps<path.length&&!straight){
+      const p=pts[pts.length-1];
+      cx.shadowBlur=30; cx.shadowColor='#fff'; cx.fillStyle='#fff';
+      cx.beginPath(); cx.arc(p.x,p.y,S*0.17,0,Math.PI*2); cx.fill();
+    }
+    cx.restore();
+  }
+
+  /* ——— RENDER: sonar en el suelo (entrada) ——— */
+  function renderSonar(ts){
+    const c0=cXY(0,0);
+    cx.save();
+    [0,0.5].forEach(off=>{
+      const pr=(((ts/2400)%1)+off)%1, rad=0.18+2.0*pr;
+      cx.beginPath();
+      for(let k=0;k<=28;k++){
+        const ang=k/28*Math.PI*2;
+        const p=P(c0.x+rad*Math.cos(ang),0.01,c0.z+rad*Math.sin(ang));
+        if(k===0) cx.moveTo(p.x,p.y); else cx.lineTo(p.x,p.y);
+      }
+      cx.strokeStyle=`rgba(130,149,242,${(1-pr)*0.45})`; cx.lineWidth=1; cx.stroke();
+    });
+    const e=P(c0.x,0.05,c0.z);
+    cx.shadowBlur=18; cx.shadowColor=SOFT; cx.fillStyle='rgba(146,164,255,.95)';
+    cx.beginPath(); cx.arc(e.x,e.y,S*0.13,0,Math.PI*2); cx.fill();
+    const ex0=cXY(ROWS-1,COLS-1), ex=P(ex0.x,0.05,ex0.z);
+    cx.shadowBlur=0; cx.fillStyle='rgba(130,149,242,.22)';
+    cx.beginPath(); cx.arc(ex.x,ex.y,S*0.10,0,Math.PI*2); cx.fill();
+    cx.restore();
+  }
+
+  /* ——— RENDER: viñeta ——— */
+  function vignette(){
+    const W=window.innerWidth,H=window.innerHeight;
+    const g=cx.createRadialGradient(W/2,H/2,Math.min(W,H)*0.35,W/2,H/2,Math.max(W,H)*0.72);
+    g.addColorStop(0,'rgba(11,12,16,0)');
+    g.addColorStop(1,'rgba(7,8,11,0.55)');
+    cx.fillStyle=g; cx.fillRect(0,0,W,H);
+  }
+
+  /* ——— LOOP PRINCIPAL ——— */
+  const clamp=t=>t<0?0:t>1?1:t;
+  function loop(ts){
+    if(phase==='done') return;
+    const dt=lastT<0?0:Math.min(ts-lastT,60);
+    lastT=ts;
+    yaw=ts*ORBIT;                       // órbita continua de cámara
+    const W=window.innerWidth,H=window.innerHeight;
+    cx.clearRect(0,0,W,H);
+    cx.fillStyle=BG; cx.fillRect(0,0,W,H);
+
+    /* — ACTO 1: el laberinto se levanta desde el centro — */
+    if(phase==='building'){
+      buildP=Math.min(1,buildP+dt/1750);
+      renderFloor(buildP);
+      renderWalls(
+        w=>WALL_H*easeOut(clamp((buildP-w.rise)/0.45)),
+        w=>clamp((buildP-w.rise)/0.45)
+      );
+      if(buildP>=1){
+        phase='idle';
+        txOp.style.color='rgba(130,149,242,.7)';
+        setTimeout(()=>{ hint.style.color='rgba(148,152,168,.78)'; },700);
+        setTimeout(()=>{ skipBtn.style.opacity='1'; },900);
+      }
+    }
+
+    /* — ACTO 2: laberinto completo, esperando — */
+    else if(phase==='idle'){
+      renderFloor(1);
+      renderWalls(()=>WALL_H,()=>1);
+      renderSonar(ts);
+    }
+
+    /* — ACTO 3: el hilo encuentra la salida — */
+    else if(phase==='solving'){
+      solveT=Math.min(SOLVE_DUR,solveT+dt);
+      const steps=Math.ceil(easeOut(solveT/SOLVE_DUR)*path.length);
+      renderFloor(1);
+      renderWalls(()=>WALL_H,()=>1);
+      renderPath(steps,1,0);
+      if(solveT>SOLVE_DUR*0.28 && !txLshown){ txLshown=true; txL.style.color='rgba(236,237,242,.92)'; }
+      if(solveT>=SOLVE_DUR){
+        phase='dissolving'; dissP=0;
+        txR.style.color='rgba(130,149,242,.95)';
+        setTimeout(()=>{ logoDiv.style.opacity='1'; },420);
+        hint.style.color='transparent';
+      }
+    }
+
+    /* — EPÍLOGO: las paredes se derrumban; el hilo se endereza — */
+    else if(phase==='dissolving'){
+      dissP=Math.min(1,dissP+dt/4000);            // ~4s + reposo: da tiempo a leerlo
+      // las paredes caen en el primer tramo
+      renderFloor(clamp(1-dissP*1.7));
+      renderWalls(
+        w=>WALL_H*(1-easeOut(clamp((dissP-w.sink*0.4)/0.28))),
+        w=>clamp(1-(dissP-w.sink*0.4)/0.28)
+      );
+      // el hilo se endereza despacio (tramo central) y luego se mantiene visible
+      renderPath(path.length,1,easeOut(clamp((dissP-0.18)/0.42)));
+      if(dissP>=1){
+        phase='done';
+        ov.style.transition='opacity 1.2s ease';
+        ov.style.opacity='0';
+        setTimeout(dismiss,1300);
+        return;
+      }
+    }
+
+    vignette();
+    requestAnimationFrame(loop);
+  }
+
+  /* ——— INTERACCIÓN ——— */
+  function interact(){
+    if(phase==='building'){
+      buildP=1; phase='idle';
+      txOp.style.color='rgba(130,149,242,.7)';
+      hint.style.color='rgba(148,152,168,.78)';
+      skipBtn.style.opacity='1';
+    } else if(phase==='idle'){
+      phase='solving'; solveT=0;
+      txOp.style.transition='color .4s'; txOp.style.color='rgba(130,149,242,0)';
+      hint.style.transition='color .3s'; hint.style.color='transparent';
+    } else if(phase==='solving'){
+      solveT=SOLVE_DUR; // saltar al final del acto 3
+    } else if(phase==='dissolving'){
+      // clic durante el enderezado → salir ya (fundido rápido)
+      phase='done';
+      ov.style.transition='opacity .6s ease'; ov.style.opacity='0';
+      setTimeout(dismiss,620);
+    }
+  }
+
+  function dismiss(){ ov.remove(); window.removeEventListener('resize',onResize); }
+
+  let rT;
+  function onResize(){ clearTimeout(rT); rT=setTimeout(resize,150); }
+  window.addEventListener('resize',onResize);
+
+  ov.addEventListener('click',interact);
+  ov.addEventListener('touchend',e=>{e.preventDefault();interact();},{passive:false});
+  skipBtn.addEventListener('click',e=>{e.stopPropagation();dismiss();});
+  skipBtn.addEventListener('touchend',e=>{e.stopPropagation();e.preventDefault();dismiss();},{passive:false});
+  document.addEventListener('keydown',e=>{
+    if(e.key==='Enter'||e.key===' ') interact();
+    if(e.key==='Escape') dismiss();
+  });
+
+  setup();
+  requestAnimationFrame(loop);
+})();
+</script>
+
+<script>
+/* ——— GRANO + CURSOR premium + botones magnéticos (estético) ——— */
+(function(){
+  'use strict';
+
+  /* — grano: capa fija de ruido sobre todo — */
+  const grain=document.createElement('div');
+  grain.className='grain';
+  grain.setAttribute('aria-hidden','true');
+  document.body.appendChild(grain);
+
+  /* — todo lo que sigue: solo en dispositivos con puntero fino (no táctil) — */
+  const fine   = window.matchMedia && window.matchMedia('(pointer:fine)').matches;
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if(!fine) return;
+
+  /* — cursor premium: punto preciso (instantáneo) + anillo con inercia — */
+  const dot  = document.createElement('div'); dot.className ='cur-dot';  dot.setAttribute('aria-hidden','true');
+  const ring = document.createElement('div'); ring.className='cur-ring'; ring.setAttribute('aria-hidden','true');
+  document.body.appendChild(dot); document.body.appendChild(ring);
+  document.documentElement.classList.add('cursor-on');
+
+  let mx=innerWidth/2, my=innerHeight/2;   // posición real del ratón
+  let rx=mx, ry=my;                        // posición del anillo (sigue suavizado)
+  let shown=false;
+
+  addEventListener('mousemove',e=>{
+    mx=e.clientX; my=e.clientY;
+    dot.style.transform=`translate(${mx}px,${my}px) translate(-50%,-50%)`;
+    if(reduce) ring.style.transform=`translate(${mx}px,${my}px) translate(-50%,-50%)`;
+    if(!shown){ shown=true; dot.style.opacity='1'; ring.style.opacity='1'; }
+  },{passive:true});
+  document.addEventListener('mouseleave',()=>{ dot.style.opacity='0'; ring.style.opacity='0'; shown=false; });
+  addEventListener('mousedown',()=>ring.classList.add('down'));
+  addEventListener('mouseup',  ()=>ring.classList.remove('down'));
+
+  /* — sobre elementos interactivos: el anillo se expande, el punto se oculta — */
+  const hov='a, button, .btn, [data-cursor], input, textarea, [role="button"], .demo-item';
+  document.addEventListener('mouseover',e=>{ if(e.target.closest(hov)){ ring.classList.add('hover'); dot.classList.add('hover'); } });
+  document.addEventListener('mouseout', e=>{ if(e.target.closest(hov)){ ring.classList.remove('hover'); dot.classList.remove('hover'); } });
+
+  /* — el anillo persigue al ratón con inercia (lerp por frame) — */
+  if(!reduce){
+    (function follow(){
+      rx += (mx-rx)*0.18; ry += (my-ry)*0.18;
+      ring.style.transform=`translate(${rx}px,${ry}px) translate(-50%,-50%)`;
+      requestAnimationFrame(follow);
+    })();
+  }
+
+  /* — botones magnéticos: atraen el botón hacia el ratón — */
+  if(!reduce){
+    document.querySelectorAll('.btn').forEach(el=>{
+      el.addEventListener('mousemove',e=>{
+        const r=el.getBoundingClientRect();
+        const dx=(e.clientX-(r.left+r.width/2))*0.3;
+        const dy=(e.clientY-(r.top +r.height/2))*0.4;
+        el.style.transform=`translate(${dx}px,${dy}px)`;
+      });
+      el.addEventListener('mouseleave',()=>{ el.style.transform=''; });
+    });
+  }
+})();
 </script>
 </body>
 </html>
