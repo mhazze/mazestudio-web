@@ -1,0 +1,100 @@
+/* ———————————————————————————————————————————————
+   Mazestudio · estilos compartidos de páginas legales
+   (aviso-legal.html · privacidad.html · cookies.html)
+   Misma marca que la web: cobalto sobre lienzo nocturno.
+   Para cambiar paleta, edítala aquí y en la web principal.
+——————————————————————————————————————————————— */
+:root{
+  --bg:#0B0C10;
+  --bg-2:#0F1116;
+  --surface:#14161E;
+  --ink:#ECEDF2;
+  --ink-mut:#9498A8;
+  --ink-dim:#696D7C;
+  --line:rgba(255,255,255,.07);
+  --line-2:rgba(255,255,255,.14);
+  --accent:#4361F0;
+  --accent-deep:#2D4ECC;
+  --accent-soft:#8295F2;
+  --accent-wash:rgba(67,97,240,.12);
+
+  --display:'Space Grotesk', system-ui, sans-serif;
+  --serif:'Fraunces', 'Times New Roman', Georgia, serif;
+  --sans:'Inter', system-ui, sans-serif;
+  --mono:'JetBrains Mono', ui-monospace, monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);color:var(--ink);font-family:var(--sans);
+  line-height:1.7;-webkit-font-smoothing:antialiased;letter-spacing:-.005em;
+  min-height:100dvh;overflow-x:hidden;position:relative;
+}
+a{color:var(--accent-soft);text-decoration:none;}
+a:hover{color:var(--ink);text-decoration:underline;text-underline-offset:3px;}
+
+/* halo de fondo cobalto */
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(55% 40% at 50% 0%, rgba(67,97,240,.14), transparent 70%);
+}
+
+.wrap{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:0 24px;}
+
+/* volver */
+.back{
+  display:inline-flex;align-items:center;gap:8px;margin:38px 0 0;
+  font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink-mut);transition:color .2s,transform .2s;
+}
+.back:hover{color:var(--ink);transform:translateX(-3px);text-decoration:none;}
+
+/* cabecera */
+header.legal-head{padding:30px 0 26px;border-bottom:1px solid var(--line);margin-bottom:42px;}
+.logo{display:inline-flex;align-items:center;gap:13px;}
+.logo svg{display:block;height:30px;width:auto;overflow:visible;}
+.logo .hilo{fill:none;stroke:var(--ink);stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round;}
+.logo .nd{fill:var(--bg);stroke:var(--ink);stroke-width:2.4;}
+.logo .nd.end{fill:var(--accent);stroke:none;}
+.logo .wm{font-family:var(--display);font-weight:600;font-size:26px;letter-spacing:-.02em;color:var(--ink);}
+.logo .wm .dot{color:var(--accent);}
+
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent-soft);margin:34px 0 12px;}
+h1{font-family:var(--display);font-weight:600;font-size:clamp(28px,5vw,40px);line-height:1.08;letter-spacing:-.025em;margin-bottom:10px;}
+.updated{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--ink-dim);margin-bottom:8px;}
+
+article{padding-bottom:64px;}
+article h2{font-family:var(--display);font-weight:600;font-size:21px;letter-spacing:-.01em;margin:40px 0 12px;}
+article h3{font-family:var(--display);font-weight:600;font-size:16px;letter-spacing:-.005em;margin:26px 0 8px;color:var(--ink);}
+article p{color:var(--ink-mut);margin-bottom:14px;}
+article ul{color:var(--ink-mut);margin:0 0 16px;padding-left:22px;}
+article li{margin-bottom:8px;}
+article strong{color:var(--ink);font-weight:600;}
+
+/* tabla de datos identificativos */
+.idtable{width:100%;border-collapse:collapse;margin:8px 0 20px;font-size:15px;}
+.idtable th,.idtable td{text-align:left;padding:11px 14px;border:1px solid var(--line-2);vertical-align:top;}
+.idtable th{width:38%;background:var(--surface);font-family:var(--display);font-weight:500;color:var(--ink);white-space:nowrap;}
+.idtable td{color:var(--ink-mut);}
+
+/* hueco pendiente de rellenar (visible a propósito) */
+.fill{display:inline-block;padding:1px 8px;border-radius:5px;background:rgba(67,97,240,.16);
+  border:1px dashed var(--accent-soft);color:var(--accent-soft);font-family:var(--mono);font-size:.92em;}
+
+/* aviso "plantilla" — bórralo cuando esté revisado */
+.notice{margin:0 0 34px;padding:14px 18px;border-radius:12px;
+  background:var(--accent-wash);border:1px solid var(--line-2);
+  font-size:13px;color:var(--ink-mut);}
+.notice strong{color:var(--ink);}
+
+/* pie con enlaces entre páginas legales */
+footer.legal-foot{border-top:1px solid var(--line);padding:26px 0 40px;
+  display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--ink-dim);}
+footer.legal-foot nav{display:flex;gap:18px;flex-wrap:wrap;}
+footer.legal-foot a{color:var(--ink-dim);}
+footer.legal-foot a:hover{color:var(--ink);text-decoration:none;}
+
+@media (max-width:480px){
+  .idtable th{width:auto;white-space:normal;}
+}

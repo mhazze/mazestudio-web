@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 132 132" role="img" aria-label="Mazestudio">
+  <rect width="132" height="132" rx="28" fill="#0B0C10"/>
+  <g transform="translate(0,42)">
+    <path d="M3 44 L3 31 L19 31 L19 15 L33 15 L33 35 L47 35 L47 9 L61 9 L61 27 L75 27 L75 44 L129 44"
+          fill="none" stroke="#ECEDF2" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="129" cy="44" r="7.5" fill="#4361F0"/>
+  </g>
+</svg>

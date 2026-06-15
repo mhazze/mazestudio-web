@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aviso legal · Mazestudio</title>
+<meta name="description" content="Aviso legal y condiciones de uso del sitio web de Mazestudio, estudio de automatización.">
+<meta name="robots" content="noindex, follow">
+<meta name="theme-color" content="#0B0C10">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;450;500;600&family=JetBrains+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="legal.css">
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back" href="mazestudio-web.html" data-home><span>←</span> Volver a la web</a>
+
+  <header class="legal-head">
+    <a class="logo" href="mazestudio-web.html" data-home aria-label="Mazestudio">
+      <svg viewBox="0 0 132 52" aria-hidden="true">
+        <path class="hilo" d="M3 44 L3 31 L19 31 L19 15 L33 15 L33 35 L47 35 L47 9 L61 9 L61 27 L75 27 L75 44 L129 44"/>
+        <circle class="nd" cx="3"  cy="44" r="4"/>
+        <circle class="nd" cx="33" cy="15" r="3.2"/>
+        <circle class="nd" cx="47" cy="9"  r="3.2"/>
+        <circle class="nd" cx="75" cy="44" r="3.2"/>
+        <circle class="nd end" cx="129" cy="44" r="4.4"/>
+      </svg>
+      <span class="wm">Mazestudio<span class="dot">.</span></span>
+    </a>
+    <p class="eyebrow">// información legal</p>
+    <h1>Aviso legal</h1>
+    <p class="updated">Última actualización · junio de 2026</p>
+  </header>
+
+  <article>
+    <h2>1. Datos identificativos del titular</h2>
+    <p>En cumplimiento del artículo 10 de la Ley 34/2002, de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI-CE), se ponen a disposición de los usuarios los datos identificativos del titular de este sitio web:</p>
+    <table class="idtable">
+      <tr><th>Titular</th><td>Mario Bolado Ceballos</td></tr>
+      <tr><th>Correo electrónico</th><td><a href="mailto:info@mazestudio.site">info@mazestudio.site</a></td></tr>
+      <tr><th>Actividad</th><td>Estudio de automatización de procesos y desarrollo de sitios web</td></tr>
+      <tr><th>Sitio web</th><td>mazestudio.site</td></tr>
+    </table>
+
+    <h2>2. Objeto y condiciones de uso</h2>
+    <p>El presente aviso legal regula el acceso y uso del sitio web. La navegación por el sitio atribuye la condición de usuario e implica la aceptación plena de todas las cláusulas recogidas en este aviso.</p>
+    <p>El usuario se compromete a hacer un uso adecuado de los contenidos y servicios del sitio y a no emplearlos para incurrir en actividades ilícitas, contrarias a la buena fe o al orden público, ni para causar daños en los sistemas físicos y lógicos del titular o de terceros.</p>
+
+    <h2>3. Propiedad intelectual e industrial</h2>
+    <p>Todos los contenidos del sitio (textos, fotografías, gráficos, imágenes, iconos, tipografías, diseño, código fuente, marca y logotipo) son titularidad del titular o de terceros que han autorizado su uso, y están protegidos por la normativa de propiedad intelectual e industrial.</p>
+    <p>Queda prohibida la reproducción, distribución, comunicación pública, transformación o cualquier otra forma de explotación, total o parcial, de los contenidos sin la autorización expresa del titular.</p>
+
+    <h2>4. Exclusión de responsabilidad</h2>
+    <p>El titular no se hace responsable de los daños y perjuicios que pudieran derivarse de interferencias, omisiones, interrupciones, virus informáticos, averías o desconexiones en el funcionamiento del sistema, motivadas por causas ajenas a su control.</p>
+    <p>El titular procura mantener la información actualizada y libre de errores, pero no garantiza la inexistencia de los mismos ni la disponibilidad permanente del sitio.</p>
+
+    <h2>5. Enlaces a terceros</h2>
+    <p>El sitio puede contener enlaces a sitios de terceros (por ejemplo, WhatsApp). El titular no asume responsabilidad alguna sobre los contenidos, políticas o prácticas de dichos sitios externos.</p>
+
+    <h2>6. Protección de datos</h2>
+    <p>El tratamiento de los datos personales que el usuario pueda facilitar se rige por la <a href="privacidad.html">Política de privacidad</a>. El uso de cookies se detalla en la <a href="cookies.html">Política de cookies</a>.</p>
+
+    <h2>7. Legislación aplicable y jurisdicción</h2>
+    <p>Las presentes condiciones se rigen por la legislación española. Para la resolución de cualquier controversia, las partes se someten a los juzgados y tribunales que correspondan conforme a la normativa aplicable.</p>
+  </article>
+
+  <footer class="legal-foot">
+    <span>© 2026 Mazestudio</span>
+    <nav>
+      <a href="aviso-legal.html">Aviso legal</a>
+      <a href="privacidad.html">Privacidad</a>
+      <a href="cookies.html">Cookies</a>
+    </nav>
+  </footer>
+
+</div>
+
+<script>
+  /* "Volver"/logo → home correcta (local: mazestudio-web.html · producción: /) */
+  (function(){
+    var home = (location.protocol === 'file:') ? 'mazestudio-web.html' : '/';
+    document.querySelectorAll('a[data-home]').forEach(function(a){ a.setAttribute('href', home); });
+  })();
+</script>
+</body>
+</html>
