@@ -533,7 +533,7 @@
         <a class="btn accent" href="hablemos.html"><span class="arrow">→</span> Empezar conversación</a>
         <a class="btn ghost" href="#como">Ver cómo funciona</a>
       </div>
-      <p class="meta">45 min · sin guion · sin compromiso</p>
+      <p class="meta">sin guion · sin compromiso</p>
     </div>
   </section>
 </div><!-- /hero-zone -->
@@ -656,7 +656,7 @@
   <div class="wrap">
     <div class="sec-head reveal">
       <span class="kicker">soluciones</span>
-      <h2>Automatizaciones que ya hemos resuelto.</h2>
+      <h2>Lo que ya hemos resuelto.</h2>
       <p class="note">Casos concretos, con resultado medible. Si el tuyo no está aquí, te lo diseñamos.</p>
     </div>
     <div class="sol-grid">
@@ -705,6 +705,225 @@
     </div>
   </div>
 </section>
+
+
+<!-- DIAGNÓSTICO INTERACTIVO -->
+<style>
+  /* ——— DIAGNÓSTICO · sección autocontenida (prefijo .diag-) ——— */
+  .diag-tag{display:inline-flex;align-items:center;gap:10px;margin-bottom:20px;
+    font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim);}
+  .diag-tag .diag-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--accent-wash);}
+
+  .diag-progress{height:2px;background:var(--line-2);border-radius:2px;margin-bottom:36px;overflow:hidden;}
+  .diag-progress-fill{height:100%;width:0%;background:var(--accent);transition:width .4s ease;}
+
+  .diag-questions{display:flex;flex-direction:column;gap:14px;}
+  .diag-q{border:1px solid var(--line-2);border-radius:14px;background:var(--surface);transition:border-color .2s ease;}
+  .diag-q.diag-open{border-color:var(--accent);}
+  .diag-head{display:flex;align-items:center;gap:16px;padding:22px;cursor:pointer;}
+  .diag-num{font-family:var(--mono);font-size:12px;color:var(--ink-dim);}
+  .diag-qtext{font-family:var(--display);font-weight:600;font-size:18px;letter-spacing:-.01em;flex:1;}
+  .diag-icon{flex:0 0 auto;width:28px;height:28px;border-radius:50%;border:1px solid var(--line-2);
+    display:flex;align-items:center;justify-content:center;color:var(--ink-mut);font-size:18px;line-height:1;
+    transition:transform .3s ease, background .3s ease, border-color .3s ease, color .3s ease;}
+  .diag-q.diag-open .diag-icon{transform:rotate(45deg);background:var(--accent);border-color:var(--accent);color:#fff;}
+  .diag-body{max-height:0;overflow:hidden;transition:max-height .35s ease;}
+  .diag-q.diag-open .diag-body{max-height:400px;}
+  .diag-opts{display:flex;flex-direction:column;gap:10px;padding:0 22px 20px 58px;}
+  .diag-opt{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:10px;
+    border:1px solid var(--line-2);background:var(--surface-2);cursor:pointer;font-size:14px;color:var(--ink-mut);
+    transition:border-color .2s ease, background .2s ease, color .2s ease;}
+  .diag-opt:hover{border-color:var(--accent-soft);background:var(--accent-wash);}
+  .diag-check{flex:0 0 auto;width:18px;height:18px;border-radius:50%;border:1px solid var(--line-2);
+    display:flex;align-items:center;justify-content:center;transition:background .2s ease, border-color .2s ease;}
+  .diag-check svg{width:11px;height:11px;opacity:0;transition:opacity .2s ease;}
+  .diag-opt.diag-selected{border-color:var(--accent);background:var(--accent-wash);color:var(--ink);}
+  .diag-opt.diag-selected .diag-check{background:var(--accent);border-color:var(--accent);}
+  .diag-opt.diag-selected .diag-check svg{opacity:1;}
+
+  .diag-result{display:none;margin-top:28px;border:1px solid var(--accent);border-radius:14px;
+    background:var(--accent-wash);padding:28px;}
+  .diag-result.diag-show{display:block;animation:diag-fade .4s ease both;}
+  @keyframes diag-fade{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+  .diag-result .diag-rtag{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--accent-soft);margin-bottom:12px;}
+  .diag-result h3{font-family:var(--display);font-weight:600;font-size:22px;letter-spacing:-.015em;}
+  .diag-result h3 em{font-style:normal;color:var(--accent-soft);}
+  .diag-result p{font-size:15px;color:var(--ink-mut);margin:12px 0 24px;}
+  .diag-result .diag-actions{display:flex;gap:12px;flex-wrap:wrap;}
+
+  @media(max-width:560px){
+    .diag-head{padding:18px;gap:12px;}
+    .diag-qtext{font-size:16px;}
+    .diag-opts{padding:0 18px 18px 18px;}
+    .diag-result{padding:22px;}
+    .diag-result .diag-actions .btn{flex:1 1 auto;justify-content:center;}
+  }
+</style>
+
+<section id="diagnostico" class="diag-wrap" data-spine>
+  <div class="wrap">
+    <span class="diag-tag reveal"><span class="diag-dot"></span>diagnóstico · 3 preguntas · 2 minutos</span>
+
+    <div class="sec-head reveal">
+      <span class="kicker">¿lo necesitas?</span>
+      <h2>¿Nos necesitas? Descúbrelo <em>ahora.</em></h2>
+      <p class="note">Responde tres preguntas sobre tu día a día. Sin datos, sin compromiso.</p>
+    </div>
+
+    <div class="diag-progress reveal"><div class="diag-progress-fill" id="diag-progress-fill"></div></div>
+
+    <div class="diag-questions reveal">
+
+      <div class="diag-q" id="diag-q1">
+        <div class="diag-head" data-diag-toggle="diag-q1">
+          <span class="diag-num">01</span>
+          <span class="diag-qtext">¿Hay tareas que repites cada semana y sientes que podrías no tocar?</span>
+          <span class="diag-icon">+</span>
+        </div>
+        <div class="diag-body">
+          <div class="diag-opts">
+            <div class="diag-opt" data-q="q1" data-v="a"><span class="diag-check"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span>Sí — correos, facturas, recordatorios, copiar datos...</div>
+            <div class="diag-opt" data-q="q1" data-v="b"><span class="diag-check"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span>Puede ser, pero no tengo claro cuáles</div>
+            <div class="diag-opt" data-q="q1" data-v="c"><span class="diag-check"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span>No — cada semana es diferente</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="diag-q" id="diag-q2">
+        <div class="diag-head" data-diag-toggle="diag-q2">
+          <span class="diag-num">02</span>
+          <span class="diag-qtext">¿Cuántas horas a la semana se van en trabajo que no necesita tu cabeza?</span>
+          <span class="diag-icon">+</span>
+        </div>
+        <div class="diag-body">
+          <div class="diag-opts">
+            <div class="diag-opt" data-q="q2" data-v="a"><span class="diag-check"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span>Más de 5 horas — es una sangría seria</div>
+            <div class="diag-opt" data-q="q2" data-v="b"><span class="diag-check"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span>Entre 2 y 5 horas — se nota pero lo aguanto</div>
+            <div class="diag-opt" data-q="q2" data-v="c"><span class="diag-check"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span>Menos de 2 — no es mi problema principal</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="diag-q" id="diag-q3">
+        <div class="diag-head" data-diag-toggle="diag-q3">
+          <span class="diag-num">03</span>
+          <span class="diag-qtext">Si esas horas volvieran, ¿en qué las pondrías?</span>
+          <span class="diag-icon">+</span>
+        </div>
+        <div class="diag-body">
+          <div class="diag-opts">
+            <div class="diag-opt" data-q="q3" data-v="a"><span class="diag-check"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span>Conseguir más clientes o cerrar más ventas</div>
+            <div class="diag-opt" data-q="q3" data-v="b"><span class="diag-check"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span>Mejorar el servicio o atender mejor a los que tengo</div>
+            <div class="diag-opt" data-q="q3" data-v="c"><span class="diag-check"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span>Descansar — llevo demasiado tiempo sin parar</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="diag-result" id="diag-result">
+      <span class="diag-rtag" id="diag-result-tag"></span>
+      <h3 id="diag-result-title"></h3>
+      <p id="diag-result-body"></p>
+      <div class="diag-actions">
+        <a class="btn accent" href="#contacto"><span class="arrow">→</span> Empezar conversación</a>
+        <a class="btn ghost" href="#como">Ver cómo funciona</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+/* ——— DIAGNÓSTICO · lógica (IIFE, sin contaminar scope) ——— */
+(function(){
+  'use strict';
+  var answers = { q1:null, q2:null, q3:null };
+  var ids = ['diag-q1','diag-q2','diag-q3'];
+
+  function closeAll(){
+    ids.forEach(function(id){ var q=document.getElementById(id); if(q) q.classList.remove('diag-open'); });
+  }
+  function openQ(id){
+    closeAll();
+    if(id){ var el=document.getElementById(id); if(el) el.classList.add('diag-open'); }
+  }
+  function toggleQ(id){
+    var el=document.getElementById(id);
+    if(!el) return;
+    var wasOpen=el.classList.contains('diag-open');
+    closeAll();
+    if(!wasOpen) el.classList.add('diag-open');
+  }
+
+  function updateProgress(){
+    var count=0;
+    ['q1','q2','q3'].forEach(function(k){ if(answers[k]!==null) count++; });
+    var fill=document.getElementById('diag-progress-fill');
+    if(fill) fill.style.width=(count/3*100)+'%';
+  }
+
+  function checkResult(){
+    if(answers.q1===null || answers.q2===null || answers.q3===null) return;
+    var q1=answers.q1, q2=answers.q2, q3=answers.q3, tag, title, body;
+    if(q1==='c' && q2==='c'){
+      tag='resultado · quizá no es el momento';
+      title='Tu operativa ya funciona bastante <em>bien.</em>';
+      body='No detectamos una pérdida de tiempo clara. Si esto cambia, nos cuentas y lo miramos sin compromiso.';
+    } else if(q1==='c'){
+      tag='resultado · vale la pena explorar';
+      title='Puede que no lo veas, pero <em>está ahí.</em>';
+      body='Las tareas que roban tiempo se vuelven invisibles cuando te acostumbras. Una conversación de 45 minutos suele sacarlas a la luz.';
+    } else if(q2==='c'){
+      tag='resultado · hay margen';
+      title='Poco tiempo perdido no significa que <em>esté bien así.</em>';
+      body='Con 2 horas semanales recuperadas ya se nota la diferencia — y ese margen crece cuando eliminas el primer cuello de botella.';
+    } else {
+      tag='resultado · encajamos';
+      title='Sí. Podemos <em>ayudarte.</em>';
+      body='Tienes tareas repetitivas que te roban tiempo, y sabes qué harías con esas horas de vuelta.';
+      if(q3==='c') body='Llevas demasiado tiempo aguantando. '+body;
+      body=body+' Una llamada de 45 minutos — sin guion, sin compromiso — y te mostramos dónde está la salida.';
+    }
+    var rt=document.getElementById('diag-result-tag'); if(rt) rt.textContent=tag;
+    var ti=document.getElementById('diag-result-title'); if(ti) ti.innerHTML=title;
+    var bo=document.getElementById('diag-result-body'); if(bo) bo.textContent=body;
+    var res=document.getElementById('diag-result');
+    if(res){
+      res.classList.add('diag-show');
+      setTimeout(function(){ if(res.scrollIntoView) res.scrollIntoView({behavior:'smooth', block:'nearest'}); },150);
+    }
+  }
+
+  function selectOpt(qId, val, optEl){
+    answers[qId]=val;
+    var container=document.getElementById('diag-'+qId);
+    if(container){ container.querySelectorAll('.diag-opt').forEach(function(o){ o.classList.remove('diag-selected'); }); }
+    optEl.classList.add('diag-selected');
+    if(container) container.classList.remove('diag-open');
+    var next = qId==='q1' ? 'diag-q2' : qId==='q2' ? 'diag-q3' : null;
+    setTimeout(function(){
+      if(next){
+        openQ(next);
+        var nEl=document.getElementById(next);
+        if(nEl && nEl.scrollIntoView) nEl.scrollIntoView({behavior:'smooth', block:'center'});
+      }
+    },200);
+    updateProgress();
+    checkResult();
+  }
+
+  document.querySelectorAll('[data-diag-toggle]').forEach(function(h){
+    h.addEventListener('click', function(){ toggleQ(h.getAttribute('data-diag-toggle')); });
+  });
+  document.querySelectorAll('.diag-opt').forEach(function(o){
+    o.addEventListener('click', function(){ selectOpt(o.getAttribute('data-q'), o.getAttribute('data-v'), o); });
+  });
+
+  setTimeout(function(){ openQ('diag-q1'); }, 600);
+})();
+</script>
 
 
 <!-- PROCESO -->
