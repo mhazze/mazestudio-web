@@ -182,39 +182,118 @@
   .sec-head h2{font-family:var(--display);font-weight:600;font-size:clamp(28px,4vw,46px);line-height:1.07;letter-spacing:-.03em;}
   .sec-head .note{margin-top:16px;font-size:16.5px;color:var(--ink-mut);max-width:48ch;}
 
-  /* ——— SERVICIOS · filas editoriales con hilo conector ——— */
-  .svc-rows{border-top:1px solid var(--line);position:relative;}
-  /* el hilo vertical que recorre los servicios */
-  .svc-rows::before{content:"";position:absolute;left:7px;top:0;bottom:0;width:2px;
-    background:linear-gradient(var(--line-2),var(--line));}
-  .svc-row{display:grid;grid-template-columns:124px minmax(180px,1fr) 1.5fr 44px;gap:28px;align-items:center;
-    padding:32px 0 32px 42px;border-bottom:1px solid var(--line);position:relative;
-    transition:padding-left .32s ease, background .35s ease;}
-  .svc-row:hover{padding-left:54px;background:linear-gradient(90deg,var(--accent-wash),transparent 62%);}
-  /* nodo del hilo · apagado por defecto, se enciende al entrar en pantalla y al hover */
-  .svc-row .node{position:absolute;left:8px;top:50%;width:11px;height:11px;border-radius:50%;
-    background:var(--bg);border:2px solid var(--line-2);transform:translate(-50%,-50%);
-    transition:background .4s ease, border-color .4s ease, box-shadow .4s ease, transform .3s ease;}
-  .svc-row.in .node{background:var(--accent);border-color:var(--accent);box-shadow:0 0 12px var(--accent-soft);}
-  .svc-row:hover .node{box-shadow:0 0 18px 2px var(--accent-soft);transform:translate(-50%,-50%) scale(1.25);}
-  /* numeral · sólido tenue, se tiñe de cobalto al hover */
+  /* ——— SERVICIOS · premium cards ——— */
+  .svc-rows{display:flex;flex-direction:column;gap:10px;position:relative;}
+  .svc-rows::before{display:none;}
+
+  .svc-row{
+    display:grid;grid-template-columns:112px minmax(180px,1fr) 1.5fr 56px;
+    gap:0 32px;align-items:center;
+    padding:32px 36px;
+    border-radius:18px;
+    background:var(--surface);
+    border:1px solid var(--line-2);
+    position:relative;overflow:hidden;
+    cursor:default;
+    transition:transform .34s ease, background .36s ease, border-color .36s ease, box-shadow .36s ease;
+  }
+  /* barra accent izquierda */
+  .svc-row::before{
+    content:'';position:absolute;left:0;top:18px;bottom:18px;width:3px;
+    border-radius:0 3px 3px 0;
+    background:linear-gradient(180deg,var(--accent-soft),var(--accent));
+    transform:scaleY(0);transform-origin:center;
+    transition:transform .38s cubic-bezier(.22,1,.36,1), box-shadow .38s ease;
+  }
+  .svc-row.in::before{transform:scaleY(.35);box-shadow:0 0 10px var(--accent);}
+  .svc-row:hover::before{transform:scaleY(1);box-shadow:0 0 22px 3px var(--accent);}
+  /* textura de cuadrícula que emerge al hover */
+  .svc-row::after{
+    content:'';position:absolute;inset:0;pointer-events:none;
+    background-image:linear-gradient(rgba(255,255,255,.028) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.028) 1px,transparent 1px);
+    background-size:30px 30px;
+    opacity:0;transition:opacity .36s ease;
+  }
+  .svc-row:hover::after{opacity:1;}
+  /* estado hover: lift + glow + fondo cobalto */
+  .svc-row:hover{
+    transform:translateY(-4px);
+    background:linear-gradient(135deg,rgba(67,97,240,.13),rgba(67,97,240,.04) 65%);
+    border-color:rgba(67,97,240,.38);
+    box-shadow:0 28px 64px -28px rgba(67,97,240,.6), 0 4px 22px -8px rgba(0,0,0,.75);
+  }
+  /* ocultar dot del hilo viejo */
+  .svc-row .node{display:none;}
+  /* bloque del número */
   .svc-row .idx{position:relative;}
-  .svc-row .num{display:block;font-family:var(--serif);font-weight:500;font-optical-sizing:auto;
-    font-size:clamp(46px,5.6vw,70px);line-height:.82;letter-spacing:-.01em;font-variant-numeric:lining-nums;
-    color:rgba(236,237,242,.10);
-    transition:color .4s ease, text-shadow .4s ease;}
-  .svc-row.in .num{color:rgba(236,237,242,.15);}
-  .svc-row:hover .num{color:var(--accent);text-shadow:0 0 26px rgba(67,97,240,.45);}
-  .svc-row .fn{font-family:var(--mono);font-size:12.5px;color:var(--ink-dim);display:block;margin-top:12px;
-    transition:color .3s ease;}
+  .svc-row .num{
+    display:block;font-family:var(--serif);font-weight:600;
+    font-size:clamp(50px,5.8vw,76px);
+    line-height:.84;letter-spacing:-.02em;font-variant-numeric:lining-nums;
+    background:linear-gradient(135deg,rgba(236,237,242,.13),rgba(236,237,242,.05));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    transition:background .42s ease;
+  }
+  .svc-row.in .num{
+    background:linear-gradient(135deg,rgba(236,237,242,.22),rgba(236,237,242,.10));
+    -webkit-background-clip:text;background-clip:text;
+  }
+  .svc-row:hover .num{
+    background:linear-gradient(135deg,var(--accent-soft) 10%,var(--accent));
+    -webkit-background-clip:text;background-clip:text;
+  }
+  .svc-row .fn{font-family:var(--mono);font-size:11.5px;color:var(--ink-dim);display:block;margin-top:11px;letter-spacing:.12em;transition:color .3s ease;}
   .svc-row:hover .fn{color:var(--accent-soft);}
-  .svc-row h3{font-family:var(--display);font-weight:600;font-size:23px;letter-spacing:-.015em;
-    transition:transform .32s ease;}
-  .svc-row p{font-size:15.5px;color:var(--ink-mut);}
-  /* flecha que se desliza al hover */
-  .svc-row .go{justify-self:end;font-family:var(--mono);font-size:22px;color:var(--accent);
-    opacity:0;transform:translateX(-10px);transition:opacity .3s ease, transform .3s ease;}
+  /* título */
+  .svc-row h3{font-family:var(--display);font-weight:600;font-size:22px;letter-spacing:-.018em;transition:transform .32s ease;}
+  .svc-row:hover h3{transform:translateX(6px);}
+  /* descripción */
+  .svc-row p{font-size:15px;color:var(--ink-mut);line-height:1.62;}
+  /* flecha */
+  .svc-row .go{justify-self:end;font-family:var(--mono);font-size:24px;color:var(--accent);
+    opacity:0;transform:translateX(-14px);transition:opacity .3s ease, transform .3s ease;}
   .svc-row:hover .go{opacity:1;transform:translateX(0);}
+
+  /* —— SERVICIOS · acordeón expandible —— */
+  .svc-row.svc-expandable{cursor:pointer;}
+  /* el + que reemplaza la flecha en filas expandibles */
+  .svc-row.svc-expandable .go{
+    opacity:1;transform:none;font-size:18px;font-family:var(--mono);
+    width:34px;height:34px;border-radius:50%;
+    border:1px solid var(--line-2);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--ink-mut);justify-self:end;flex-shrink:0;
+    transition:background .28s ease, border-color .28s ease, color .28s ease, transform .32s ease;
+  }
+  .svc-row.svc-expandable:hover .go{border-color:var(--accent-soft);color:var(--accent-soft);}
+  .svc-row.svc-expandable.open .go{background:var(--accent);border-color:var(--accent);color:#fff;transform:rotate(45deg);}
+  /* panel desplegable */
+  .svc-detail{
+    grid-column:1 / -1;
+    max-height:0;overflow:hidden;opacity:0;
+    transition:max-height .5s cubic-bezier(.22,1,.36,1), opacity .38s ease;
+  }
+  .svc-row.open .svc-detail{max-height:700px;opacity:1;}
+  /* interior del panel */
+  .svc-detail-inner{
+    display:grid;grid-template-columns:1.7fr 1fr;gap:28px;
+    padding:24px 0 12px;margin-top:22px;
+    border-top:1px solid var(--line-2);
+  }
+  .svc-detail-lead{font-size:15.5px;color:var(--ink);line-height:1.72;margin-bottom:20px;}
+  .svc-detail-list{list-style:none;display:flex;flex-direction:column;gap:10px;}
+  .svc-detail-list li{display:flex;align-items:flex-start;gap:11px;font-size:14px;color:var(--ink-mut);line-height:1.55;}
+  .svc-detail-list li::before{content:'—';font-family:var(--mono);color:var(--accent-soft);flex-shrink:0;font-size:11px;margin-top:2px;}
+  .svc-detail-aside{
+    display:flex;flex-direction:column;gap:14px;
+    padding:20px 22px;
+    background:var(--surface-2);border:1px solid var(--line-2);border-radius:13px;
+  }
+  .svc-detail-tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-soft);}
+  .svc-detail-aside p{font-size:14px;color:var(--ink-mut);line-height:1.62;flex:1;}
+  .svc-detail-aside .btn{font-size:13px;padding:10px 16px;}
+  @media(max-width:880px){.svc-detail-inner{grid-template-columns:1fr;gap:18px;}}
 
   /* —— CÓMO FUNCIONA · pipeline —— */
   .flow{background:var(--bg-2);}
@@ -300,6 +379,50 @@
 
 
 
+  /* —— ROI strip · debajo del grid de soluciones —— */
+  .roi-strip{margin-top:40px;display:flex;align-items:center;gap:28px;flex-wrap:wrap;
+    padding:28px 32px;border-radius:16px;
+    background:linear-gradient(135deg,rgba(67,97,240,.18),rgba(130,149,242,.08));
+    border:1px solid rgba(67,97,240,.45);
+    box-shadow:0 0 50px -20px rgba(67,97,240,.6), inset 0 0 70px -40px rgba(67,97,240,.12);}
+  .roi-label{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--accent-soft);white-space:nowrap;}
+  .roi-strip p{flex:1;font-size:15px;color:var(--ink-mut);margin:0;min-width:200px;}
+
+  /* botón ROI superlativo */
+  .btn.roi-cta{
+    position:relative;overflow:hidden;
+    background:linear-gradient(135deg,#4F6EF7,#2D4ECC);
+    border:none;color:#fff;
+    font-size:17px;font-weight:600;
+    padding:18px 36px;border-radius:14px;gap:12px;
+    box-shadow:0 6px 30px -6px rgba(67,97,240,.9), 0 0 0 1px rgba(130,149,242,.35);
+    animation:roi-pulse 2.4s ease-in-out infinite;
+    white-space:nowrap;
+  }
+  .btn.roi-cta::before{
+    content:'';position:absolute;top:0;left:-110%;width:55%;height:100%;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent);
+    animation:roi-shimmer 2.4s ease-in-out infinite;
+  }
+  .btn.roi-cta:hover{transform:translateY(-3px);
+    box-shadow:0 14px 50px -6px rgba(67,97,240,1), 0 0 0 1px rgba(130,149,242,.5);}
+  .btn.roi-cta .arrow{font-size:20px;display:inline-block;animation:roi-bounce 1.2s ease-in-out infinite;}
+  @keyframes roi-pulse{
+    0%,100%{box-shadow:0 6px 30px -6px rgba(67,97,240,.9), 0 0 0 1px rgba(130,149,242,.35);}
+    50%{box-shadow:0 10px 56px -4px rgba(67,97,240,1), 0 0 28px 2px rgba(130,149,242,.45), 0 0 0 1px rgba(130,149,242,.6);}
+  }
+  @keyframes roi-shimmer{
+    0%{left:-110%;}55%,100%{left:140%;}
+  }
+  @keyframes roi-bounce{
+    0%,100%{transform:translateX(0);}50%{transform:translateX(5px);}
+  }
+  @media(max-width:560px){
+    .roi-strip{flex-direction:column;align-items:flex-start;gap:16px;}
+    .btn.roi-cta{width:100%;justify-content:center;font-size:16px;padding:17px 24px;}
+  }
+
   /* —— PROCESO —— */
   .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;}
   .step{position:relative;padding-top:8px;}
@@ -364,10 +487,9 @@
     .menu-toggle{display:block;font-size:27px;line-height:1;padding:6px 4px;margin-right:-4px;}
     .nav .right .btn.accent{display:none;}
     .nav-cta-li{display:block;}
-    .svc-row{grid-template-columns:1fr;gap:8px;padding-left:34px;align-items:start;}
-    .svc-row:hover{padding-left:40px;}
-    .svc-row .node{top:46px;}
-    .svc-row .num{font-size:40px;}
+    .svc-row{grid-template-columns:1fr;gap:8px;padding:24px 22px 24px 26px;align-items:start;}
+    .svc-row:hover{transform:none;}
+    .svc-row .num{font-size:42px;}
     .svc-row .go{display:none;}
     .steps,.sol-grid,.pipe{grid-template-columns:1fr;}
     .demo-viewer{grid-template-columns:1fr;gap:14px;}
@@ -528,7 +650,7 @@
   <section class="hero" id="top">
     <div class="wrap">
       <span class="eyebrow"><span class="d"></span>sur de Tenerife</span>
-      <h1 class="hl">Automatizamos <em>el trabajo repetitivo</em> de tu negocio.</h1>
+      <h1 class="hl">Solucionamos <em>el trabajo repetitivo</em> de tu negocio.</h1>
       <p class="sub">Montamos los procesos para que se hagan solos — y los vigilamos para que nunca fallen.</p>
       <div class="cta-row">
         <a class="btn accent" href="hablemos.html"><span class="arrow">→</span> Empezar conversación</a>
@@ -556,12 +678,30 @@
       <p class="note">Sin paquetes raros ni jerga. Cada servicio es una función con un resultado concreto.</p>
     </div>
     <div class="svc-rows">
-      <div class="svc-row reveal">
+      <div class="svc-row reveal svc-expandable" id="svc-1">
         <span class="node" aria-hidden="true"></span>
         <div class="idx"><span class="num">01</span><b class="fn">audit()</b></div>
         <div><h3>Auditoría de procesos</h3></div>
         <p>Miramos cómo trabajas hoy y encontramos exactamente dónde se te escapan las horas.</p>
-        <span class="go" aria-hidden="true">→</span>
+        <span class="go svc-tog" aria-label="Expandir detalle">+</span>
+        <div class="svc-detail" aria-hidden="true">
+          <div class="svc-detail-inner">
+            <div class="svc-detail-main">
+              <p class="svc-detail-lead">Antes de automatizar nada, necesitamos entender tu negocio desde dentro. En una sesión de trabajo contigo — sin tecnicismos — mapeamos qué ocurre en cada tarea del día a día: quién la hace, cuánto tarda, qué herramientas usa y dónde se rompe cuando falla.</p>
+              <ul class="svc-detail-list">
+                <li>Entrevista de proceso (60–90 min, remota o presencial)</li>
+                <li>Mapa visual de tus flujos actuales</li>
+                <li>Identificación de las 2–3 tareas con mayor potencial de automatización</li>
+                <li>Estimación de horas recuperables al mes</li>
+              </ul>
+            </div>
+            <div class="svc-detail-aside">
+              <span class="svc-detail-tag">// resultado</span>
+              <p>Un documento claro con las palancas que más mueven — y por dónde empezar sin perder tiempo.</p>
+              <a class="btn ghost" href="hablemos.html"><span class="arrow">→</span> Pedir auditoría</a>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="svc-row reveal">
         <span class="node" aria-hidden="true"></span>
@@ -593,7 +733,7 @@
   <div class="wrap">
     <div class="sec-head reveal">
       <span class="kicker">cómo funciona</span>
-      <h2>Así se ve una automación por dentro.</h2>
+      <h2>Así se ve una automatización por dentro.</h2>
       <p class="note">Un disparador la enciende, la lógica decide, tus apps se coordinan y el resultado llega solo. Tú no tocas nada.</p>
     </div>
     <div class="pipe">
@@ -704,6 +844,13 @@
         <div class="sol-foot"><span class="metric">4–8 h/mes recuperadas</span></div>
       </article>
     </div>
+
+    <div class="roi-strip reveal">
+      <span class="roi-label">// ¿y en euros?</span>
+      <p>Mete tus números y ve cuántas horas recuperas — y qué vale eso para tu negocio.</p>
+      <a class="btn roi-cta" href="../comercial/calculadora-roi.html" target="_blank" rel="noopener"><span class="arrow">→</span> Calcular mi ROI</a>
+    </div>
+
   </div>
 </section>
 
