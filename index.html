@@ -187,15 +187,18 @@
   .svc-rows::before{display:none;}
 
   .svc-row{
-    display:grid;grid-template-columns:112px minmax(180px,1fr) 1.5fr 56px;
-    gap:0 32px;align-items:center;
+    display:flex;flex-direction:column;
     padding:32px 36px;
     border-radius:18px;
     background:var(--surface);
     border:1px solid var(--line-2);
-    position:relative;overflow:hidden;
+    position:relative;
     cursor:default;
     transition:transform .34s ease, background .36s ease, border-color .36s ease, box-shadow .36s ease;
+  }
+  .svc-row-head{
+    display:grid;grid-template-columns:112px minmax(180px,1fr) 1.5fr 56px;
+    gap:0 32px;align-items:center;
   }
   /* barra accent izquierda */
   .svc-row::before{
@@ -251,14 +254,14 @@
   /* descripción */
   .svc-row p{font-size:15px;color:var(--ink-mut);line-height:1.62;}
   /* flecha */
-  .svc-row .go{justify-self:end;font-family:var(--mono);font-size:24px;color:var(--accent);
+  .svc-row-head .go{justify-self:end;font-family:var(--mono);font-size:24px;color:var(--accent);
     opacity:0;transform:translateX(-14px);transition:opacity .3s ease, transform .3s ease;}
-  .svc-row:hover .go{opacity:1;transform:translateX(0);}
+  .svc-row:hover .svc-row-head .go{opacity:1;transform:translateX(0);}
 
   /* —— SERVICIOS · acordeón expandible —— */
   .svc-row.svc-expandable{cursor:pointer;}
   /* el + que reemplaza la flecha en filas expandibles */
-  .svc-row.svc-expandable .go{
+  .svc-row.svc-expandable .svc-row-head .go{
     opacity:1;transform:none;font-size:18px;font-family:var(--mono);
     width:34px;height:34px;border-radius:50%;
     border:1px solid var(--line-2);
@@ -266,15 +269,10 @@
     color:var(--ink-mut);justify-self:end;flex-shrink:0;
     transition:background .28s ease, border-color .28s ease, color .28s ease, transform .32s ease;
   }
-  .svc-row.svc-expandable:hover .go{border-color:var(--accent-soft);color:var(--accent-soft);}
-  .svc-row.svc-expandable.open .go{background:var(--accent);border-color:var(--accent);color:#fff;transform:rotate(45deg);}
-  /* panel desplegable */
-  .svc-detail{
-    grid-column:1 / -1;
-    max-height:0;overflow:hidden;opacity:0;
-    transition:max-height .5s cubic-bezier(.22,1,.36,1), opacity .38s ease;
-  }
-  .svc-row.open .svc-detail{max-height:700px;opacity:1;}
+  .svc-row.svc-expandable:hover .svc-row-head .go{border-color:var(--accent-soft);color:var(--accent-soft);}
+  .svc-row.svc-expandable.open .svc-row-head .go{background:var(--accent);border-color:var(--accent);color:#fff;transform:rotate(45deg);}
+  /* panel desplegable — altura gestionada por JS */
+  .svc-detail{overflow:hidden;height:0;opacity:0;}
   /* interior del panel */
   .svc-detail-inner{
     display:grid;grid-template-columns:1.7fr 1fr;gap:28px;
@@ -487,10 +485,11 @@
     .menu-toggle{display:block;font-size:27px;line-height:1;padding:6px 4px;margin-right:-4px;}
     .nav .right .btn.accent{display:none;}
     .nav-cta-li{display:block;}
-    .svc-row{grid-template-columns:1fr;gap:8px;padding:24px 22px 24px 26px;align-items:start;}
+    .svc-row{padding:22px 20px;}
     .svc-row:hover{transform:none;}
+    .svc-row-head{grid-template-columns:1fr;gap:8px;align-items:start;}
     .svc-row .num{font-size:42px;}
-    .svc-row .go{display:none;}
+    .svc-row-head .go{display:none;}
     .steps,.sol-grid,.pipe{grid-template-columns:1fr;}
     .demo-viewer{grid-template-columns:1fr;gap:14px;}
     .pipe-step{margin-right:0;margin-bottom:18px;}
@@ -678,53 +677,228 @@
       <p class="note">Sin paquetes raros ni jerga. Cada servicio es una función con un resultado concreto.</p>
     </div>
     <div class="svc-rows">
+      <!-- 01 · expandible -->
       <div class="svc-row reveal svc-expandable" id="svc-1">
-        <span class="node" aria-hidden="true"></span>
-        <div class="idx"><span class="num">01</span><b class="fn">audit()</b></div>
-        <div><h3>Auditoría de procesos</h3></div>
-        <p>Miramos cómo trabajas hoy y encontramos exactamente dónde se te escapan las horas.</p>
-        <span class="go svc-tog" aria-label="Expandir detalle">+</span>
+        <div class="svc-row-head">
+          <div class="idx"><span class="num">01</span><b class="fn">audit()</b></div>
+          <div><h3>Auditoría de procesos</h3></div>
+          <p>Miramos cómo trabajas hoy y encontramos exactamente dónde se te escapan las horas.</p>
+          <span class="go svc-tog" aria-label="Expandir detalle">+</span>
+        </div>
         <div class="svc-detail" aria-hidden="true">
           <div class="svc-detail-inner">
             <div class="svc-detail-main">
               <p class="svc-detail-lead">Antes de automatizar nada, necesitamos entender tu negocio desde dentro. En una sesión de trabajo contigo — sin tecnicismos — mapeamos qué ocurre en cada tarea del día a día: quién la hace, cuánto tarda, qué herramientas usa y dónde se rompe cuando falla.</p>
               <ul class="svc-detail-list">
-                <li>Entrevista de proceso (60–90 min, remota o presencial)</li>
+                <li>Entrevista de proceso (20 min, remota o presencial)</li>
                 <li>Mapa visual de tus flujos actuales</li>
-                <li>Identificación de las 2–3 tareas con mayor potencial de automatización</li>
-                <li>Estimación de horas recuperables al mes</li>
+                <li>Identificación de tareas con mayor potencial de automatización</li>
+                <li><a href="#roi" style="color:var(--accent-soft);text-decoration:underline;text-underline-offset:3px;">Estimación de horas recuperables al mes →</a></li>
               </ul>
             </div>
             <div class="svc-detail-aside">
               <span class="svc-detail-tag">// resultado</span>
               <p>Un documento claro con las palancas que más mueven — y por dónde empezar sin perder tiempo.</p>
-              <a class="btn ghost" href="hablemos.html"><span class="arrow">→</span> Pedir auditoría</a>
             </div>
           </div>
         </div>
       </div>
-      <div class="svc-row reveal">
-        <span class="node" aria-hidden="true"></span>
-        <div class="idx"><span class="num">02</span><b class="fn">design()</b></div>
-        <div><h3>Diseño de flujos</h3></div>
-        <p>Dibujamos el camino más corto entre el problema y el resultado, y te lo enseñamos en claro.</p>
-        <span class="go" aria-hidden="true">→</span>
+      <!-- 02 -->
+      <div class="svc-row reveal svc-expandable" id="svc-2">
+        <div class="svc-row-head">
+          <div class="idx"><span class="num">02</span><b class="fn">design()</b></div>
+          <div><h3>Diseño de flujos</h3></div>
+          <p>Dibujamos el camino más corto entre el problema y el resultado, y te lo enseñamos en claro.</p>
+          <span class="go svc-tog" aria-label="Expandir detalle">+</span>
+        </div>
+        <div class="svc-detail" aria-hidden="true">
+          <div class="svc-detail-inner">
+            <div class="svc-detail-main">
+              <p class="svc-detail-lead">Con el mapa de tu negocio en la mano, diseñamos el flujo de automatización antes de montar nada. Te lo mostramos en lenguaje claro — sin código, sin tecnicismos — para que entiendas exactamente qué va a pasar y cuándo.</p>
+              <ul class="svc-detail-list">
+                <li>Diseño del flujo en lenguaje visual (sin código)</li>
+                <li>Definición de disparadores, condiciones y resultados</li>
+                <li>Revisión contigo antes de construir nada</li>
+                <li>Estimación del tiempo de implementación</li>
+              </ul>
+            </div>
+            <div class="svc-detail-aside">
+              <span class="svc-detail-tag">// resultado</span>
+              <p>Un mapa claro del flujo — sabes exactamente qué va a ocurrir y cuándo, antes de que lo montemos.</p>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="svc-row reveal">
-        <span class="node" aria-hidden="true"></span>
-        <div class="idx"><span class="num">03</span><b class="fn">integrate()</b></div>
-        <div><h3>Integración de sistemas</h3></div>
-        <p>Conectamos tus herramientas para que hablen entre ellas y dejes de copiar y pegar.</p>
-        <span class="go" aria-hidden="true">→</span>
+      <!-- 03 -->
+      <div class="svc-row reveal svc-expandable" id="svc-3">
+        <div class="svc-row-head">
+          <div class="idx"><span class="num">03</span><b class="fn">integrate()</b></div>
+          <div><h3>Integración de sistemas</h3></div>
+          <p>Conectamos tus herramientas para que hablen entre ellas y dejes de copiar y pegar.</p>
+          <span class="go svc-tog" aria-label="Expandir detalle">+</span>
+        </div>
+        <div class="svc-detail" aria-hidden="true">
+          <div class="svc-detail-inner">
+            <div class="svc-detail-main">
+              <p class="svc-detail-lead">Conectamos las herramientas que ya usas para que se hablen entre ellas sin que tengas que intervenir. Sin cambiar de software, sin migraciones. Tu CRM, tu correo, tu calendario y tu facturación, coordinados.</p>
+              <ul class="svc-detail-list">
+                <li>Conexión de tus herramientas actuales (CRM, correo, calendario, facturación…)</li>
+                <li>Automatización de la transferencia de datos entre sistemas</li>
+                <li>Pruebas con casos reales de tu negocio</li>
+                <li>Documentación del flujo para tu equipo</li>
+              </ul>
+            </div>
+            <div class="svc-detail-aside">
+              <span class="svc-detail-tag">// resultado</span>
+              <p>Tus herramientas conectadas y funcionando solas — sin copiar, pegar ni recordar nada.</p>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="svc-row reveal">
-        <span class="node" aria-hidden="true"></span>
-        <div class="idx"><span class="num">04</span><b class="fn">operate()</b></div>
-        <div><h3>Operación continua</h3></div>
-        <p>Lo mantenemos funcionando y mejorando mes a mes. Tú a lo tuyo.</p>
-        <span class="go" aria-hidden="true">→</span>
+      <!-- 04 -->
+      <div class="svc-row reveal svc-expandable" id="svc-4">
+        <div class="svc-row-head">
+          <div class="idx"><span class="num">04</span><b class="fn">operate()</b></div>
+          <div><h3>Operación continua</h3></div>
+          <p>Lo mantenemos funcionando y mejorando mes a mes. Tú a lo tuyo.</p>
+          <span class="go svc-tog" aria-label="Expandir detalle">+</span>
+        </div>
+        <div class="svc-detail" aria-hidden="true">
+          <div class="svc-detail-inner">
+            <div class="svc-detail-main">
+              <p class="svc-detail-lead">Montar la automatización es solo el principio. La vigilamos, la mantenemos y la mejoramos mes a mes para que nunca falle en silencio. Si algo cambia en tu negocio o en tus herramientas, ya estamos.</p>
+              <ul class="svc-detail-list">
+                <li>Monitorización de errores en tiempo real con alertas inmediatas</li>
+                <li>Ajustes y mejoras mensuales</li>
+                <li>Soporte ante cambios en tus herramientas o procesos</li>
+                <li>Informe mensual de rendimiento</li>
+              </ul>
+            </div>
+            <div class="svc-detail-aside">
+              <span class="svc-detail-tag">// resultado</span>
+              <p>La automatización funciona sin que la mires — y si algo cambia, ya lo sabemos antes que tú.</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+
+    <style>
+      /* —— Calculadora ROI · panel desplegable inline (prefijo roi-calc) —— */
+      .roi-calc{max-height:0;overflow:hidden;opacity:0;
+        transition:max-height .55s cubic-bezier(.22,1,.36,1), opacity .4s ease, margin-top .4s ease;}
+      .roi-calc.roi-open{max-height:780px;opacity:1;margin-top:18px;}
+      .roi-calc-inner{background:var(--surface);border:1px solid var(--accent);border-radius:16px;padding:28px;}
+      .roi-calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px;}
+      .roi-field{display:flex;flex-direction:column;gap:8px;}
+      .roi-field .roi-flbl{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-dim);}
+      .roi-field input{font-family:var(--display);font-weight:600;font-size:22px;color:var(--ink);
+        background:var(--surface-2);border:1px solid var(--line-2);border-radius:10px;padding:10px 14px;width:100%;
+        transition:border-color .18s ease, background .18s ease;}
+      .roi-field input:focus{outline:none;border-color:var(--accent);}
+      .roi-levels{display:flex;gap:8px;}
+      .roi-lvl{flex:1;font-family:var(--sans);font-size:13.5px;color:var(--ink-mut);cursor:pointer;text-align:center;
+        background:var(--surface-2);border:1px solid var(--line-2);border-radius:10px;padding:11px 8px;
+        transition:border-color .18s ease, background .18s ease, color .18s ease;}
+      .roi-lvl:hover{border-color:var(--accent-soft);}
+      .roi-lvl.roi-active{border-color:var(--accent);background:var(--accent-wash);color:var(--ink);}
+      .roi-out{display:flex;flex-wrap:wrap;gap:22px 36px;border-top:1px solid var(--line-2);padding-top:22px;margin:22px 0;}
+      .roi-onum{font-family:var(--display);font-weight:700;font-size:30px;letter-spacing:-.025em;color:var(--accent-soft);line-height:1;}
+      .roi-onum small{font-size:14px;color:var(--ink-mut);font-weight:400;letter-spacing:0;}
+      .roi-olbl{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-dim);margin-top:7px;}
+      .roi-calc-actions{display:flex;gap:12px;flex-wrap:wrap;}
+      .roi-calc-note{font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;color:var(--ink-dim);margin-top:16px;}
+      @media(max-width:560px){
+        .roi-calc-inner{padding:20px;}
+        .roi-calc-grid{grid-template-columns:1fr;gap:14px;}
+        .roi-calc.roi-open{max-height:1100px;}
+        .roi-calc-actions .btn{flex:1 1 auto;justify-content:center;}
+      }
+    </style>
+
+    <div class="roi-strip reveal" id="roi">
+      <span class="roi-label">// ¿y en euros?</span>
+      <p>Mete tus números y ve cuántas horas recuperas — y qué vale eso para tu negocio.</p>
+      <button class="btn roi-cta" type="button" id="roi-toggle" aria-expanded="false" aria-controls="roi-calc"><span class="arrow">→</span> Calcular mi ROI</button>
+    </div>
+
+    <div class="roi-calc" id="roi-calc">
+      <div class="roi-calc-inner">
+        <div class="roi-calc-grid">
+          <div class="roi-field">
+            <label class="roi-flbl" for="roi-horas">Horas/semana en tareas repetitivas</label>
+            <input id="roi-horas" type="number" min="0" step="1" value="10" inputmode="numeric">
+          </div>
+          <div class="roi-field">
+            <label class="roi-flbl" for="roi-coste">Coste por hora (€)</label>
+            <input id="roi-coste" type="number" min="0" step="1" value="15" inputmode="numeric">
+          </div>
+        </div>
+        <div class="roi-field">
+          <span class="roi-flbl">Nivel de repetición de esas tareas</span>
+          <div class="roi-levels" id="roi-levels">
+            <div class="roi-lvl roi-active" data-lvl="0.85">Alta</div>
+            <div class="roi-lvl" data-lvl="0.6">Media</div>
+            <div class="roi-lvl" data-lvl="0.35">Baja</div>
+          </div>
+        </div>
+        <div class="roi-out">
+          <div class="roi-out-item"><div class="roi-onum"><span id="roi-h">0</span> <small>h/mes</small></div><span class="roi-olbl">horas que recuperas</span></div>
+          <div class="roi-out-item"><div class="roi-onum"><span id="roi-m">0</span> <small>€/mes</small></div><span class="roi-olbl">ahorro mensual</span></div>
+          <div class="roi-out-item"><div class="roi-onum">≈ <span id="roi-y">0</span> <small>€/año</small></div><span class="roi-olbl">ahorro anual</span></div>
+        </div>
+        <div class="roi-calc-actions">
+          <a class="btn accent" href="#contacto"><span class="arrow">→</span> Empezar conversación</a>
+          <a class="btn ghost" href="#como">Ver cómo funciona</a>
+        </div>
+        <p class="roi-calc-note">// estimación orientativa — los números exactos los afinamos contigo</p>
+      </div>
+    </div>
+
+    <script>
+    /* —— Calculadora ROI · despliegue + cálculo (IIFE) —— */
+    (function(){
+      'use strict';
+      var toggle=document.getElementById('roi-toggle');
+      var panel=document.getElementById('roi-calc');
+      var horas=document.getElementById('roi-horas');
+      var coste=document.getElementById('roi-coste');
+      var levels=document.getElementById('roi-levels');
+      if(!toggle||!panel||!horas||!coste||!levels) return;
+      var lvl=0.85;
+
+      function fmt(n){ return Math.round(n).toLocaleString('es-ES'); }
+      function calc(){
+        var hWeek=parseFloat(horas.value)||0;
+        var c=parseFloat(coste.value)||0;
+        var hMonth=hWeek*4.33*lvl;       // horas recuperadas al mes
+        var mMonth=hMonth*c;
+        document.getElementById('roi-h').textContent=fmt(hMonth);
+        document.getElementById('roi-m').textContent=fmt(mMonth);
+        document.getElementById('roi-y').textContent=fmt(mMonth*12);
+      }
+
+      toggle.addEventListener('click', function(){
+        var open=panel.classList.toggle('roi-open');
+        toggle.setAttribute('aria-expanded', open?'true':'false');
+        if(open){
+          calc();
+          setTimeout(function(){ if(panel.scrollIntoView) panel.scrollIntoView({behavior:'smooth', block:'nearest'}); }, 320);
+        }
+      });
+      levels.querySelectorAll('.roi-lvl').forEach(function(el){
+        el.addEventListener('click', function(){
+          levels.querySelectorAll('.roi-lvl').forEach(function(o){ o.classList.remove('roi-active'); });
+          el.classList.add('roi-active');
+          lvl=parseFloat(el.getAttribute('data-lvl'))||0.85;
+          calc();
+        });
+      });
+      [horas,coste].forEach(function(i){ i.addEventListener('input', calc); });
+      calc();
+    })();
+    </script>
+
   </div>
 </section>
 
@@ -843,12 +1017,6 @@
         <p>Cada lunes, un resumen de ventas y tareas en tu bandeja o Slack. Dashboard en tiempo real.</p>
         <div class="sol-foot"><span class="metric">4–8 h/mes recuperadas</span></div>
       </article>
-    </div>
-
-    <div class="roi-strip reveal">
-      <span class="roi-label">// ¿y en euros?</span>
-      <p>Mete tus números y ve cuántas horas recuperas — y qué vale eso para tu negocio.</p>
-      <a class="btn roi-cta" href="../comercial/calculadora-roi.html" target="_blank" rel="noopener"><span class="arrow">→</span> Calcular mi ROI</a>
     </div>
 
   </div>
@@ -1877,6 +2045,56 @@
       el.addEventListener('mouseleave',()=>{ el.style.transform=''; });
     });
   }
+})();
+</script>
+
+<script>
+/* ——— SERVICIOS · acordeón expandible ——— */
+(function(){
+  'use strict';
+  var TR = 'height 0.44s cubic-bezier(.22,1,.36,1), opacity 0.34s ease';
+
+  function closePanel(d){
+    d.style.transition = TR;
+    d.style.height = d.scrollHeight + 'px'; // fijar antes de animar a 0
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        d.style.height = '0';
+        d.style.opacity = '0';
+      });
+    });
+  }
+
+  function openPanel(d){
+    d.style.transition = TR;
+    d.style.height = d.scrollHeight + 'px';
+    d.style.opacity = '1';
+    d.addEventListener('transitionend', function handler(e){
+      if(e.propertyName !== 'height') return;
+      d.style.height = 'auto'; // evita reflow si cambia el contenido
+      d.removeEventListener('transitionend', handler);
+    });
+  }
+
+  document.querySelectorAll('.svc-expandable').forEach(function(row){
+    var detail = row.querySelector('.svc-detail');
+    if(!detail) return;
+    row.addEventListener('click', function(e){
+      if(e.target.closest('a')) return;
+      var isOpen = row.classList.contains('open');
+      // cerrar todos los abiertos
+      document.querySelectorAll('.svc-expandable.open').forEach(function(r){
+        r.classList.remove('open');
+        var d = r.querySelector('.svc-detail');
+        if(d) closePanel(d);
+      });
+      // abrir este si estaba cerrado
+      if(!isOpen){
+        row.classList.add('open');
+        openPanel(detail);
+      }
+    });
+  });
 })();
 </script>
 </body>
