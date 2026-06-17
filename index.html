@@ -98,7 +98,16 @@
   .wrap{max-width:1200px;margin:0 auto;padding:0 28px;}
   a{color:inherit;text-decoration:none;}
   .mono{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim);}
-  .page{position:relative;}
+  /* ——— FONDO GLOBAL · misma atmósfera del hero (sin líneas), con cambios de tonalidad por zona ——— */
+  .page{position:relative;
+    background:
+      radial-gradient(1100px 720px at 92% 1%,   rgba(67,97,240,.10), transparent 58%),
+      radial-gradient(900px 680px at -5% 30%,    rgba(67,97,240,.06), transparent 55%),
+      radial-gradient(1000px 760px at 105% 66%,  rgba(67,97,240,.075), transparent 58%),
+      radial-gradient(900px 700px at 18% 93%,    rgba(67,97,240,.05), transparent 60%),
+      linear-gradient(180deg,
+        #0B0C10 0%, #0C0E16 14%, #0E0F15 30%, #0B0D14 45%,
+        #0D0E13 60%, #0C0E17 74%, #0A0B11 88%, #090A0E 100%);}
 
   /* ——— EL HILO (spine que recorre toda la página) ——— */
   .spine{position:absolute;top:0;bottom:0;width:2px;z-index:5;pointer-events:none;
@@ -141,39 +150,58 @@
   .nav .right{display:flex;align-items:center;gap:14px;}
   .menu-toggle{display:none;background:none;border:none;font-size:22px;color:var(--ink);cursor:pointer;}
   .nav-cta-li{display:none;}
+  /* —— botón de idioma (muy visible) —— */
+  .lang-toggle{display:inline-flex;align-items:center;gap:7px;cursor:pointer;
+    font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--ink);background:var(--surface);border:1px solid var(--accent);border-radius:30px;
+    padding:7px 13px;line-height:1;box-shadow:0 0 0 3px var(--accent-wash);
+    transition:background .2s ease,border-color .2s ease,color .2s ease,box-shadow .2s ease,transform .15s ease;}
+  .lang-toggle:hover{background:var(--accent);border-color:var(--accent);color:#fff;
+    transform:translateY(-1px);box-shadow:0 9px 24px -8px var(--accent);}
+  .lang-toggle svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.6;flex:0 0 auto;}
+  .lang-toggle .lt-cur{font-weight:700;}
 
   /* ——— HERO ——— */
   .hero-zone{position:relative;overflow:hidden;border-bottom:1px solid var(--line);}
   .hero{position:relative;padding:104px 0 96px;}
   /* fondo: el laberinto que se resuelve y sale por la derecha */
   .flow-anim{position:absolute;inset:0;width:100%;height:100%;z-index:0;opacity:1;
-    -webkit-mask-image:linear-gradient(90deg,transparent 0%,transparent 26%,#000 56%,#000 100%);
-    mask-image:linear-gradient(90deg,transparent 0%,transparent 26%,#000 56%,#000 100%);}
-  .flow-anim .conn{fill:none;stroke:var(--accent);stroke-width:2;opacity:.38;stroke-linecap:round;stroke-linejoin:round;}
+    will-change:transform,opacity;transform-origin:70% 42%;
+    -webkit-mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.5) 13%,#000 40%,#000 100%);
+    mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.5) 13%,#000 40%,#000 100%);}
+  .flow-anim .conn{fill:none;stroke:var(--accent);stroke-width:2;opacity:var(--flow-glow,.38);stroke-linecap:round;stroke-linejoin:round;}
+  .flow-anim .conn.entry{stroke-width:1.6;opacity:calc(var(--flow-glow,.38) * .62);}
   .flow-anim .nd{fill:var(--bg);stroke:var(--accent);stroke-width:2;opacity:.6;}
-  .flow-anim .nd-acc{fill:var(--accent);stroke:none;opacity:.85;}
+  .flow-anim .nd-acc{fill:var(--accent);stroke:none;opacity:.85;filter:drop-shadow(0 0 7px var(--accent-soft));}
   .flow-anim.scrub .conn{stroke-dasharray:1;}
   .flow-anim .pulse{fill:var(--accent-soft);opacity:0;filter:drop-shadow(0 0 6px var(--accent-soft));}
   .flow-anim.scrub .pulse{opacity:.95;}
   .flow-anim .pulses{transition:opacity .25s linear;}
+  /* halo cobalto detrás del titular · da profundidad sin competir con el texto */
+  .hero-glow{position:absolute;z-index:0;left:-4%;top:6%;width:min(720px,62%);height:520px;pointer-events:none;
+    background:radial-gradient(closest-side, rgba(67,97,240,.15), rgba(67,97,240,0) 72%);opacity:.9;}
+  @media (prefers-reduced-motion:no-preference){
+    .flow-anim .nd-acc{animation:ndBreath 4.6s ease-in-out infinite;}
+    @keyframes ndBreath{0%,100%{opacity:.65;}50%{opacity:1;}}
+  }
   .hero .wrap{position:relative;z-index:1;}
   .eyebrow{display:inline-flex;align-items:center;gap:10px;margin-bottom:28px;
     font-family:var(--mono);font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-mut);
     background:var(--surface);border:1px solid var(--line-2);border-radius:30px;padding:7px 14px;}
   .eyebrow .d{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--accent-wash);}
   h1.hl{font-family:var(--display);font-weight:600;font-size:clamp(40px,6.6vw,82px);line-height:1.0;letter-spacing:-.035em;max-width:15ch;}
-  h1.hl em{font-style:normal;color:var(--accent-soft);}
+  h1.hl em{font-style:normal;color:var(--accent-soft);text-shadow:0 0 36px rgba(130,149,242,.32);}
   .hero .sub{margin-top:28px;max-width:52ch;font-size:19px;color:var(--ink-mut);}
   .hero .cta-row{margin-top:38px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
   .hero .meta{margin-top:20px;font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;color:var(--ink-dim);}
 
 
   /* ——— MANIFIESTO (band) ——— */
-  .band{border-bottom:1px solid var(--line);background:var(--bg-2);}
-  .band .wrap{display:flex;align-items:center;gap:30px;padding:34px 28px;flex-wrap:wrap;}
-  .band .tag{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-soft);white-space:nowrap;}
-  .band p{font-family:var(--display);font-weight:500;font-size:clamp(18px,2.3vw,25px);line-height:1.3;letter-spacing:-.01em;color:var(--ink);}
-  .band p em{font-style:normal;color:var(--accent-soft);}
+  .band{border-bottom:1px solid var(--line);background:transparent;}
+  .band .wrap{display:flex;flex-direction:column;align-items:flex-start;gap:18px;padding:60px 28px;}
+  .band .tag{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent-soft);}
+  .band p{font-family:var(--display);font-weight:600;font-size:clamp(24px,3.6vw,40px);line-height:1.2;letter-spacing:-.022em;color:var(--ink);max-width:30ch;}
+  .band p em{font-style:normal;color:var(--accent-soft);text-shadow:0 0 32px rgba(130,149,242,.28);}
 
   /* ——— SECCIONES ——— */
   section{padding:100px 0;}
@@ -251,8 +279,22 @@
   /* título */
   .svc-row h3{font-family:var(--display);font-weight:600;font-size:22px;letter-spacing:-.018em;transition:transform .32s ease;}
   .svc-row:hover h3{transform:translateX(6px);}
+  /* badge GRATIS (paso 01) · llamativo */
+  .svc-free{display:inline-flex;align-items:center;gap:6px;vertical-align:middle;margin-left:12px;
+    font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;
+    color:#fff;background:linear-gradient(135deg,var(--accent-soft),var(--accent) 48%,var(--accent-deep));
+    border-radius:30px;padding:4px 13px;line-height:1;
+    box-shadow:0 0 0 1px rgba(255,255,255,.18) inset, 0 6px 18px -6px var(--accent), 0 0 14px -2px var(--accent);
+    animation:freePulse 2s ease-in-out infinite;}
+  .svc-free::before{content:"";width:6px;height:6px;border-radius:50%;background:#fff;
+    box-shadow:0 0 8px 1px rgba(255,255,255,.9);}
+  @media (prefers-reduced-motion:reduce){ .svc-free{animation:none;} }
+  @keyframes freePulse{
+    0%,100%{box-shadow:0 0 0 1px rgba(255,255,255,.18) inset, 0 6px 18px -6px var(--accent), 0 0 14px -2px var(--accent);transform:scale(1);}
+    50%{box-shadow:0 0 0 1px rgba(255,255,255,.26) inset, 0 8px 24px -6px var(--accent), 0 0 28px 0 var(--accent);transform:scale(1.05);}}
   /* descripción */
   .svc-row p{font-size:15px;color:var(--ink-mut);line-height:1.62;}
+  .svc-row p strong{color:var(--accent-soft);font-weight:600;}
   /* flecha */
   .svc-row-head .go{justify-self:end;font-family:var(--mono);font-size:24px;color:var(--accent);
     opacity:0;transform:translateX(-14px);transition:opacity .3s ease, transform .3s ease;}
@@ -294,7 +336,7 @@
   @media(max-width:880px){.svc-detail-inner{grid-template-columns:1fr;gap:18px;}}
 
   /* —— CÓMO FUNCIONA · pipeline —— */
-  .flow{background:var(--bg-2);}
+  .flow{background:transparent;}
   .pipe{display:grid;grid-template-columns:repeat(4,1fr);gap:0;align-items:stretch;position:relative;}
   .pipe-step{position:relative;padding:24px 22px;border:1px solid var(--line-2);border-radius:14px;background:var(--surface);margin-right:34px;}
   .pipe-step:last-child{margin-right:0;}
@@ -454,7 +496,7 @@
   .about .panel.in .maze-solve .dot{opacity:.9;transition:opacity .4s ease 2.2s;}
 
   /* —— CTA —— */
-  .cta{background:linear-gradient(180deg,var(--bg-2),var(--bg));text-align:center;padding:112px 0;position:relative;overflow:hidden;border-top:1px solid var(--line);}
+  .cta{background:radial-gradient(120% 130% at 50% 0%, rgba(67,97,240,.12), rgba(67,97,240,0) 58%);text-align:center;padding:112px 0;position:relative;overflow:hidden;border-top:1px solid var(--line);}
   .cta h2{font-family:var(--display);font-weight:600;font-size:clamp(32px,5.2vw,62px);line-height:1.05;letter-spacing:-.035em;max-width:18ch;margin:28px auto 0;}
   .cta h2 em{font-style:normal;color:var(--accent-soft);}
   .cta .cta-row{margin-top:36px;display:flex;justify-content:center;gap:14px;flex-wrap:wrap;}
@@ -558,21 +600,12 @@
     80%{transform:translate(4%,-2%)} 100%{transform:translate(0,0)}
   }
 
-  /* ——— CURSOR premium · cobalto · punto preciso + anillo con inercia ——— */
-  .cur-dot,.cur-ring{position:fixed;top:0;left:0;z-index:10000;pointer-events:none;
-    border-radius:50%;transform:translate(-50%,-50%);opacity:0;will-change:transform;}
-  .cur-dot{width:6px;height:6px;background:var(--accent);
-    box-shadow:0 0 10px 1px var(--accent-soft);transition:opacity .25s ease;}
-  .cur-ring{width:34px;height:34px;border:1.5px solid var(--accent-soft);
-    background:var(--accent-wash);
-    transition:width .3s cubic-bezier(.22,1,.36,1), height .3s cubic-bezier(.22,1,.36,1),
-               border-color .3s ease, background .3s ease, opacity .3s ease;}
-  .cur-ring.hover{width:60px;height:60px;border-color:var(--accent);
-    background:rgba(67,97,240,.18);box-shadow:0 0 22px -4px var(--accent);}
-  .cur-ring.down{width:26px;height:26px;background:rgba(67,97,240,.26);}
-  .cur-dot.hover{opacity:0;}
-  html.cursor-on, html.cursor-on *{cursor:none !important;}
-  @media (pointer:coarse){ .cur-dot,.cur-ring{display:none;} }
+  /* ——— CURSOR · flecha blanca normal (manita en clicables), acorde a la estética ——— */
+  html{cursor:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScyOCcgaGVpZ2h0PScyOCcgdmlld0JveD0nMCAwIDI4IDI4Jz48cGF0aCBkPSdNNSAyLjUgTDUgMjIuNSBMMTAuNiAxNy42IEwxMy45IDI0LjggTDE3LjMgMjMuMyBMMTQgMTYuNCBMMjEuNSAxNi40IFonIGZpbGw9JyNmZmYnIHN0cm9rZT0ncmdiKDksMTAsMTUpJyBzdHJva2Utd2lkdGg9JzEuNCcgc3Ryb2tlLWxpbmVqb2luPSdyb3VuZCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PC9zdmc+") 5 3, auto;}
+  a, button, [role="button"], [type="button"], [type="submit"], label, summary,
+  .btn, .demo-item, .svc-row.svc-expandable, .diag-head, .roi-lvl, .ld-stage, .menu-toggle, .demo-modal .x{
+    cursor:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScyOCcgaGVpZ2h0PScyOCcgdmlld0JveD0nMCAwIDI4IDI4Jz48cGF0aCBkPSdNOS40IDQuMiBhMS43IDEuNyAwIDAgMSAzLjQgMCBWMTIgYTEuNCAxLjQgMCAwIDEgMi44IDAgVjEyLjYgYTEuNCAxLjQgMCAwIDEgMi44IDAgVjEzLjQgYTEuNCAxLjQgMCAwIDEgMi44IDAgVjE4LjUgYTUgNSAwIDAgMSAtNSA1IEgxMi44IGE1IDUgMCAwIDEgLTMuNiAtMS41IEw1LjYgMTguNCBhMS42IDEuNiAwIDAgMSAyLjMgLTIuMiBMOS40IDEzLjYgWicgZmlsbD0nI2ZmZicgc3Ryb2tlPSdyZ2IoOSwxMCwxNSknIHN0cm9rZS13aWR0aD0nMS4zJyBzdHJva2UtbGluZWpvaW49J3JvdW5kJyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48L3N2Zz4=") 11 3, pointer;}
+  input[type="text"], input[type="email"], input[type="tel"], input[type="number"], textarea{cursor:text;}
 </style>
 </head>
 <body>
@@ -604,10 +637,14 @@
       <li><a href="#como">Cómo funciona</a></li>
       <li><a href="#soluciones">Soluciones</a></li>
       <li><a href="#diagnostico">¿Nos necesitas?</a></li>
-      <li class="nav-cta-li"><a class="btn accent nav-cta" href="#contacto"><span class="arrow">→</span> Hablemos</a></li>
+      <li class="nav-cta-li"><a class="btn accent nav-cta" href="hablemos.html"><span class="arrow">→</span> Hablemos</a></li>
     </ul>
     <div class="right">
-      <a class="btn accent" href="#contacto"><span class="arrow">→</span> Hablemos</a>
+      <button class="lang-toggle" id="langToggle" type="button" aria-label="Cambiar idioma · Switch language" data-i18n-skip>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.9 2.6 15.1 0 18M12 3c-2.6 2.9-2.6 15.1 0 18"/></svg>
+        <span class="lt-cur">EN</span>
+      </button>
+      <a class="btn accent" href="hablemos.html"><span class="arrow">→</span> Hablemos</a>
       <button class="menu-toggle" aria-label="menú">☰</button>
     </div>
   </div>
@@ -623,6 +660,12 @@
     <path id="m4" class="conn" pathLength="1" d="M1010 320 V410 H1110"/>
     <path id="m5" class="conn" pathLength="1" d="M660 330 V500 H560 V560"/>
     <path id="m6" class="conn" pathLength="1" d="M850 540 V600 H1010"/>
+    <!-- hilo de entrada: nace en la columna del texto y alimenta el laberinto -->
+    <path id="m7" class="conn entry" pathLength="1" d="M70 470 H540"/>
+    <path id="m8" class="conn entry" pathLength="1" d="M300 470 V408 H470"/>
+    <circle class="nd" cx="70"  cy="470" r="4"/>
+    <circle class="nd" cx="300" cy="470" r="4"/>
+    <circle class="nd" cx="300" cy="408" r="3.5"/>
     <circle class="nd" cx="540" cy="470" r="6"/>
     <circle class="nd" cx="660" cy="330" r="5"/>
     <circle class="nd" cx="770" cy="210" r="5"/>
@@ -642,8 +685,10 @@
       <circle class="pulse" r="3"  ><animateMotion dur="3s"   begin="2.4s" repeatCount="indefinite" calcMode="linear"><mpath href="#m4"/></animateMotion></circle>
       <circle class="pulse" r="3"  ><animateMotion dur="3.4s" begin="2.8s" repeatCount="indefinite" calcMode="linear"><mpath href="#m5"/></animateMotion></circle>
       <circle class="pulse" r="3"  ><animateMotion dur="3.2s" begin="2.2s" repeatCount="indefinite" calcMode="linear"><mpath href="#m6"/></animateMotion></circle>
+      <circle class="pulse" r="3.5"><animateMotion dur="3.8s" begin="0.4s" repeatCount="indefinite" calcMode="linear"><mpath href="#m7"/></animateMotion></circle>
     </g>
   </svg>
+  <div class="hero-glow" aria-hidden="true"></div>
 
   <section class="hero" id="top">
     <div class="wrap">
@@ -651,7 +696,6 @@
       <h1 class="hl">Solucionamos <em>el trabajo repetitivo</em> de tu negocio.</h1>
       <p class="sub">Montamos los procesos para que se hagan solos — y los vigilamos para que nunca fallen.</p>
       <div class="cta-row">
-        <a class="btn accent" href="hablemos.html"><span class="arrow">→</span> Empezar conversación</a>
         <a class="btn ghost" href="#como">Ver cómo funciona</a>
       </div>
       <p class="meta">sin guion · sin compromiso</p>
@@ -663,7 +707,7 @@
 <div class="band" data-spine>
   <div class="wrap">
     <span class="tag">// manifiesto</span>
-    <p>No te vendemos software. Conectamos el que <em>ya usas</em> para que el trabajo repetitivo pase solo — silencioso, sin que se note.</p>
+    <p>No vendemos un sistema nuevo. Montamos <em>una capa de automatización encima de lo que ya usas</em> — para que el trabajo repetitivo pase solo, sin que se note.</p>
   </div>
 </div>
 
@@ -680,24 +724,25 @@
       <div class="svc-row reveal svc-expandable" id="svc-1">
         <div class="svc-row-head">
           <div class="idx"><span class="num">01</span><b class="fn">audit()</b></div>
-          <div><h3>Auditoría de procesos</h3></div>
-          <p>Miramos cómo trabajas hoy y encontramos exactamente dónde se te escapan las horas.</p>
+          <div><h3>Auditoría de procesos <span class="svc-free">Gratis</span></h3></div>
+          <p>Miramos <strong>gratis</strong> cómo trabajas hoy, encontramos dónde se te escapan las horas — y volvemos con una demo hecha para tu negocio.</p>
           <span class="go svc-tog" aria-label="Expandir detalle">+</span>
         </div>
         <div class="svc-detail" aria-hidden="true">
           <div class="svc-detail-inner">
             <div class="svc-detail-main">
-              <p class="svc-detail-lead">Antes de automatizar nada, necesitamos entender tu negocio desde dentro. En una sesión de trabajo contigo — sin tecnicismos — mapeamos qué ocurre en cada tarea del día a día: quién la hace, cuánto tarda, qué herramientas usa y dónde se rompe cuando falla.</p>
+              <p class="svc-detail-lead">Este primer análisis es <strong>gratis y sin compromiso</strong>. Antes de automatizar nada, entendemos tu negocio desde dentro. En una sesión de trabajo contigo — sin tecnicismos — mapeamos qué ocurre en cada tarea del día a día: quién la hace, cuánto tarda, qué herramientas usa y dónde se rompe cuando falla.</p>
               <ul class="svc-detail-list">
                 <li>Entrevista de proceso (20 min, remota o presencial)</li>
                 <li>Mapa visual de tus flujos actuales</li>
                 <li>Identificación de tareas con mayor potencial de automatización</li>
                 <li>Estimación de horas recuperables al mes</li>
+                <li>Una demo específica para tu negocio — sin coste</li>
               </ul>
             </div>
             <div class="svc-detail-aside">
               <span class="svc-detail-tag">// resultado</span>
-              <p>Un documento claro con las palancas que más mueven — y por dónde empezar sin perder tiempo.</p>
+              <p>Una demo a medida de tu negocio y un documento claro con las palancas que más mueven — sin coste ni compromiso.</p>
             </div>
           </div>
         </div>
@@ -983,10 +1028,11 @@
       <article class="sol-card reveal">
         <span class="fn">agenda()</span>
         <h3>Reservas y citas sin fricción</h3>
-        <p>El cliente elige hueco con disponibilidad real, confirma solo y recibe recordatorios automáticos.</p>
+        <p>El cliente elige hueco con disponibilidad real, confirma solo y recibe recordatorios automáticos. Sobre tu sistema de siempre.</p>
         <div class="sol-foot">
           <span class="metric">2–4 h/mes recuperadas</span>
-          <a class="sol-demo" href="https://inmobiliaria-demo.demos.mazestudio.site" target="_blank" rel="noopener">Ver demo <span class="ar">→</span></a>
+          <a class="sol-demo" href="https://teide-sunset.demos.mazestudio.site" target="_blank" rel="noopener">Demo excursiones <span class="ar">→</span></a>
+          <a class="sol-demo" href="https://inmobiliaria-demo.demos.mazestudio.site" target="_blank" rel="noopener">Demo inmobiliaria <span class="ar">→</span></a>
         </div>
       </article>
       <article class="sol-card reveal">
@@ -1388,7 +1434,7 @@
     if(!svg) return;
     const paths  = [...svg.querySelectorAll('.conn')];
     const pulses = svg.querySelector('.pulses');
-    const segs = [[-0.10,0.40],[0.18,0.58],[0.36,0.70],[0.46,0.80],[0.40,0.74],[0.52,0.88]];
+    const segs = [[-0.10,0.40],[0.18,0.58],[0.36,0.70],[0.46,0.80],[0.40,0.74],[0.52,0.88],[-0.20,0.20],[-0.08,0.30]];
     const draw = p => {
       paths.forEach((path,i)=>{
         const [s,e] = segs[i] || [0,1];
@@ -1408,6 +1454,31 @@
     }
     requestAnimationFrame(frame);
   })();
+
+  // ——— HERO · el laberinto se vuelve dinámico con el scroll (parallax + trazo que se intensifica) ———
+  (function(){
+    const svg  = document.querySelector('.flow-anim');
+    const glow = document.querySelector('.hero-glow');
+    const zone = document.querySelector('.hero-zone');
+    if(!svg || !zone) return;
+    if(!matchMedia('(min-width:881px)').matches) return;          // en móvil el fondo es textura fija
+    if(matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+    let ticking = false;
+    function update(){
+      const r = zone.getBoundingClientRect();
+      const h = r.height || 1;
+      const p = Math.max(0, Math.min(1, (-r.top) / h));            // 0 arriba · 1 hero saliendo
+      const e = p * (2 - p);                                       // suaviza (easeOut)
+      svg.style.transform = 'translate3d(' + (e*54).toFixed(1) + 'px,' + (e*-30).toFixed(1) + 'px,0) scale(' + (1 + e*0.07).toFixed(4) + ')';
+      svg.style.opacity   = (1 - e*0.5).toFixed(3);
+      svg.style.setProperty('--flow-glow', (0.38 + e*0.42).toFixed(3));
+      if(glow){ glow.style.transform = 'translate3d(' + (e*22).toFixed(1) + 'px,' + (e*-14).toFixed(1) + 'px,0)'; glow.style.opacity = (0.9 - e*0.6).toFixed(3); }
+    }
+    function onScroll(){ if(!ticking){ ticking = true; requestAnimationFrame(()=>{ ticking=false; update(); }); } }
+    update();
+    addEventListener('scroll', onScroll, {passive:true});
+    addEventListener('resize', update, {passive:true});
+  })();
 </script>
 
 <script>
@@ -1416,6 +1487,7 @@
     const DEMOS = [
       {id:'gestion',  name:'Gestión documental', desc:'Facturas y nóminas que se archivan solas', url:'https://gestion.demos.mazestudio.site/',          live:true},
       {id:'citas',    name:'Agendado de citas',   desc:'Reserva con disponibilidad real y avisos',  url:'https://inmobiliaria-demo.demos.mazestudio.site/', live:true},
+      {id:'teide',    name:'Reservas excursiones',desc:'Chatbot de WhatsApp que reserva plazas 24/7',url:'https://teide-sunset-tours.demos.mazestudio.site/',live:true},
       {id:'atencion', name:'Atención al cliente', desc:'Responde los emails de clientes con IA',    url:'',                                                 live:false},
     ];
     const stage = document.getElementById('demoStage');
@@ -1989,40 +2061,6 @@
   const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
   if(!fine) return;
 
-  /* — cursor premium: punto preciso (instantáneo) + anillo con inercia — */
-  const dot  = document.createElement('div'); dot.className ='cur-dot';  dot.setAttribute('aria-hidden','true');
-  const ring = document.createElement('div'); ring.className='cur-ring'; ring.setAttribute('aria-hidden','true');
-  document.body.appendChild(dot); document.body.appendChild(ring);
-  document.documentElement.classList.add('cursor-on');
-
-  let mx=innerWidth/2, my=innerHeight/2;   // posición real del ratón
-  let rx=mx, ry=my;                        // posición del anillo (sigue suavizado)
-  let shown=false;
-
-  addEventListener('mousemove',e=>{
-    mx=e.clientX; my=e.clientY;
-    dot.style.transform=`translate(${mx}px,${my}px) translate(-50%,-50%)`;
-    if(reduce) ring.style.transform=`translate(${mx}px,${my}px) translate(-50%,-50%)`;
-    if(!shown){ shown=true; dot.style.opacity='1'; ring.style.opacity='1'; }
-  },{passive:true});
-  document.addEventListener('mouseleave',()=>{ dot.style.opacity='0'; ring.style.opacity='0'; shown=false; });
-  addEventListener('mousedown',()=>ring.classList.add('down'));
-  addEventListener('mouseup',  ()=>ring.classList.remove('down'));
-
-  /* — sobre elementos interactivos: el anillo se expande, el punto se oculta — */
-  const hov='a, button, .btn, [data-cursor], input, textarea, [role="button"], .demo-item';
-  document.addEventListener('mouseover',e=>{ if(e.target.closest(hov)){ ring.classList.add('hover'); dot.classList.add('hover'); } });
-  document.addEventListener('mouseout', e=>{ if(e.target.closest(hov)){ ring.classList.remove('hover'); dot.classList.remove('hover'); } });
-
-  /* — el anillo persigue al ratón con inercia (lerp por frame) — */
-  if(!reduce){
-    (function follow(){
-      rx += (mx-rx)*0.18; ry += (my-ry)*0.18;
-      ring.style.transform=`translate(${rx}px,${ry}px) translate(-50%,-50%)`;
-      requestAnimationFrame(follow);
-    })();
-  }
-
   /* — botones magnéticos: atraen el botón hacia el ratón — */
   if(!reduce){
     document.querySelectorAll('.btn').forEach(el=>{
@@ -2085,6 +2123,153 @@
       }
     });
   });
+})();
+</script>
+
+<script>
+/* ——— TRADUCTOR ES⇄EN · diccionario + recorrido de nodos de texto + observador para lo dinámico ——— */
+(function(){
+  'use strict';
+  // Claves = texto en español (recortado). Valores = inglés (con espacios al borde donde el original los lleva).
+  var DICT = {
+    /* nav + footer nav */
+    "Servicios":"Services","Cómo funciona":"How it works","Soluciones":"Solutions","¿Nos necesitas?":"Need us?","Hablemos":" Let's talk",
+    /* hero */
+    "sur de Tenerife":"south of Tenerife",
+    "Solucionamos":"We handle your business's ","el trabajo repetitivo":"repetitive work","de tu negocio.":".",
+    "Montamos los procesos para que se hagan solos — y los vigilamos para que nunca fallen.":"We build the processes so they run on their own — and we keep watch so they never fail.",
+    "Ver cómo funciona":"See how it works","sin guion · sin compromiso":"no script · no commitment",
+    /* manifiesto */
+    "// manifiesto":"// manifesto",
+    "No vendemos un sistema nuevo. Montamos":"We don't sell a new system. We build ","una capa de automatización encima de lo que ya usas":"an automation layer on top of what you already use","— para que el trabajo repetitivo pase solo, sin que se note.":" — so the repetitive work runs on its own, without you noticing.",
+    /* servicios head */
+    "servicios":"services","Lo que hacemos, en cuatro pasos claros.":"What we do, in four clear steps.","Sin paquetes raros ni jerga. Cada servicio es una función con un resultado concreto.":"No weird packages, no jargon. Each service is a function with a concrete result.",
+    /* 01 */
+    "Auditoría de procesos":"Process audit ","Gratis":"Free",
+    "Miramos":"We map out, ","gratis":"for free","cómo trabajas hoy, encontramos dónde se te escapan las horas — y volvemos con una demo hecha para tu negocio.":", how you work today, find where your hours leak away — and come back with a demo built for your business.",
+    "// resultado":"// result",
+    "Este primer análisis es":"This first analysis is ","gratis y sin compromiso":"free and with no commitment",". Antes de automatizar nada, entendemos tu negocio desde dentro. En una sesión de trabajo contigo — sin tecnicismos — mapeamos qué ocurre en cada tarea del día a día: quién la hace, cuánto tarda, qué herramientas usa y dónde se rompe cuando falla.":". Before automating anything, we understand your business from the inside. In a working session with you — no jargon — we map what happens in every day-to-day task: who does it, how long it takes, what tools it uses and where it breaks when it fails.",
+    "Entrevista de proceso (20 min, remota o presencial)":"Process interview (20 min, remote or in person)","Mapa visual de tus flujos actuales":"A visual map of your current workflows","Identificación de tareas con mayor potencial de automatización":"Identifying the tasks with the most automation potential","Estimación de horas recuperables al mes":"An estimate of recoverable hours per month","Una demo específica para tu negocio — sin coste":"A demo specific to your business — at no cost",
+    "Una demo a medida de tu negocio y un documento claro con las palancas que más mueven — sin coste ni compromiso.":"A demo tailored to your business and a clear document with the levers that move the needle most — at no cost, no commitment.",
+    /* 02 */
+    "Diseño de flujos":"Workflow design","Dibujamos el camino más corto entre el problema y el resultado, y te lo enseñamos en claro.":"We draw the shortest path between problem and result, and show it to you in plain terms.",
+    "Con el mapa de tu negocio en la mano, diseñamos el flujo de automatización antes de montar nada. Te lo mostramos en lenguaje claro — sin código, sin tecnicismos — para que entiendas exactamente qué va a pasar y cuándo.":"With the map of your business in hand, we design the automation flow before building anything. We show it to you in plain language — no code, no jargon — so you understand exactly what will happen and when.",
+    "Diseño del flujo en lenguaje visual (sin código)":"Flow design in a visual language (no code)","Definición de disparadores, condiciones y resultados":"Defining triggers, conditions and outcomes","Revisión contigo antes de construir nada":"Review with you before building anything","Estimación del tiempo de implementación":"An estimate of the implementation time",
+    "Un mapa claro del flujo — sabes exactamente qué va a ocurrir y cuándo, antes de que lo montemos.":"A clear map of the flow — you know exactly what will happen and when, before we build it.",
+    /* 03 */
+    "Integración de sistemas":"Systems integration","Conectamos tus herramientas para que hablen entre ellas y dejes de copiar y pegar.":"We connect your tools so they talk to each other and you stop copying and pasting.",
+    "Conectamos las herramientas que ya usas para que se hablen entre ellas sin que tengas que intervenir. Sin cambiar de software, sin migraciones. Tu CRM, tu correo, tu calendario y tu facturación, coordinados.":"We connect the tools you already use so they talk to each other without you stepping in. No switching software, no migrations. Your CRM, your email, your calendar and your invoicing, all in sync.",
+    "Conexión de tus herramientas actuales (CRM, correo, calendario, facturación…)":"Connecting your current tools (CRM, email, calendar, invoicing…)","Automatización de la transferencia de datos entre sistemas":"Automating data transfer between systems","Pruebas con casos reales de tu negocio":"Testing with real cases from your business","Documentación del flujo para tu equipo":"Documentation of the flow for your team",
+    "Tus herramientas conectadas y funcionando solas — sin copiar, pegar ni recordar nada.":"Your tools connected and running on their own — no copying, pasting or remembering anything.",
+    /* 04 */
+    "Operación continua":"Ongoing operation","Lo mantenemos funcionando y mejorando mes a mes. Tú a lo tuyo.":"We keep it running and improving month after month. You focus on your business.",
+    "Montar la automatización es solo el principio. La vigilamos, la mantenemos y la mejoramos mes a mes para que nunca falle en silencio. Si algo cambia en tu negocio o en tus herramientas, ya estamos.":"Setting up the automation is just the beginning. We watch it, maintain it and improve it month after month so it never fails silently. If something changes in your business or your tools, we're already on it.",
+    "Monitorización de errores en tiempo real con alertas inmediatas":"Real-time error monitoring with instant alerts","Ajustes y mejoras mensuales":"Monthly tweaks and improvements","Soporte ante cambios en tus herramientas o procesos":"Support when your tools or processes change","Informe mensual de rendimiento":"Monthly performance report",
+    "La automatización funciona sin que la mires — y si algo cambia, ya lo sabemos antes que tú.":"The automation just works without you watching it — and if something changes, we know before you do.",
+    /* ROI */
+    "// ¿y en euros?":"// and in euros?","Mete tus números y ve cuántas horas recuperas — y qué vale eso para tu negocio.":"Enter your numbers and see how many hours you get back — and what that's worth to your business.","Calcular mi ROI":" Calculate my ROI",
+    "Horas/semana en tareas repetitivas":"Hours/week on repetitive tasks","Coste por hora (€)":"Cost per hour (€)","Nivel de repetición de esas tareas":"How repetitive those tasks are","Alta":"High","Media":"Medium","Baja":"Low",
+    "h/mes":"h/mo","€/mes":"€/mo","€/año":"€/yr","horas que recuperas":"hours you get back","ahorro mensual":"monthly savings","ahorro anual":"annual savings",
+    "Empezar conversación":" Start a conversation","// estimación orientativa — los números exactos los afinamos contigo":"// rough estimate — we fine-tune the exact numbers with you",
+    /* cómo funciona */
+    "cómo funciona":"how it works","Así se ve una automatización por dentro.":"This is what an automation looks like inside.","Un disparador la enciende, la lógica decide, tus apps se coordinan y el resultado llega solo. Tú no tocas nada.":"A trigger sets it off, the logic decides, your apps coordinate and the result arrives on its own. You don't touch a thing.",
+    "01 · disparador":"01 · trigger","Algo ocurre":"Something happens","Entra un correo, se cierra una venta, llega un formulario o son las 9:00 de un lunes.":"An email arrives, a sale closes, a form comes in or it's 9:00 on a Monday.","Formulario":"Form","Horario":"Schedule",
+    "02 · lógica":"02 · logic","Se decide":"It decides","Clasifica, filtra y enruta. Si es una factura va por aquí; si es un cliente VIP, por allá.":"It classifies, filters and routes. If it's an invoice it goes here; if it's a VIP client, over there.","IA":"AI","Reglas":"Rules","Filtros":"Filters",
+    "03 · integraciones":"03 · integrations","Se coordina":"It coordinates","Tus herramientas se hablan: CRM, calendario, hojas, contabilidad, WhatsApp.":"Your tools talk to each other: CRM, calendar, sheets, accounting, WhatsApp.",
+    "04 · resultado":"04 · result","Llega solo":"It arrives on its own","Factura enviada, cita confirmada, informe en tu bandeja, dato registrado. Sin manos.":"Invoice sent, appointment confirmed, report in your inbox, data logged. Hands-free.","Aviso":"Alert",
+    "// construido sobre":"// built on ","tus herramientas actuales":"your current tools","— sin cambiar de software ni dependencias eternas":" — without switching software or endless dependencies",
+    "// y esto no es un esquema — pruébalo tú":"// and this isn't a diagram — try it yourself","Míralo funcionar":"See it in action","facturas y nóminas que se archivan solas · ~60 s":"invoices and payslips that file themselves · ~60 s","o ábrela a pantalla completa ↗":"or open it full screen ↗",
+    /* visor demos (dinámico) */
+    "Demos disponibles":"Available demos","en vivo":"live","pronto":"soon",
+    "Gestión documental":"Document management","Agendado de citas":"Appointment booking","Atención al cliente":"Customer support","Reservas excursiones":"Excursion bookings",
+    "Facturas y nóminas que se archivan solas":"Invoices and payslips that file themselves","Reserva con disponibilidad real y avisos":"Booking with real availability and alerts","Responde los emails de clientes con IA":"Answers customer emails with AI","Chatbot de WhatsApp que reserva plazas 24/7":"WhatsApp chatbot that books spots 24/7",
+    "Facturas y nóminas que se archivan solas · ~60 s":"Invoices and payslips that file themselves · ~60 s","Reserva con disponibilidad real y avisos · ~60 s":"Booking with real availability and alerts · ~60 s","Chatbot de WhatsApp que reserva plazas 24/7 · ~60 s":"WhatsApp chatbot that books spots 24/7 · ~60 s",
+    /* soluciones */
+    "soluciones":"solutions","Lo que ya hemos resuelto.":"What we've already solved.","Casos concretos, con resultado medible. Si el tuyo no está aquí, te lo diseñamos.":"Concrete cases, with measurable results. If yours isn't here, we'll design it for you.",
+    "facturacion()":"invoicing()","agenda()":"scheduling()","documental()":"documents()","informes()":"reports()",
+    "Facturas y cobros automáticos":"Automatic invoicing and payments","Genera, envía y archiva facturas sin tocar nada. Avisa por WhatsApp si una lleva +15 días sin pagar.":"Generates, sends and files invoices without touching a thing. Pings you on WhatsApp if one goes 15+ days unpaid.","3–6 h/mes recuperadas":"3–6 h/mo recovered",
+    "Reservas y citas sin fricción":"Bookings and appointments without friction","El cliente elige hueco con disponibilidad real, confirma solo y recibe recordatorios automáticos.":"The client picks a slot with real availability, confirms on their own and gets automatic reminders.","2–4 h/mes recuperadas":"2–4 h/mo recovered","Ver demo":"See demo ",
+    "Bandejas sin colapso":"Inboxes that never pile up","Clasificación, respuestas automáticas y rutas según el tipo de mensaje. Alertas si un VIP escribe urgente.":"Sorting, automatic replies and routing based on message type. Alerts if a VIP writes urgently.","5–10 h/mes recuperadas":"5–10 h/mo recovered",
+    "Documentos en orden solos":"Documents that sort themselves","Facturas y nóminas de proveedores clasificadas, archivadas en Drive y enviadas a la asesoría.":"Supplier invoices and payslips classified, filed in Drive and sent to your accountant.","Cero documentos perdidos":"Zero lost documents",
+    "Primer contacto al instante":"Instant first contact","El lead entra, recibe bienvenida, se cualifica y aterriza en el CRM. Respuesta en minutos, no días.":"The lead comes in, gets a welcome, is qualified and lands in the CRM. A reply in minutes, not days.","0 leads enfriados":"0 leads gone cold",
+    "Informes automáticos":"Automatic reports","Cada lunes, un resumen de ventas y tareas en tu bandeja o Slack. Dashboard en tiempo real.":"Every Monday, a summary of sales and tasks in your inbox or Slack. Real-time dashboard.","4–8 h/mes recuperadas":"4–8 h/mo recovered",
+    /* diagnóstico */
+    "diagnóstico · 3 preguntas · 2 minutos":"diagnosis · 3 questions · 2 minutes","¿lo necesitas?":"do you need it?","¿Nos necesitas? Descúbrelo":"Do you need us? Find out ","ahora.":"now.","Responde tres preguntas sobre tu día a día. Sin datos, sin compromiso.":"Answer three questions about your day-to-day. No data, no commitment.",
+    "¿Hay tareas que repites cada semana y sientes que podrías no tocar?":"Are there tasks you repeat every week that you feel you could stop doing?","Sí — correos, facturas, recordatorios, copiar datos...":"Yes — emails, invoices, reminders, copying data...","Puede ser, pero no tengo claro cuáles":"Maybe, but I'm not sure which ones","No — cada semana es diferente":"No — every week is different",
+    "¿Cuántas horas a la semana se van en trabajo que no necesita tu cabeza?":"How many hours a week go into work that doesn't need your brain?","Más de 5 horas — es una sangría seria":"More than 5 hours — it's a serious drain","Entre 2 y 5 horas — se nota pero lo aguanto":"Between 2 and 5 hours — noticeable but bearable","Menos de 2 — no es mi problema principal":"Less than 2 — it's not my main problem",
+    "Si esas horas volvieran, ¿en qué las pondrías?":"If those hours came back, what would you put them into?","Conseguir más clientes o cerrar más ventas":"Getting more clients or closing more sales","Mejorar el servicio o atender mejor a los que tengo":"Improving the service or taking better care of the clients I have","Descansar — llevo demasiado tiempo sin parar":"Resting — I've gone too long without stopping",
+    /* diagnóstico · resultados (dinámico) */
+    "resultado · quizá no es el momento":"result · maybe not the right time","resultado · vale la pena explorar":"result · worth exploring","resultado · hay margen":"result · there's room","resultado · encajamos":"result · we're a fit",
+    "Tu operativa ya funciona bastante":"Your operation already runs pretty ","bien.":"well.","Puede que no lo veas, pero":"You may not see it, but ","está ahí.":"it's there.","Poco tiempo perdido no significa que":"A little wasted time doesn't mean ","esté bien así.":"it's fine as is.","Sí. Podemos":"Yes. We can ","ayudarte.":"help you.",
+    "No detectamos una pérdida de tiempo clara. Si esto cambia, nos cuentas y lo miramos sin compromiso.":"We don't see a clear loss of time. If that changes, tell us and we'll take a look, no commitment.",
+    "Las tareas que roban tiempo se vuelven invisibles cuando te acostumbras. Una conversación de 45 minutos suele sacarlas a la luz.":"The tasks that steal time become invisible once you get used to them. A 45-minute conversation usually brings them to light.",
+    "Con 2 horas semanales recuperadas ya se nota la diferencia — y ese margen crece cuando eliminas el primer cuello de botella.":"Getting back just 2 hours a week already makes a difference — and that margin grows once you remove the first bottleneck.",
+    "Tienes tareas repetitivas que te roban tiempo, y sabes qué harías con esas horas de vuelta. Una llamada de 45 minutos — sin guion, sin compromiso — y te mostramos dónde está la salida.":"You have repetitive tasks stealing your time, and you know what you'd do with those hours back. A 45-minute call — no script, no commitment — and we'll show you where the way out is.",
+    "Llevas demasiado tiempo aguantando. Tienes tareas repetitivas que te roban tiempo, y sabes qué harías con esas horas de vuelta. Una llamada de 45 minutos — sin guion, sin compromiso — y te mostramos dónde está la salida.":"You've been putting up with it too long. You have repetitive tasks stealing your time, and you know what you'd do with those hours back. A 45-minute call — no script, no commitment — and we'll show you where the way out is.",
+    /* proceso */
+    "cómo trabajamos":"how we work","De tu lío de hoy a un negocio que funciona solo.":"From today's mess to a business that runs itself.",
+    "Escuchamos":"We listen","Entendemos tu negocio y tu día a día antes de tocar nada.":"We understand your business and your day-to-day before touching anything.","Diseñamos":"We design","Te enseñamos el flujo en lenguaje claro, sin tecnicismos.":"We show you the flow in plain language, no jargon.","Automatizamos":"We automate","Lo construimos y lo probamos contigo, paso a paso.":"We build it and test it with you, step by step.","Cuidamos":"We care for it","Seguimos cerca para que dure, crezca y te dé calma.":"We stay close so it lasts, grows and gives you peace of mind.",
+    /* CTA + footer */
+    "¿Hablamos de lo que te":"Shall we talk about what's ","quita tiempo?":"eating your time?","info@mazestudio.site · respondemos en 24 h":"info@mazestudio.site · we reply within 24 h",
+    "© 2026 Mazestudio · estudio de automatización":"© 2026 Mazestudio · automation studio","del laberinto, una línea recta — 28°02′N · 16°34′O":"from the maze, a straight line — 28°02′N · 16°34′O",
+    /* intro animada */
+    "// tu operativa, hoy":"// your operation, today","Del laberinto,":"From the maze,","una línea recta.":"a straight line.","// toca para resolver":"// tap to solve","saltar →":"skip →"
+  };
+
+  var lang = 'es';
+  var orig = new WeakMap();
+
+  function accept(n){
+    var p = n.parentNode;
+    if(!p) return false;
+    var tag = p.nodeName;
+    if(tag === 'SCRIPT' || tag === 'STYLE') return false;
+    if(p.nodeType === 1 && p.closest && p.closest('[data-i18n-skip]')) return false;
+    return !!(n.nodeValue && n.nodeValue.trim());
+  }
+  function tr(n){
+    if(lang !== 'en' || !accept(n)) return;
+    var key = n.nodeValue.trim();
+    var en = DICT[key];
+    if(en === undefined) return;
+    orig.set(n, n.nodeValue);
+    if(n.nodeValue !== en) n.nodeValue = en;
+  }
+  function walk(root, fn){
+    if(root.nodeType === 3){ fn(root); return; }
+    var w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+    var node; while((node = w.nextNode())) fn(node);
+  }
+  function toEN(){ lang = 'en'; document.documentElement.lang = 'en'; walk(document.body, tr); }
+  function toES(){
+    lang = 'es'; document.documentElement.lang = 'es';
+    walk(document.body, function(n){ if(orig.has(n)){ var o = orig.get(n); if(n.nodeValue !== o) n.nodeValue = o; } });
+  }
+
+  // Observa lo que aparezca/cambie (resultado del test, demos, etc.) y lo traduce si estamos en EN.
+  var mo = new MutationObserver(function(muts){
+    if(lang !== 'en') return;
+    for(var i=0;i<muts.length;i++){
+      var m = muts[i];
+      if(m.type === 'characterData'){ tr(m.target); }
+      else { for(var j=0;j<m.addedNodes.length;j++){ var a = m.addedNodes[j]; if(a.nodeType === 3) tr(a); else if(a.nodeType === 1) walk(a, tr); } }
+    }
+  });
+  try{ mo.observe(document.body, {subtree:true, childList:true, characterData:true}); }catch(e){}
+
+  var btn = document.getElementById('langToggle');
+  var cur = btn ? btn.querySelector('.lt-cur') : null;
+  function apply(l, save){
+    if(l === 'en'){ toEN(); if(cur) cur.textContent = 'ES'; }
+    else { toES(); if(cur) cur.textContent = 'EN'; }
+    if(save){ try{ localStorage.setItem('mz_lang', l); }catch(e){} }
+  }
+  if(btn){ btn.addEventListener('click', function(){ apply(lang === 'en' ? 'es' : 'en', true); }); }
+
+  // estado guardado
+  var saved = 'es';
+  try{ saved = localStorage.getItem('mz_lang') || 'es'; }catch(e){}
+  if(saved === 'en') apply('en', false);
 })();
 </script>
 </body>

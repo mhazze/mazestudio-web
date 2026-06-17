@@ -78,6 +78,16 @@
   }
   .back:hover{color:var(--ink);transform:translateX(-3px);}
 
+  /* botón de idioma (muy visible) */
+  .lang-toggle{position:fixed;top:20px;right:22px;z-index:10;display:inline-flex;align-items:center;gap:7px;cursor:pointer;
+    font-family:var(--mono);font-size:11.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--ink);background:var(--surface);border:1px solid var(--accent);border-radius:30px;
+    padding:7px 12px;line-height:1;box-shadow:0 0 0 3px var(--accent-wash);
+    transition:background .2s ease,border-color .2s ease,color .2s ease,box-shadow .2s ease,transform .15s ease;}
+  .lang-toggle:hover{background:var(--accent);border-color:var(--accent);color:#fff;transform:translateY(-1px);box-shadow:0 9px 24px -8px var(--accent);}
+  .lang-toggle svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.6;flex:0 0 auto;}
+  .lang-toggle .lt-cur{font-weight:700;}
+
   /* tarjeta central */
   .card{
     position:relative;z-index:5;width:100%;max-width:560px;
@@ -141,6 +151,10 @@
 <div class="grain"></div>
 
 <a class="back" href="mazestudio-web.html" data-home><span>←</span> Volver</a>
+<button class="lang-toggle" id="langToggle" type="button" aria-label="Cambiar idioma · Switch language" data-i18n-skip>
+  <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.9 2.6 15.1 0 18M12 3c-2.6 2.9-2.6 15.1 0 18"/></svg>
+  <span class="lt-cur">EN</span>
+</button>
 
 <main class="card">
   <a class="logo" href="mazestudio-web.html" data-home aria-label="Mazestudio">
@@ -203,6 +217,45 @@
       a.setAttribute('href', home + '?skipintro=1');
     });
   })();
+</script>
+
+<script>
+/* ——— TRADUCTOR ES⇄EN (misma lógica que la web) + mensajes pre-rellenados en cada idioma ——— */
+(function(){
+  'use strict';
+  var DICT = {
+    "Volver":" Back",
+    "// empecemos":"// let's begin",
+    "¿Por dónde prefieres":"Where would you like to ",
+    "empezar?":"start?",
+    "Elige el canal que más te convenga. Te respondemos rápido y sin compromiso.":"Choose whichever channel suits you best. We reply fast and with no commitment.",
+    "Escríbenos ahora mismo":"Message us right now",
+    "Respondemos en menos de 24 h":"We reply within 24 h"
+  };
+  var lang = 'es', orig = new WeakMap();
+  function accept(n){ var p=n.parentNode; if(!p) return false; var t=p.nodeName; if(t==='SCRIPT'||t==='STYLE') return false; if(p.nodeType===1 && p.closest && p.closest('[data-i18n-skip]')) return false; return !!(n.nodeValue && n.nodeValue.trim()); }
+  function tr(n){ if(lang!=='en' || !accept(n)) return; var k=n.nodeValue.trim(); var en=DICT[k]; if(en===undefined) return; orig.set(n, n.nodeValue); if(n.nodeValue!==en) n.nodeValue=en; }
+  function walk(root, fn){ if(root.nodeType===3){ fn(root); return; } var w=document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null), x; while((x=w.nextNode())) fn(x); }
+
+  // enlaces de acción con el mensaje pre-rellenado en el idioma activo
+  var wa = document.querySelector('.opt.wa'), mail = document.querySelector('.opt.mail');
+  var waEs = wa ? wa.getAttribute('href') : null, mailEs = mail ? mail.getAttribute('href') : null;
+  var WA_EN = "Hi Mazestudio 👋 I came from your website and I'd like you to help me understand and solve my problem.";
+  var MS_EN = "I want to automate my business";
+  var MB_EN = "Hi Mazestudio,\r\n\r\nI came from your website and I'd like you to tell me how you can help me.\r\n\r\nThanks.";
+  function links(l){
+    if(wa)   wa.setAttribute('href',   l==='en' ? 'https://wa.me/34629525765?text='+encodeURIComponent(WA_EN) : waEs);
+    if(mail) mail.setAttribute('href', l==='en' ? 'mailto:info@mazestudio.site?subject='+encodeURIComponent(MS_EN)+'&body='+encodeURIComponent(MB_EN) : mailEs);
+  }
+  function toEN(){ lang='en'; document.documentElement.lang='en'; document.title="Mazestudio · let's talk"; walk(document.body, tr); links('en'); }
+  function toES(){ lang='es'; document.documentElement.lang='es'; document.title='Mazestudio · hablemos'; walk(document.body, function(n){ if(orig.has(n)){ var o=orig.get(n); if(n.nodeValue!==o) n.nodeValue=o; } }); links('es'); }
+
+  var btn = document.getElementById('langToggle'), cur = btn ? btn.querySelector('.lt-cur') : null;
+  function apply(l, save){ if(l==='en'){ toEN(); if(cur) cur.textContent='ES'; } else { toES(); if(cur) cur.textContent='EN'; } if(save){ try{ localStorage.setItem('mz_lang', l); }catch(e){} } }
+  if(btn) btn.addEventListener('click', function(){ apply(lang==='en' ? 'es' : 'en', true); });
+  var saved = 'es'; try{ saved = localStorage.getItem('mz_lang') || 'es'; }catch(e){}
+  if(saved === 'en') apply('en', false);
+})();
 </script>
 
 </body>
