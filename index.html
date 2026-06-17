@@ -604,7 +604,6 @@
       <li><a href="#como">Cómo funciona</a></li>
       <li><a href="#soluciones">Soluciones</a></li>
       <li><a href="#diagnostico">¿Nos necesitas?</a></li>
-      <li><a href="#estudio">Estudio</a></li>
       <li class="nav-cta-li"><a class="btn accent nav-cta" href="#contacto"><span class="arrow">→</span> Hablemos</a></li>
     </ul>
     <div class="right">
@@ -693,7 +692,7 @@
                 <li>Entrevista de proceso (20 min, remota o presencial)</li>
                 <li>Mapa visual de tus flujos actuales</li>
                 <li>Identificación de tareas con mayor potencial de automatización</li>
-                <li><a href="#roi" style="color:var(--accent-soft);text-decoration:underline;text-underline-offset:3px;">Estimación de horas recuperables al mes →</a></li>
+                <li>Estimación de horas recuperables al mes</li>
               </ul>
             </div>
             <div class="svc-detail-aside">
@@ -1258,31 +1257,6 @@
   </div>
 </section>
 
-<!-- ESTUDIO -->
-<section id="estudio" data-spine>
-  <div class="wrap about">
-    <div class="txt reveal">
-      <h2>Del laberinto a <em>una línea recta.</em></h2>
-      <p>Creemos en la automatización silenciosa: la que no se nota, pero te devuelve el tiempo y la calma. Nada de soluciones que nadie entiende ni dependencias eternas.</p>
-      <p>Conocemos el laberinto para que tú no tengas que perderte en él.</p>
-    </div>
-    <div class="panel reveal">
-      <svg class="maze-solve" viewBox="0 0 300 210" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
-        <path class="wall" d="M52 60 V38"/>
-        <path class="wall" d="M90 120 V150"/>
-        <path class="wall" d="M128 48 H158"/>
-        <path class="thread tangle"   pathLength="1" d="M18 165 V60 H52 V120 H90 V48 H128 V165"/>
-        <path class="thread straight" pathLength="1" d="M128 165 H284"/>
-        <path id="solveFull" fill="none" stroke="none" d="M18 165 V60 H52 V120 H90 V48 H128 V165 H284"/>
-        <circle class="nd-start" cx="18"  cy="165" r="3.4"/>
-        <circle class="nd-end"   cx="284" cy="165" r="5.5"/>
-        <circle class="dot" r="3.2"><animateMotion dur="4.6s" begin="0s" repeatCount="indefinite" calcMode="linear"><mpath href="#solveFull"/></animateMotion></circle>
-      </svg>
-      <div class="coord"><b>28°02′N · 16°34′O</b>sur de Tenerife · Islas Canarias</div>
-    </div>
-  </div>
-</section>
-
 <!-- CTA -->
 <section class="cta" id="contacto" data-spine>
   <div class="wrap">
@@ -1325,7 +1299,6 @@
         <a href="#como">Cómo funciona</a>
         <a href="#soluciones">Soluciones</a>
         <a href="#diagnostico">¿Nos necesitas?</a>
-        <a href="#estudio">Estudio</a>
       </nav>
     </div>
     <div class="bot">
@@ -1524,6 +1497,17 @@
     }
   }catch(e){}
 
+  /* Accesibilidad: si el visitante pide reducir movimiento, no se reproduce. */
+  try{
+    if(window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  }catch(e){}
+
+  /* Una vez por sesión: si ya se vio la intro en esta pestaña, no se repite. */
+  try{
+    if(sessionStorage.getItem('mz_intro_seen')==='1') return;
+    sessionStorage.setItem('mz_intro_seen','1');
+  }catch(e){}
+
   function mk(tag,css,txt){
     const el=document.createElement(tag);
     el.style.cssText=css;
@@ -1587,7 +1571,7 @@
   const logoDiv=mk('div',`
     position:absolute;bottom:52px;left:50%;transform:translateX(-50%);
     display:flex;align-items:center;gap:17px;
-    opacity:0;transition:opacity 1.1s ease;pointer-events:none;
+    opacity:0;transition:opacity .8s ease;pointer-events:none;
   `);
   logoDiv.innerHTML=`
     <svg viewBox="0 0 132 52" style="height:32px;overflow:visible" aria-hidden="true">
@@ -1623,8 +1607,8 @@
   let yaw=0;                   // ángulo de órbita de cámara
   let maze=[],path=[],walls=[];
   let phase='building';        // building|idle|solving|dissolving|done
-  let buildP=0, solveT=0, dissP=0, lastT=-1, txLshown=false;
-  const SOLVE_DUR=1100;
+  let buildP=0, solveT=0, dissP=0, lastT=-1, txLshown=false, idleTimer=0;
+  const SOLVE_DUR=900;
   const WALL_H=0.92;           // altura de pared (en celdas)
   const ISO=0.56;             // achatado vertical axonométrico
   const PATH_Y=0.06;          // el hilo flota apenas sobre el suelo
@@ -1881,18 +1865,13 @@
 
     /* — ACTO 1: el laberinto se levanta desde el centro — */
     if(phase==='building'){
-      buildP=Math.min(1,buildP+dt/1750);
+      buildP=Math.min(1,buildP+dt/1300);
       renderFloor(buildP);
       renderWalls(
         w=>WALL_H*easeOut(clamp((buildP-w.rise)/0.45)),
         w=>clamp((buildP-w.rise)/0.45)
       );
-      if(buildP>=1){
-        phase='idle';
-        txOp.style.color='rgba(130,149,242,.7)';
-        setTimeout(()=>{ hint.style.color='rgba(148,152,168,.78)'; },700);
-        setTimeout(()=>{ skipBtn.style.opacity='1'; },900);
-      }
+      if(buildP>=1) toIdle();
     }
 
     /* — ACTO 2: laberinto completo, esperando — */
@@ -1913,14 +1892,14 @@
       if(solveT>=SOLVE_DUR){
         phase='dissolving'; dissP=0;
         txR.style.color='rgba(130,149,242,.95)';
-        setTimeout(()=>{ logoDiv.style.opacity='1'; },420);
+        setTimeout(()=>{ logoDiv.style.opacity='1'; },300);
         hint.style.color='transparent';
       }
     }
 
     /* — EPÍLOGO: las paredes se derrumban; el hilo se endereza — */
     else if(phase==='dissolving'){
-      dissP=Math.min(1,dissP+dt/4000);            // ~4s + reposo: da tiempo a leerlo
+      dissP=Math.min(1,dissP+dt/1500);            // cierre ágil: paredes caen + hilo recto
       // las paredes caen en el primer tramo
       renderFloor(clamp(1-dissP*1.7));
       renderWalls(
@@ -1931,9 +1910,9 @@
       renderPath(path.length,1,easeOut(clamp((dissP-0.18)/0.42)));
       if(dissP>=1){
         phase='done';
-        ov.style.transition='opacity 1.2s ease';
+        ov.style.transition='opacity .6s ease';
         ov.style.opacity='0';
-        setTimeout(dismiss,1300);
+        setTimeout(dismiss,700);
         return;
       }
     }
@@ -1943,16 +1922,27 @@
   }
 
   /* ——— INTERACCIÓN ——— */
+  /* idle automático: tras construirse, el laberinto se resuelve solo (sin clic) */
+  function toIdle(){
+    if(phase!=='building'&&phase!=='idle') return;
+    phase='idle'; buildP=1;
+    txOp.style.color='rgba(130,149,242,.7)';
+    setTimeout(()=>{ if(phase==='idle') skipBtn.style.opacity='1'; },150);
+    clearTimeout(idleTimer);
+    idleTimer=setTimeout(startSolving,600);   // pausa breve y a resolver
+  }
+  function startSolving(){
+    if(phase!=='idle') return;
+    phase='solving'; solveT=0;
+    txOp.style.transition='color .4s'; txOp.style.color='rgba(130,149,242,0)';
+  }
+
+  /* clic / tecla = acelerador opcional (adelanta la fase actual) */
   function interact(){
     if(phase==='building'){
-      buildP=1; phase='idle';
-      txOp.style.color='rgba(130,149,242,.7)';
-      hint.style.color='rgba(148,152,168,.78)';
-      skipBtn.style.opacity='1';
+      toIdle();
     } else if(phase==='idle'){
-      phase='solving'; solveT=0;
-      txOp.style.transition='color .4s'; txOp.style.color='rgba(130,149,242,0)';
-      hint.style.transition='color .3s'; hint.style.color='transparent';
+      clearTimeout(idleTimer); startSolving();
     } else if(phase==='solving'){
       solveT=SOLVE_DUR; // saltar al final del acto 3
     } else if(phase==='dissolving'){
