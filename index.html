@@ -141,7 +141,8 @@
   .page{position:relative;z-index:1;background:transparent;}
 
   /* ——— EL HILO (spine que recorre toda la página) ——— */
-  .spine{position:absolute;top:0;bottom:0;width:2px;z-index:5;pointer-events:none;
+  .spine{display:none;   /* hilo lateral retirado a petición */
+    position:absolute;top:0;bottom:0;width:2px;z-index:5;pointer-events:none;
     left:max(20px, calc((100vw - 1200px)/2 - 26px));}
   .spine .track{position:absolute;inset:0;background:var(--line-2);}
   .spine .fill{position:absolute;left:0;right:0;top:0;height:0;
@@ -217,7 +218,7 @@
   .hero-sticky{position:relative;overflow:hidden;}
   .scroll-cue{display:none;}
   @media(min-width:881px){
-    .hero-zone.imgstage{height:220vh;}                  /* pista de scroll (~2,2 pantallas) */
+    .hero-zone.imgstage{height:320vh;}                  /* pista de scroll: órbita + inmersión (~3,2 pantallas) */
     .hero-zone.imgstage .hero-sticky{position:sticky;top:0;height:100vh;display:flex;align-items:center;}
     .hero-zone.imgstage .hero{width:100%;padding-top:0;padding-bottom:0;}
     .hero-zone.imgstage .hero .wrap{will-change:transform,opacity;}
@@ -1867,7 +1868,7 @@
     const easeOut = x => 1 - Math.pow(1 - x, 3);
 
     // secuencia de la órbita (generada con Higgsfield · Seedance 2.0, troceada con ffmpeg)
-    const N = 76, DIR = 'assets/orbit/', EXT = '.webp';
+    const N = 152, DIR = 'assets/orbit/', EXT = '.webp';   // 1-76 órbita · 77-152 inmersión (Escena 2)
     const frames = new Array(N); let ready = false, lastIdx = -1;
     function frameURL(i){ return DIR + 'f_' + String(i + 1).padStart(3, '0') + EXT; }
 
@@ -1910,9 +1911,11 @@
       if(!staged) return;
       const p = progress();
       if(ready){ const idx = Math.round(p * (N - 1)); if(idx !== lastIdx) drawIndex(idx); }
-      const inn = map(p, 0.06, 0.30);                  // titular: hero limpio → aparece el texto
-      if(copy){ copy.style.opacity = inn.toFixed(3); copy.style.transform = 'translateY(' + ((1 - easeOut(inn)) * 24).toFixed(1) + 'px)'; }
-      if(glow) glow.style.opacity = (inn * 0.85).toFixed(3);
+      const inn = map(p, 0.06, 0.20);                  // titular entra (sobre la órbita)
+      const out = map(p, 0.42, 0.54);                  // …y se retira al iniciar la inmersión en el cubo
+      const op  = inn * (1 - out);
+      if(copy){ copy.style.opacity = op.toFixed(3); copy.style.transform = 'translateY(' + ((1 - easeOut(inn)) * 24 - out * 18).toFixed(1) + 'px)'; }
+      if(glow) glow.style.opacity = (op * 0.85).toFixed(3);
       if(cue)  cue.style.opacity = (1 - map(p, 0, 0.10)).toFixed(3);
     }
     function onScroll(){ if(!ticking){ ticking = true; requestAnimationFrame(() => { ticking = false; tick(); }); } }
