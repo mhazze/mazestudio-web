@@ -209,12 +209,11 @@
 </main>
 
 <script>
-  /* "Volver"/logo → home correcta (local: mazestudio-web.html · producción: /)
-     con marca ?skipintro para que NO se reproduzca la intro al regresar. */
+  /* "Volver"/logo → home correcta (local: mazestudio-web.html · producción: /) */
   (function(){
     var home = (location.protocol === 'file:') ? 'mazestudio-web.html' : '/';
     document.querySelectorAll('a[data-home]').forEach(function(a){
-      a.setAttribute('href', home + '?skipintro=1');
+      a.setAttribute('href', home);
     });
   })();
 </script>

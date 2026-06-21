@@ -3,6 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+  }
+}
+</script>
 <title>Mazestudio · Estudio de automatización con IA en Tenerife</title>
 <meta name="description" content="Estudio de automatización en el sur de Tenerife. Conectamos tus aplicaciones y montamos asistentes con IA para que correos, reservas y documentos se hagan solos.">
 <meta name="author" content="Mazestudio">
@@ -58,7 +66,19 @@
   }
 }
 </script>
-<script>document.documentElement.classList.add('js');</script><!-- sin JS, el contenido se ve igual (no se oculta) -->
+<script>
+  /* gate de movimiento · se fija ANTES del primer pintado (sin parpadeo).
+     html.motion → animaciones completas · html.still → reduced-motion: página quieta y visible.
+     sin JS: el contenido se ve igual (no se oculta nada). */
+  (function(){var de=document.documentElement;de.classList.add('js');
+    /* override de previsualización: ?motion fuerza animaciones · ?still las apaga
+       (útil para ver los efectos aunque Windows tenga el movimiento desactivado). */
+    var q='';try{q=location.search;}catch(e){}
+    if(/[?&]motion\b/.test(q)){de.classList.add('motion');return;}
+    if(/[?&]still\b/.test(q)){de.classList.add('still');return;}
+    try{de.classList.add(matchMedia('(prefers-reduced-motion:reduce)').matches?'still':'motion');}
+    catch(e){de.classList.add('motion');}})();
+</script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -90,16 +110,8 @@
   *{margin:0;padding:0;box-sizing:border-box;}
   html{scroll-behavior:smooth;}
   body{
-    background:var(--bg);color:var(--ink);font-family:var(--sans);
-    line-height:1.55;-webkit-font-smoothing:antialiased;letter-spacing:-.005em;
-    overflow-x:hidden;
-  }
-  img,svg,iframe{max-width:100%;}
-  .wrap{max-width:1200px;margin:0 auto;padding:0 28px;}
-  a{color:inherit;text-decoration:none;}
-  .mono{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim);}
-  /* ——— FONDO GLOBAL · misma atmósfera del hero (sin líneas), con cambios de tonalidad por zona ——— */
-  .page{position:relative;
+    /* la atmósfera vive ahora en el BODY (capa de fondo); encima va el canvas de la red
+       de nodos (#netfield) y, sobre él, el contenido (.page). */
     background:
       radial-gradient(1100px 720px at 92% 1%,   rgba(67,97,240,.10), transparent 58%),
       radial-gradient(900px 680px at -5% 30%,    rgba(67,97,240,.06), transparent 55%),
@@ -107,7 +119,26 @@
       radial-gradient(900px 700px at 18% 93%,    rgba(67,97,240,.05), transparent 60%),
       linear-gradient(180deg,
         #0B0C10 0%, #0C0E16 14%, #0E0F15 30%, #0B0D14 45%,
-        #0D0E13 60%, #0C0E17 74%, #0A0B11 88%, #090A0E 100%);}
+        #0D0E13 60%, #0C0E17 74%, #0A0B11 88%, #090A0E 100%);
+    color:var(--ink);font-family:var(--sans);
+    line-height:1.55;-webkit-font-smoothing:antialiased;letter-spacing:-.005em;
+    overflow-x:clip;        /* 'clip' en vez de 'hidden': evita scroll horizontal SIN romper el position:sticky del hero */
+  }
+  /* CAMPO DE NODOS · canvas fijo entre la atmósfera y el contenido */
+  #netfield{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;
+    opacity:0;transition:opacity 1.2s ease;}
+  #netfield.on{opacity:1;}
+  /* Lenis · scroll con inercia (las clases las pone la librería en <html> al iniciar).
+     Si Lenis no arranca (reduced-motion o CDN caído), html mantiene scroll-behavior:smooth nativo. */
+  html.lenis, html.lenis body{height:auto;}
+  .lenis.lenis-smooth{scroll-behavior:auto !important;}
+  .lenis.lenis-stopped{overflow:hidden;}
+  img,svg,iframe{max-width:100%;}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 28px;}
+  a{color:inherit;text-decoration:none;}
+  .mono{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim);}
+  /* ——— CONTENIDO · transparente y por encima del canvas (la atmósfera está en el body) ——— */
+  .page{position:relative;z-index:1;background:transparent;}
 
   /* ——— EL HILO (spine que recorre toda la página) ——— */
   .spine{position:absolute;top:0;bottom:0;width:2px;z-index:5;pointer-events:none;
@@ -141,6 +172,9 @@
   .btn.ghost:hover{background:var(--surface);border-color:#3a3e4d;}
   .arrow{font-family:var(--mono);}
 
+  /* salto del menú: deja la sección visible bajo la barra sticky (~70px) */
+  section[id]{scroll-margin-top:84px;}
+
   /* ——— NAV ——— */
   header.nav{position:sticky;top:0;z-index:50;background:rgba(11,12,16,.72);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);}
   .nav .bar{display:flex;align-items:center;justify-content:space-between;height:70px;}
@@ -162,8 +196,41 @@
   .lang-toggle .lt-cur{font-weight:700;}
 
   /* ——— HERO ——— */
-  .hero-zone{position:relative;overflow:hidden;border-bottom:1px solid var(--line);}
+  .hero-zone{position:relative;border-bottom:1px solid var(--line);}
   .hero{position:relative;padding:104px 0 96px;}
+  /* fondo cinematográfico: el laberinto 3D · el scroll lo acerca (efecto "entrar") */
+  .hero-img{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;
+    will-change:transform,opacity;transform-origin:50% 45%;}
+  .hero-img img{width:100%;height:100%;object-fit:cover;object-position:64% 46%;display:block;opacity:.94;}
+  /* canvas de la órbita 3D (scrub por scroll) · oculto hasta que el JS lo activa en escritorio */
+  .hero-orbit{position:absolute;inset:0;width:100%;height:100%;display:none;}
+  .hero-zone.orbit-on .hero-img img{opacity:0;}
+  .hero-zone.orbit-on .hero-orbit{display:block;}
+  .hero-zone.orbit-on .flow-anim{opacity:0;}   /* foto fotorreal limpia, sin el SVG encima */
+  /* oscurece la izquierda (legibilidad del titular) + viñeta para fundir con el fondo */
+  .hero-img::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background:
+      linear-gradient(90deg, var(--bg) 0%, rgba(11,12,16,.88) 24%, rgba(11,12,16,.40) 54%, rgba(11,12,16,.30) 78%, rgba(11,12,16,.62) 100%),
+      linear-gradient(0deg, var(--bg) 0%, rgba(11,12,16,.30) 22%, rgba(11,12,16,0) 52%),
+      radial-gradient(125% 95% at 66% 44%, rgba(11,12,16,0) 38%, rgba(11,12,16,.55) 100%);}
+  /* ——— HERO POR ETAPAS · empuje cinematográfico hacia el laberinto (imagen fotorreal) ——— */
+  .hero-sticky{position:relative;overflow:hidden;}
+  .scroll-cue{display:none;}
+  @media(min-width:881px){
+    .hero-zone.imgstage{height:220vh;}                  /* pista de scroll (~2,2 pantallas) */
+    .hero-zone.imgstage .hero-sticky{position:sticky;top:0;height:100vh;display:flex;align-items:center;}
+    .hero-zone.imgstage .hero{width:100%;padding-top:0;padding-bottom:0;}
+    .hero-zone.imgstage .hero .wrap{will-change:transform,opacity;}
+    .hero-zone.imgstage .scroll-cue{display:block;position:absolute;z-index:3;left:50%;bottom:38px;transform:translateX(-50%);
+      text-align:center;font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-mut);}
+    .hero-zone.imgstage .scroll-cue .ar{display:block;font-size:17px;margin-top:6px;animation:cueBob 1.8s ease-in-out infinite;}
+    @keyframes cueBob{0%,100%{transform:translateY(0);}50%{transform:translateY(5px);}}
+  }
+  /* la imagen fotorreal "respira" (vida en el láser azul) sin desplazarse */
+  @media (prefers-reduced-motion:no-preference){
+    .hero-img img{animation:laserBreath 5.5s ease-in-out infinite;}
+    @keyframes laserBreath{0%,100%{filter:brightness(1) saturate(1);}50%{filter:brightness(1.07) saturate(1.13);}}
+  }
   /* fondo: el laberinto que se resuelve y sale por la derecha */
   .flow-anim{position:absolute;inset:0;width:100%;height:100%;z-index:0;opacity:1;
     will-change:transform,opacity;transform-origin:70% 42%;
@@ -208,7 +275,12 @@
   .sec-head{margin-bottom:52px;max-width:62ch;}
   .sec-head .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-soft);margin-bottom:16px;display:block;}
   .sec-head h2{font-family:var(--display);font-weight:600;font-size:clamp(28px,4vw,46px);line-height:1.07;letter-spacing:-.03em;}
+  .sec-head h2 em{font-style:normal;color:var(--accent-soft);}
   .sec-head .note{margin-top:16px;font-size:16.5px;color:var(--ink-mut);max-width:48ch;}
+  /* titulares en una sola línea (solo escritorio; el JS de auto-fit ajusta el tamaño). Móvil intacto. */
+  @media (min-width:881px){
+    .hero h1.hl, .sec-head h2{white-space:nowrap;max-width:none;}
+  }
 
   /* ——— SERVICIOS · premium cards ——— */
   .svc-rows{display:flex;flex-direction:column;gap:10px;position:relative;}
@@ -247,10 +319,10 @@
     opacity:0;transition:opacity .36s ease;
   }
   .svc-row:hover::after{opacity:1;}
-  /* estado hover: lift + glow + fondo cobalto */
+  /* estado hover: lift + glow + fondo cobalto (tinte SOBRE superficie opaca → el cubo nunca se transparenta) */
   .svc-row:hover{
     transform:translateY(-4px);
-    background:linear-gradient(135deg,rgba(67,97,240,.13),rgba(67,97,240,.04) 65%);
+    background:linear-gradient(135deg,rgba(67,97,240,.13),rgba(67,97,240,.04) 65%), var(--surface);
     border-color:rgba(67,97,240,.38);
     box-shadow:0 28px 64px -28px rgba(67,97,240,.6), 0 4px 22px -8px rgba(0,0,0,.75);
   }
@@ -365,7 +437,7 @@
   .demo-list .dl-head{font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:2px;}
   .demo-item{text-align:left;font-family:var(--sans);color:var(--ink);background:var(--surface);border:1px solid var(--line-2);border-radius:12px;padding:13px 15px;cursor:pointer;display:flex;flex-direction:column;gap:5px;transition:border-color .2s, background .2s, transform .2s;}
   .demo-item:hover{border-color:var(--accent-soft);transform:translateY(-2px);}
-  .demo-item.active{border-color:var(--accent);background:rgba(67,97,240,.14);}
+  .demo-item.active{border-color:var(--accent);background:linear-gradient(rgba(67,97,240,.14),rgba(67,97,240,.14)), var(--surface);}
   .demo-item .di-top{display:flex;align-items:center;justify-content:space-between;gap:8px;}
   .demo-item .di-name{font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:-.01em;}
   .demo-item .di-desc{font-size:12.5px;color:var(--ink-mut);line-height:1.4;}
@@ -422,7 +494,7 @@
   /* —— ROI strip · debajo del grid de soluciones —— */
   .roi-strip{margin-top:40px;display:flex;align-items:center;gap:28px;flex-wrap:wrap;
     padding:28px 32px;border-radius:16px;
-    background:linear-gradient(135deg,rgba(67,97,240,.18),rgba(130,149,242,.08));
+    background:linear-gradient(135deg,rgba(67,97,240,.18),rgba(130,149,242,.08)), var(--surface);
     border:1px solid rgba(67,97,240,.45);
     box-shadow:0 0 50px -20px rgba(67,97,240,.6), inset 0 0 70px -40px rgba(67,97,240,.12);}
   .roi-label{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
@@ -436,27 +508,20 @@
     border:none;color:#fff;
     font-size:17px;font-weight:600;
     padding:18px 36px;border-radius:14px;gap:12px;
-    box-shadow:0 6px 30px -6px rgba(67,97,240,.9), 0 0 0 1px rgba(130,149,242,.35);
-    animation:roi-pulse 2.4s ease-in-out infinite;
+    box-shadow:0 8px 34px -10px rgba(67,97,240,.7), 0 0 0 1px rgba(130,149,242,.35);
     white-space:nowrap;
   }
+  /* único movimiento: un destello de luz que cruza cada ~6 s (calmado, no teletienda) */
   .btn.roi-cta::before{
     content:'';position:absolute;top:0;left:-110%;width:55%;height:100%;
-    background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent);
-    animation:roi-shimmer 2.4s ease-in-out infinite;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.16),transparent);
+    animation:roi-shimmer 6s ease-in-out infinite;
   }
   .btn.roi-cta:hover{transform:translateY(-3px);
-    box-shadow:0 14px 50px -6px rgba(67,97,240,1), 0 0 0 1px rgba(130,149,242,.5);}
-  .btn.roi-cta .arrow{font-size:20px;display:inline-block;animation:roi-bounce 1.2s ease-in-out infinite;}
-  @keyframes roi-pulse{
-    0%,100%{box-shadow:0 6px 30px -6px rgba(67,97,240,.9), 0 0 0 1px rgba(130,149,242,.35);}
-    50%{box-shadow:0 10px 56px -4px rgba(67,97,240,1), 0 0 28px 2px rgba(130,149,242,.45), 0 0 0 1px rgba(130,149,242,.6);}
-  }
+    box-shadow:0 14px 46px -8px rgba(67,97,240,.95), 0 0 0 1px rgba(130,149,242,.5);}
+  .btn.roi-cta .arrow{font-size:20px;display:inline-block;}
   @keyframes roi-shimmer{
-    0%{left:-110%;}55%,100%{left:140%;}
-  }
-  @keyframes roi-bounce{
-    0%,100%{transform:translateX(0);}50%{transform:translateX(5px);}
+    0%{left:-110%;}16%,100%{left:140%;}
   }
   @media(max-width:560px){
     .roi-strip{flex-direction:column;align-items:flex-start;gap:16px;}
@@ -513,9 +578,17 @@
   footer .legal a{color:var(--ink-dim);transition:color .2s;}
   footer .legal a:hover{color:var(--ink);}
 
-  /* reveal — solo se ocultan con JS */
-  .js .reveal{opacity:0;transform:translateY(22px);transition:opacity .65s ease, transform .65s ease;}
-  .js .reveal.in{opacity:1;transform:none;}
+  /* reveal — entrada al hacer scroll (solo con JS + movimiento permitido).
+     [data-rv="still"] = tarjetas con hover propio → reveal SOLO de opacidad,
+     para no pisar su transform de hover. El stagger lo pone --i (JS). */
+  html.motion .reveal:not([data-rv="still"]){opacity:0;transform:translateY(28px);
+    transition:opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1);
+    transition-delay:calc(min(var(--i,0),8) * 55ms);}
+  html.motion .reveal[data-rv="still"]{opacity:0;
+    transition:opacity .7s cubic-bezier(.16,1,.3,1);
+    transition-delay:calc(min(var(--i,0),8) * 55ms);}
+  html.motion .reveal:not([data-rv="still"]).in{opacity:1;transform:none;}
+  html.motion .reveal[data-rv="still"].in{opacity:1;}
 
   @media(max-width:880px){
     .spine{display:none;}            /* el hilo lateral se oculta en móvil/tablet (su JS ya estaba desactivado) */
@@ -541,6 +614,9 @@
     .hero{padding:64px 0 58px;}
     .hero .sub{font-size:17px;}
     .flow-anim{opacity:.5;-webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 70%,#000 100%);mask-image:linear-gradient(90deg,transparent 0%,#000 70%,#000 100%);}
+    /* móvil: la imagen va detrás del texto a todo el ancho → se oscurece en vertical para que el titular se lea */
+    .hero-img img{object-position:58% 44%;opacity:.74;}
+    .hero-img::after{background:linear-gradient(180deg, rgba(11,12,16,.82) 0%, rgba(11,12,16,.60) 30%, rgba(11,12,16,.40) 56%, rgba(11,12,16,.74) 100%);}
     .demo-list{order:-1;flex-direction:row;flex-wrap:wrap;}
     .demo-item{flex:1 1 220px;}
     .steps{gap:0;}
@@ -582,6 +658,7 @@
   @media (prefers-reduced-motion:reduce){
     .js .reveal{opacity:1;transform:none;transition:none;}
     .pipe-dot{animation:none;}
+    .btn.roi-cta::before{animation:none;}
   }
 
   /* ——— GRANO / textura de film ——— */
@@ -600,15 +677,58 @@
     80%{transform:translate(4%,-2%)} 100%{transform:translate(0,0)}
   }
 
-  /* ——— CURSOR · flecha blanca normal (manita en clicables), acorde a la estética ——— */
-  html{cursor:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScyOCcgaGVpZ2h0PScyOCcgdmlld0JveD0nMCAwIDI4IDI4Jz48cGF0aCBkPSdNNSAyLjUgTDUgMjIuNSBMMTAuNiAxNy42IEwxMy45IDI0LjggTDE3LjMgMjMuMyBMMTQgMTYuNCBMMjEuNSAxNi40IFonIGZpbGw9JyNmZmYnIHN0cm9rZT0ncmdiKDksMTAsMTUpJyBzdHJva2Utd2lkdGg9JzEuNCcgc3Ryb2tlLWxpbmVqb2luPSdyb3VuZCcgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJy8+PC9zdmc+") 5 3, auto;}
-  a, button, [role="button"], [type="button"], [type="submit"], label, summary,
-  .btn, .demo-item, .svc-row.svc-expandable, .diag-head, .roi-lvl, .ld-stage, .menu-toggle, .demo-modal .x{
-    cursor:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScyOCcgaGVpZ2h0PScyOCcgdmlld0JveD0nMCAwIDI4IDI4Jz48cGF0aCBkPSdNOS40IDQuMiBhMS43IDEuNyAwIDAgMSAzLjQgMCBWMTIgYTEuNCAxLjQgMCAwIDEgMi44IDAgVjEyLjYgYTEuNCAxLjQgMCAwIDEgMi44IDAgVjEzLjQgYTEuNCAxLjQgMCAwIDEgMi44IDAgVjE4LjUgYTUgNSAwIDAgMSAtNSA1IEgxMi44IGE1IDUgMCAwIDEgLTMuNiAtMS41IEw1LjYgMTguNCBhMS42IDEuNiAwIDAgMSAyLjMgLTIuMiBMOS40IDEzLjYgWicgZmlsbD0nI2ZmZicgc3Ryb2tlPSdyZ2IoOSwxMCwxNSknIHN0cm9rZS13aWR0aD0nMS4zJyBzdHJva2UtbGluZWpvaW49J3JvdW5kJyBzdHJva2UtbGluZWNhcD0ncm91bmQnLz48L3N2Zz4=") 11 3, pointer;}
-  input[type="text"], input[type="email"], input[type="tel"], input[type="number"], textarea{cursor:text;}
+  /* ═══════════════════════════════════════════════════════════════
+     SCROLL EXPERIENCE · v2
+     Orquestación de entrada, hilo vivo, wipes de titular, spotlight y
+     micro-física. TODO bajo html.motion; en reduced-motion (html.still)
+     la página se ve completa, nítida y quieta.
+     ═══════════════════════════════════════════════════════════════ */
+
+  /* —— HERO · entrada escalonada al cargar (la primera impresión) —— */
+  @keyframes mzRise{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:none;}}
+  html.motion .hero .eyebrow{animation:mzRise .8s cubic-bezier(.16,1,.3,1) both .15s;}
+  html.motion h1.hl       {animation:mzRise .95s cubic-bezier(.16,1,.3,1) both .28s;}
+  html.motion .hero .sub  {animation:mzRise .85s cubic-bezier(.16,1,.3,1) both .48s;}
+  html.motion .hero .cta-row{animation:mzRise .85s cubic-bezier(.16,1,.3,1) both .62s;}
+  html.motion .hero .meta {animation:mzRise .8s cubic-bezier(.16,1,.3,1) both .76s;}
+
+  /* —— TITULARES · wipe de máscara que sube tras el texto —— */
+  html.motion .sec-head h2{clip-path:inset(0 -6% 112% 0);transform:translateY(.12em);
+    transition:clip-path 1s cubic-bezier(.16,1,.3,1) .08s, transform 1s cubic-bezier(.16,1,.3,1) .08s;}
+  html.motion .sec-head.in h2{clip-path:inset(-18% -6% -22% 0);transform:none;}
+
+  /* —— SOLUCIONES · spotlight cobalto que sigue al cursor —— */
+  html.motion .sol-card{position:relative;overflow:hidden;}
+  html.motion .sol-card::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+    opacity:0;transition:opacity .35s ease;
+    background:radial-gradient(240px circle at var(--mx,50%) var(--my,50%), rgba(67,97,240,.20), transparent 62%);}
+  html.motion .sol-card:hover::before{opacity:1;}
+  html.motion .sol-card > *{position:relative;z-index:1;}
+
+  /* —— PIPELINE · el conector punteado se dibuja al entrar —— */
+  html.motion .pipe-step::after{transform:scaleX(0);transform-origin:left center;
+    transition:transform .6s cubic-bezier(.16,1,.3,1) .15s;}
+  html.motion .pipe-step.in::after{transform:scaleX(1);}
+
+  /* —— EL HILO, VIVO · cometa con estela, nodos que se encienden y etiquetas —— */
+  html.motion .spine .head{box-shadow:0 0 18px 4px var(--accent), 0 0 44px 10px rgba(67,97,240,.45);}
+  .spine .head::after{content:"";position:absolute;left:50%;top:100%;transform:translateX(-50%);
+    width:2px;height:64px;background:linear-gradient(to bottom,var(--accent-soft),transparent);opacity:.5;}
+  .spine .node .nlabel{position:absolute;left:16px;top:50%;white-space:nowrap;
+    font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-dim);
+    opacity:0;transform:translate(-8px,-50%);
+    transition:opacity .45s ease, transform .45s ease, color .3s ease;pointer-events:none;}
+  .spine .node.current .nlabel{opacity:1;transform:translate(0,-50%);color:var(--accent-soft);}
+  @keyframes mzNodePop{0%{box-shadow:0 0 0 0 rgba(130,149,242,.55);}
+    55%{box-shadow:0 0 0 7px rgba(130,149,242,0);}100%{box-shadow:0 0 12px var(--accent-soft);}}
+  html.motion .spine .node.on{animation:mzNodePop .6s ease;}
+
+  /* cursor del sistema (se retiró el cursor personalizado: distraía y daba microlag) */
 </style>
 </head>
 <body>
+<!-- CAMPO DE NODOS · red viva reactiva al cursor (lo pinta el JS del final) -->
+<canvas id="netfield" aria-hidden="true"></canvas>
 <div class="page">
 
   <!-- EL HILO · spine que recorre toda la página (lo rellena el JS del final) -->
@@ -652,7 +772,17 @@
 
 <!-- HERO -->
 <div class="hero-zone" data-spine>
-  <!-- fondo: laberinto que se resuelve y sale por la derecha -->
+ <div class="hero-sticky"><!-- en escritorio se fija (sticky) mientras el scroll recorre la pista -->
+  <!-- fondo cinematográfico: laberinto 3D (se acerca con el scroll) -->
+  <div class="hero-img" aria-hidden="true">
+    <picture>
+      <source media="(max-width:880px)" srcset="assets/hero-laberinto-mobile.jpg">
+      <img src="assets/hero-laberinto.jpg" alt="" width="2560" height="1429" decoding="async" fetchpriority="high">
+    </picture>
+    <!-- órbita 3D fotorreal · el scroll la "scrubbea" (la activa el JS en escritorio) -->
+    <canvas class="hero-orbit" id="heroOrbit"></canvas>
+  </div>
+  <!-- fondo: laberinto que se resuelve y sale por la derecha (el "hilo" en línea sobre la imagen) -->
   <svg class="flow-anim" viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
     <path id="m1" class="conn" pathLength="1" d="M540 470 V330 H660 V210 H770 V360 H890 V160 H1010 V320 H1130 H1200"/>
     <path id="m2" class="conn" pathLength="1" d="M540 470 H690 V540 H850 V470 H980"/>
@@ -692,24 +822,19 @@
 
   <section class="hero" id="top">
     <div class="wrap">
-      <span class="eyebrow"><span class="d"></span>sur de Tenerife</span>
-      <h1 class="hl">Solucionamos <em>el trabajo repetitivo</em> de tu negocio.</h1>
-      <p class="sub">Montamos los procesos para que se hagan solos — y los vigilamos para que nunca fallen.</p>
+      <span class="eyebrow"><span class="d"></span>sur de Tenerife · automatización con IA</span>
+      <h1 class="hl">Impulsamos y mejoramos <em>las tareas</em> de tu negocio.</h1>
+      <p class="sub">Analizamos cómo trabajas hoy y volvemos con una demo hecha con tu propio negocio — sin coste y sin compromiso. Si encaja, lo montamos.</p>
       <div class="cta-row">
+        <a class="btn accent" href="hablemos.html"><span class="arrow">→</span> Quiero mi demo gratis</a>
         <a class="btn ghost" href="#como">Ver cómo funciona</a>
       </div>
       <p class="meta">sin guion · sin compromiso</p>
     </div>
   </section>
+  <span class="scroll-cue" aria-hidden="true">scroll<span class="ar">&#8595;</span></span>
+ </div><!-- /hero-sticky -->
 </div><!-- /hero-zone -->
-
-<!-- MANIFIESTO -->
-<div class="band" data-spine>
-  <div class="wrap">
-    <span class="tag">// manifiesto</span>
-    <p>No vendemos un sistema nuevo. Montamos <em>una capa de automatización encima de lo que ya usas</em> — para que el trabajo repetitivo pase solo, sin que se note.</p>
-  </div>
-</div>
 
 <!-- SERVICIOS -->
 <section id="servicios" data-spine>
@@ -912,14 +1037,32 @@
       var lvl=0.85;
 
       function fmt(n){ return Math.round(n).toLocaleString('es-ES'); }
+      // count-up: las cifras suben hasta el valor (en reduced-motion saltan directas)
+      var STILL=false; try{ STILL=matchMedia('(prefers-reduced-motion:reduce)').matches; }catch(e){}
+      var cur={h:0,m:0,y:0}, raf=null;
+      function paint(){
+        document.getElementById('roi-h').textContent=fmt(cur.h);
+        document.getElementById('roi-m').textContent=fmt(cur.m);
+        document.getElementById('roi-y').textContent=fmt(cur.y);
+      }
       function calc(){
         var hWeek=parseFloat(horas.value)||0;
         var c=parseFloat(coste.value)||0;
         var hMonth=hWeek*4.33*lvl;       // horas recuperadas al mes
         var mMonth=hMonth*c;
-        document.getElementById('roi-h').textContent=fmt(hMonth);
-        document.getElementById('roi-m').textContent=fmt(mMonth);
-        document.getElementById('roi-y').textContent=fmt(mMonth*12);
+        var to={h:hMonth, m:mMonth, y:mMonth*12};
+        if(STILL){ cur=to; paint(); return; }
+        var from={h:cur.h, m:cur.m, y:cur.y}, t0=null, DUR=620;
+        if(raf) cancelAnimationFrame(raf);
+        (function step(ts){
+          if(t0===null) t0=ts;
+          var p=Math.min(1,(ts-t0)/DUR), e=1-Math.pow(1-p,3);   // easeOutCubic
+          cur.h=from.h+(to.h-from.h)*e;
+          cur.m=from.m+(to.m-from.m)*e;
+          cur.y=from.y+(to.y-from.y)*e;
+          paint();
+          if(p<1) raf=requestAnimationFrame(step);
+        })(performance.now());
       }
 
       toggle.addEventListener('click', function(){
@@ -949,8 +1092,35 @@
 <!-- CÓMO FUNCIONA -->
 <section id="como" class="flow" data-spine>
   <div class="wrap">
+    <!-- VISOR DE DEMOS · primero lo tangible -->
     <div class="sec-head reveal">
       <span class="kicker">cómo funciona</span>
+      <h2>Demo de <em>procesos</em></h2>
+      <p class="note">Estas automatizaciones están funcionando ahora mismo. Ábrelas y juega con ellas.</p>
+    </div>
+    <div class="livedemo reveal">
+      <div class="demo-viewer">
+        <div class="browser">
+          <div class="chrome">
+            <span class="dots"><i></i><i></i><i></i></span>
+            <span class="url" id="demoUrl">gestion.demos.mazestudio.site</span>
+          </div>
+          <div class="ld-stage" id="demoStage" role="button" tabindex="0" aria-label="Reproducir la demo seleccionada">
+            <div class="play">
+              <span class="circ"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
+              <span class="t" id="demoTitle">Míralo funcionar</span>
+              <span class="s" id="demoDesc">facturas y nóminas que se archivan solas · ~60 s</span>
+            </div>
+          </div>
+        </div>
+        <aside class="demo-list" id="demoList" aria-label="Lista de demos disponibles"></aside>
+      </div>
+      <div class="demo-open-row"><a id="demoOpen" href="https://gestion.demos.mazestudio.site/" target="_blank" rel="noopener">o ábrela a pantalla completa ↗</a></div>
+    </div>
+
+    <!-- PIPELINE · después, el porqué por dentro -->
+    <div class="sec-head reveal" style="margin-top:96px;">
+      <span class="kicker">por dentro</span>
       <h2>Así se ve una automatización por dentro.</h2>
       <p class="note">Un disparador la enciende, la lógica decide, tus apps se coordinan y el resultado llega solo. Tú no tocas nada.</p>
     </div>
@@ -985,28 +1155,6 @@
       </div>
     </div>
     <p class="foot reveal">// construido sobre <b>tus herramientas actuales</b> — sin cambiar de software ni dependencias eternas</p>
-
-    <!-- VISOR DE DEMOS -->
-    <div class="livedemo reveal">
-      <p class="ld-intro">// y esto no es un esquema — pruébalo tú</p>
-      <div class="demo-viewer">
-        <div class="browser">
-          <div class="chrome">
-            <span class="dots"><i></i><i></i><i></i></span>
-            <span class="url" id="demoUrl">gestion.demos.mazestudio.site</span>
-          </div>
-          <div class="ld-stage" id="demoStage" role="button" tabindex="0" aria-label="Reproducir la demo seleccionada">
-            <div class="play">
-              <span class="circ"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>
-              <span class="t" id="demoTitle">Míralo funcionar</span>
-              <span class="s" id="demoDesc">facturas y nóminas que se archivan solas · ~60 s</span>
-            </div>
-          </div>
-        </div>
-        <aside class="demo-list" id="demoList" aria-label="Lista de demos disponibles"></aside>
-      </div>
-      <div class="demo-open-row"><a id="demoOpen" href="https://gestion.demos.mazestudio.site/" target="_blank" rel="noopener">o ábrela a pantalla completa ↗</a></div>
-    </div>
   </div>
 </section>
 
@@ -1031,7 +1179,7 @@
         <p>El cliente elige hueco con disponibilidad real, confirma solo y recibe recordatorios automáticos. Sobre tu sistema de siempre.</p>
         <div class="sol-foot">
           <span class="metric">2–4 h/mes recuperadas</span>
-          <a class="sol-demo" href="https://teide-sunset.demos.mazestudio.site" target="_blank" rel="noopener">Demo excursiones <span class="ar">→</span></a>
+          <a class="sol-demo" href="https://teide-sunset-tours.demos.mazestudio.site" target="_blank" rel="noopener">Demo excursiones <span class="ar">→</span></a>
           <a class="sol-demo" href="https://inmobiliaria-demo.demos.mazestudio.site" target="_blank" rel="noopener">Demo inmobiliaria <span class="ar">→</span></a>
         </div>
       </article>
@@ -1128,7 +1276,7 @@
 
     <div class="sec-head reveal">
       <span class="kicker">¿lo necesitas?</span>
-      <h2>¿Nos necesitas? Descúbrelo <em>ahora.</em></h2>
+      <h2>¿Nos <em>necesitas?</em></h2>
       <p class="note">Responde tres preguntas sobre tu día a día. Sin datos, sin compromiso.</p>
     </div>
 
@@ -1139,7 +1287,7 @@
       <div class="diag-q" id="diag-q1">
         <div class="diag-head" data-diag-toggle="diag-q1">
           <span class="diag-num">01</span>
-          <span class="diag-qtext">¿Hay tareas que repites cada semana y sientes que podrías no tocar?</span>
+          <span class="diag-qtext">¿Hay tareas que repites cada semana y consideras que puedes delegar alguna parte?</span>
           <span class="diag-icon">+</span>
         </div>
         <div class="diag-body">
@@ -1154,7 +1302,7 @@
       <div class="diag-q" id="diag-q2">
         <div class="diag-head" data-diag-toggle="diag-q2">
           <span class="diag-num">02</span>
-          <span class="diag-qtext">¿Cuántas horas a la semana se van en trabajo que no necesita tu cabeza?</span>
+          <span class="diag-qtext">¿Cuántas horas de trabajo a la semana ocupan estas tareas?</span>
           <span class="diag-icon">+</span>
         </div>
         <div class="diag-body">
@@ -1169,7 +1317,7 @@
       <div class="diag-q" id="diag-q3">
         <div class="diag-head" data-diag-toggle="diag-q3">
           <span class="diag-num">03</span>
-          <span class="diag-qtext">Si esas horas volvieran, ¿en qué las pondrías?</span>
+          <span class="diag-qtext">¿Si pudieras aprovechar ese tiempo, en qué las invertirías?</span>
           <span class="diag-icon">+</span>
         </div>
         <div class="diag-body">
@@ -1287,21 +1435,7 @@
 </script>
 
 
-<!-- PROCESO -->
-<section id="proceso" data-spine>
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <span class="kicker">cómo trabajamos</span>
-      <h2>De tu lío de hoy a un negocio que funciona solo.</h2>
-    </div>
-    <div class="steps">
-      <div class="step reveal"><div class="n">01</div><h4>Escuchamos</h4><p>Entendemos tu negocio y tu día a día antes de tocar nada.</p></div>
-      <div class="step reveal"><div class="n">02</div><h4>Diseñamos</h4><p>Te enseñamos el flujo en lenguaje claro, sin tecnicismos.</p></div>
-      <div class="step reveal"><div class="n">03</div><h4>Automatizamos</h4><p>Lo construimos y lo probamos contigo, paso a paso.</p></div>
-      <div class="step reveal"><div class="n">04</div><h4>Cuidamos</h4><p>Seguimos cerca para que dure, crezca y te dé calma.</p></div>
-    </div>
-  </div>
-</section>
+<!-- (sección "Proceso / Cómo trabajamos" eliminada: duplicaba los 4 pasos de Servicios) -->
 
 <!-- CTA -->
 <section class="cta" id="contacto" data-spine>
@@ -1372,16 +1506,49 @@
 </div>
 
 <script>
-  // reveal al hacer scroll (fallback: si no hay IntersectionObserver, se muestra todo)
-  const reveals = document.querySelectorAll('.reveal');
-  if('IntersectionObserver' in window){
-    const io = new IntersectionObserver((entries)=>{
-      entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
-    },{threshold:0, rootMargin:'0px 0px -8% 0px'});
-    reveals.forEach(el=>io.observe(el));
-  } else {
-    reveals.forEach(el=>el.classList.add('in'));
-  }
+  // reveal al hacer scroll · variantes + stagger (fallback: si no hay IO, se muestra todo)
+  (function(){
+    var reveals = [].slice.call(document.querySelectorAll('.reveal'));
+    // tarjetas con hover propio → reveal SOLO de opacidad (no pisa su transform de hover)
+    document.querySelectorAll('.sol-card, .svc-row, .demo-item').forEach(function(c){
+      if(c.classList.contains('reveal')) c.setAttribute('data-rv','still');
+    });
+    // stagger: cada elemento recibe su índice dentro del grupo de hermanos .reveal
+    reveals.forEach(function(el){
+      var sibs = [].slice.call(el.parentElement.children).filter(function(c){ return c.classList.contains('reveal'); });
+      var i = sibs.indexOf(el);
+      if(i > 0) el.style.setProperty('--i', Math.min(i, 8));
+    });
+    if('IntersectionObserver' in window){
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+      },{threshold:0, rootMargin:'0px 0px -8% 0px'});
+      reveals.forEach(function(el){ io.observe(el); });
+    } else {
+      reveals.forEach(function(el){ el.classList.add('in'); });
+    }
+  })();
+</script>
+
+<script>
+  // auto-fit: encoge titulares en escritorio hasta que quepan en UNA línea
+  (function(){
+    if(!matchMedia('(min-width:881px)').matches) return;
+    var els = document.querySelectorAll('.hero h1.hl, .sec-head h2');
+    function fit(el){
+      el.style.fontSize='';                       // reset al tamaño del CSS
+      var parent = el.parentElement;
+      var size = parseFloat(getComputedStyle(el).fontSize);
+      var min = 18, guard = 0;
+      while(el.scrollWidth > parent.clientWidth && size > min && guard++ < 90){
+        size -= 1; el.style.fontSize = size + 'px';
+      }
+    }
+    function run(){ els.forEach(fit); }
+    run();
+    addEventListener('resize', run, {passive:true});
+    if(document.fonts && document.fonts.ready) document.fonts.ready.then(run); // re-ajusta al cargar las fuentes
+  })();
 </script>
 
 <script>
@@ -1395,6 +1562,13 @@
     const fill = spine.querySelector('.fill');
     const head = spine.querySelector('.head');
     const secs = [...page.querySelectorAll('[data-spine]')];
+    const LBL = {servicios:'Servicios', como:'Proceso', soluciones:'Soluciones', diagnostico:'Diagnóstico', contacto:'Contacto'};
+    function labelFor(s){
+      if(s.id && LBL[s.id]) return LBL[s.id];
+      if(s.classList.contains('hero-zone')) return 'Inicio';
+      if(s.classList.contains('band')) return 'Idea';
+      return '';
+    }
     let nodes = [];
 
     function build(){
@@ -1406,6 +1580,8 @@
         const el = document.createElement('span');
         el.className = 'node';
         el.style.top = y + 'px';
+        const lbl = labelFor(s);
+        if(lbl){ const t = document.createElement('span'); t.className = 'nlabel'; t.textContent = lbl; el.appendChild(t); }
         spine.appendChild(el);
         nodes.push({el, y});
       });
@@ -1414,7 +1590,9 @@
       const y = window.scrollY + window.innerHeight*0.5;   // posición de "lectura"
       fill.style.height = y + 'px';
       head.style.top = y + 'px';
-      nodes.forEach(n=> n.el.classList.toggle('on', y >= n.y));
+      let cur = -1;
+      nodes.forEach((n,i)=>{ const on = y >= n.y; n.el.classList.toggle('on', on); if(on) cur = i; });
+      nodes.forEach((n,i)=> n.el.classList.toggle('current', i === cur));   // etiqueta sólo en la sección activa
     }
     let ticking = false;
     function onScroll(){ if(!ticking){ ticking = true; requestAnimationFrame(()=>{ ticking=false; update(); }); } }
@@ -1424,6 +1602,221 @@
     addEventListener('resize', ()=>{ build(); update(); });
     // por si las fuentes/imágenes cambian la altura tras cargar
     addEventListener('load', ()=>{ build(); update(); });
+  })();
+</script>
+
+<script>
+  // ——— SOLUCIONES · spotlight cobalto que sigue al cursor sobre cada tarjeta ———
+  (function(){
+    if(!matchMedia('(min-width:881px)').matches) return;
+    if(matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+    document.querySelectorAll('.sol-card').forEach(function(card){
+      card.addEventListener('pointermove', function(e){
+        var r = card.getBoundingClientRect();
+        card.style.setProperty('--mx', ((e.clientX - r.left) / r.width  * 100).toFixed(1) + '%');
+        card.style.setProperty('--my', ((e.clientY - r.top ) / r.height * 100).toFixed(1) + '%');
+      });
+    });
+  })();
+</script>
+
+<script>
+  // ——— CAMPO DE NODOS · red viva reactiva al cursor (atmósfera de marca) ———
+  (function(){
+    if(!document.documentElement.classList.contains('motion')) return;   // off en reduced-motion / sin gate
+    if(!matchMedia('(min-width:768px)').matches) return;                 // off en móvil (coste + legibilidad)
+    var canvas=document.getElementById('netfield');
+    if(!canvas || !canvas.getContext) return;
+    var ctx=canvas.getContext('2d');
+    if(!ctx) return;
+
+    var DPR=Math.min(window.devicePixelRatio||1, 1.5);
+    var W=0, H=0, nodes=[], pulses=[], raf=null, running=false;
+    var mouse={x:-9999, y:-9999, active:false};
+    var scrollY=window.scrollY||0;
+    var COB='67,97,240', SOFT='130,149,242';
+    var LINK=150;   // distancia máxima de arista
+    var R=190;      // radio de influencia del cursor
+
+    function targetCount(){ return Math.round(Math.min(80, (W*H)/22000)); }
+    function mkNode(){
+      return {x:Math.random()*W, y:Math.random()*H,
+        vx:(Math.random()-0.5)*0.18, vy:(Math.random()-0.5)*0.18,
+        r:0.8+Math.random()*1.4, glow:0};
+    }
+    function resize(){
+      W=window.innerWidth; H=window.innerHeight;
+      canvas.width=Math.floor(W*DPR); canvas.height=Math.floor(H*DPR);
+      ctx.setTransform(DPR,0,0,DPR,0,0);
+      var t=targetCount();
+      while(nodes.length<t) nodes.push(mkNode());
+      if(nodes.length>t) nodes.length=t;
+    }
+    function spawnPulse(){
+      if(nodes.length<2) return;
+      var a=nodes[(Math.random()*nodes.length)|0], best=null, bd=LINK*LINK;
+      for(var k=0;k<nodes.length;k++){ var b=nodes[k]; if(b===a) continue;
+        var dx=a.x-b.x, dy=a.y-b.y, d2=dx*dx+dy*dy; if(d2<bd){ bd=d2; best=b; } }
+      if(best) pulses.push({ax:a.x, ay:a.y, bx:best.x, by:best.y, t:0, sp:0.01+Math.random()*0.02});
+    }
+    function step(){
+      ctx.clearRect(0,0,W,H);
+      // atenuada sobre el hero (no compite con el maze) → presente al bajar
+      var fade=Math.min(1, Math.max(0.12, scrollY/(H*0.75)));
+      var i,j,a,b,dx,dy,d2,d;
+      // mover + cursor
+      for(i=0;i<nodes.length;i++){
+        a=nodes[i]; a.x+=a.vx; a.y+=a.vy;
+        if(a.x<-20)a.x=W+20; else if(a.x>W+20)a.x=-20;
+        if(a.y<-20)a.y=H+20; else if(a.y>H+20)a.y=-20;
+        a.glow=0;
+        if(mouse.active){
+          dx=mouse.x-a.x; dy=mouse.y-a.y; d2=dx*dx+dy*dy;
+          if(d2<R*R){ d=Math.sqrt(d2)||1; var f=1-d/R; a.glow=f;
+            a.x+=dx/d*f*0.6; a.y+=dy/d*f*0.6; }
+        }
+      }
+      // aristas
+      for(i=0;i<nodes.length;i++){
+        a=nodes[i];
+        for(j=i+1;j<nodes.length;j++){
+          b=nodes[j]; dx=a.x-b.x; dy=a.y-b.y; d2=dx*dx+dy*dy;
+          if(d2>=LINK*LINK) continue;
+          d=Math.sqrt(d2); var base=1-d/LINK, lit=a.glow>b.glow?a.glow:b.glow;
+          var al=(base*0.10 + lit*base*0.5)*fade;
+          if(al<0.004) continue;
+          ctx.strokeStyle='rgba('+(lit>0.15?SOFT:COB)+','+al.toFixed(3)+')';
+          ctx.lineWidth=lit>0.3?1.1:0.7;
+          ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+        }
+      }
+      // nodos
+      for(i=0;i<nodes.length;i++){
+        a=nodes[i]; var aln=(0.22+a.glow*0.7)*fade, rr=a.r*(1+a.glow*1.6);
+        ctx.beginPath(); ctx.arc(a.x,a.y,rr,0,6.2832);
+        ctx.fillStyle='rgba('+(a.glow>0.2?SOFT:COB)+','+aln.toFixed(3)+')'; ctx.fill();
+        if(a.glow>0.35){ ctx.beginPath(); ctx.arc(a.x,a.y,rr+3,0,6.2832);
+          ctx.fillStyle='rgba('+SOFT+','+(a.glow*0.12*fade).toFixed(3)+')'; ctx.fill(); }
+      }
+      // pulsos (automatización fluyendo por las aristas)
+      if(pulses.length<3 && Math.random()<0.02) spawnPulse();
+      for(var p=pulses.length-1;p>=0;p--){
+        var pu=pulses[p]; pu.t+=pu.sp;
+        if(pu.t>=1){ pulses.splice(p,1); continue; }
+        var x=pu.ax+(pu.bx-pu.ax)*pu.t, y=pu.ay+(pu.by-pu.ay)*pu.t;
+        ctx.beginPath(); ctx.arc(x,y,1.8,0,6.2832);
+        ctx.fillStyle='rgba('+SOFT+','+(0.8*fade).toFixed(3)+')'; ctx.fill();
+      }
+      raf=running?requestAnimationFrame(step):null;
+    }
+    function start(){ if(!running){ running=true; canvas.classList.add('on'); raf=requestAnimationFrame(step); } }
+    function stop(){ running=false; if(raf) cancelAnimationFrame(raf); raf=null; }
+
+    window.addEventListener('pointermove', function(e){ mouse.x=e.clientX; mouse.y=e.clientY; mouse.active=true; }, {passive:true});
+    window.addEventListener('pointerout', function(e){ if(!e.relatedTarget) mouse.active=false; });
+    window.addEventListener('blur', function(){ mouse.active=false; });
+    window.addEventListener('scroll', function(){ scrollY=window.scrollY||0; }, {passive:true});
+    document.addEventListener('visibilitychange', function(){ if(document.hidden) stop(); else start(); });
+    window.addEventListener('resize', resize);
+
+    resize();
+    (window.requestIdleCallback||function(f){ setTimeout(f,300); })(start);
+  })();
+</script>
+
+<!-- Lenis · smooth scroll con inercia (si el CDN falla, el scroll nativo sigue funcionando) -->
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1/dist/lenis.min.js"></script>
+<script>
+  // ——— SCROLL CON INERCIA · Lenis (solo con movimiento permitido) ———
+  (function(){
+    if(!document.documentElement.classList.contains('motion')) return;  // reduced-motion → scroll nativo
+    if(typeof Lenis==='undefined') return;                              // CDN no cargó → scroll nativo
+    // lerp bajo = inercia pesada y continua (estilo Lusion); más notable que duration
+    var lenis=new Lenis({ lerp:0.07, smoothWheel:true, wheelMultiplier:1.0, syncTouch:false });
+    window.lenis=lenis;
+    function raf(t){ lenis.raf(t); requestAnimationFrame(raf); }
+    requestAnimationFrame(raf);
+
+    // anclas internas → desplazamiento suave (compensando el nav sticky)
+    document.querySelectorAll('a[href^="#"]').forEach(function(a){
+      var href=a.getAttribute('href');
+      if(!href || href.length<2) return;                                // ignora href="#"
+      a.addEventListener('click', function(e){
+        var el=document.querySelector(href);
+        if(!el) return;
+        e.preventDefault();
+        lenis.scrollTo(el, {offset:-80});
+      });
+    });
+
+    // pausa Lenis mientras el modal de demo está abierto (iframe interactivo + sin scroll de fondo)
+    var modal=document.getElementById('demoModal');
+    if(modal && 'MutationObserver' in window){
+      new MutationObserver(function(){
+        if(modal.classList.contains('open')) lenis.stop(); else lenis.start();
+      }).observe(modal, {attributes:true, attributeFilter:['class']});
+    }
+  })();
+</script>
+
+<!-- GSAP + ScrollTrigger · coreografía de scroll (el haz recorre la página). Si el CDN falla, todo sigue. -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<style>
+  /* ——— EL HAZ POR LA PÁGINA · cada sección es una "estación" (solo escritorio + motion) ——— */
+  @media(min-width:881px){
+    html.motion .sec-head{position:relative;}
+    html.motion .beam-fire{position:absolute; left:-26px; top:-15px; height:2px; width:148px;
+      background:linear-gradient(90deg, var(--accent), var(--accent-soft) 68%, transparent);
+      box-shadow:0 0 12px 1px rgba(67,97,240,.65); transform:scaleX(0); transform-origin:left center;
+      border-radius:2px; pointer-events:none; will-change:transform; z-index:2;}
+    html.motion .spine .head{transition:box-shadow .28s ease;}
+    html.motion .spine.fast .head{box-shadow:0 0 26px 7px var(--accent), 0 0 64px 18px rgba(67,97,240,.55);}
+  }
+</style>
+<script>
+  // ——— GSAP · el haz = spine que recorre la página: profundidad scrubbeada + ignición por sección ———
+  // ADITIVO y a prueba de fallos: si GSAP/ScrollTrigger no cargan, o en móvil / reduced-motion, no se monta
+  // nada y los reveals por IntersectionObserver + el spine + la órbita del hero siguen funcionando igual.
+  (function(){
+    if(!document.documentElement.classList.contains('motion')) return;          // reduced-motion → nada
+    if(!matchMedia('(min-width:881px)').matches) return;                        // móvil = reveals limpios
+    if(typeof gsap==='undefined' || typeof ScrollTrigger==='undefined') return; // CDN caído → sin GSAP
+    gsap.registerPlugin(ScrollTrigger);
+
+    // puente Lenis ↔ ScrollTrigger (Lenis ya corre su propio rAF; solo sincronizamos los updates)
+    if(window.lenis && typeof window.lenis.on==='function') window.lenis.on('scroll', ScrollTrigger.update);
+
+    // 1) PROFUNDIDAD · los números grandes de servicios derivan con el scroll (parallax scrubbeado).
+    //    .num es display:block y sus estados .in/:hover solo cambian el gradiente → sin choque de transform.
+    gsap.utils.toArray('.svc-row .num').forEach(function(n){
+      gsap.fromTo(n, {y:20}, {y:-20, ease:'none', scrollTrigger:{
+        trigger:n.closest('.svc-row'), start:'top bottom', end:'bottom top', scrub:0.6 }});
+    });
+
+    // 2) IGNICIÓN · al llegar a cada sección, el haz dispara un rayo cobalto que la "enciende".
+    gsap.utils.toArray('[data-spine]').forEach(function(sec){
+      if(sec.classList.contains('hero-zone')) return;                          // el hero tiene su propia escena
+      var head = sec.querySelector('.sec-head'); if(!head) return;
+      var beam = document.createElement('span'); beam.className='beam-fire'; head.appendChild(beam);
+      gsap.fromTo(beam, {scaleX:0}, {scaleX:1, ease:'none', scrollTrigger:{
+        trigger:head, start:'top 80%', end:'top 46%', scrub:true }});
+    });
+
+    // 3) VIVO · el cometa del spine se intensifica al scrollear rápido (reactivo a la velocidad).
+    var spine = document.getElementById('spine'), clear;
+    if(spine){
+      ScrollTrigger.create({ start:0, end:'max', onUpdate:function(self){
+        if(Math.abs(self.getVelocity()) > 600){
+          spine.classList.add('fast');
+          clearTimeout(clear); clear = setTimeout(function(){ spine.classList.remove('fast'); }, 220);
+        }
+      }});
+    }
+
+    // recalcula posiciones cuando todo ha cargado (el hero crece a 220vh, fuentes, imágenes)
+    addEventListener('load', function(){ ScrollTrigger.refresh(); });
+    if(document.fonts && document.fonts.ready) document.fonts.ready.then(function(){ ScrollTrigger.refresh(); });
   })();
 </script>
 
@@ -1455,29 +1848,94 @@
     requestAnimationFrame(frame);
   })();
 
-  // ——— HERO · el laberinto se vuelve dinámico con el scroll (parallax + trazo que se intensifica) ———
+  // ——— HERO · órbita 3D fotorreal "scrubbeada" por el scroll ———
+  // Hero fijado (sticky) en escritorio: el scroll recorre los fotogramas de la órbita
+  // (el cubo gira a tu alrededor), entra el titular y al final se entrega a las secciones.
+  // Móvil = imagen estática (assets/hero-laberinto-mobile.jpg). reduced-motion = imagen quieta.
   (function(){
-    const svg  = document.querySelector('.flow-anim');
-    const glow = document.querySelector('.hero-glow');
-    const zone = document.querySelector('.hero-zone');
-    if(!svg || !zone) return;
-    if(!matchMedia('(min-width:881px)').matches) return;          // en móvil el fondo es textura fija
-    if(matchMedia('(prefers-reduced-motion:reduce)').matches) return;
-    let ticking = false;
-    function update(){
-      const r = zone.getBoundingClientRect();
-      const h = r.height || 1;
-      const p = Math.max(0, Math.min(1, (-r.top) / h));            // 0 arriba · 1 hero saliendo
-      const e = p * (2 - p);                                       // suaviza (easeOut)
-      svg.style.transform = 'translate3d(' + (e*54).toFixed(1) + 'px,' + (e*-30).toFixed(1) + 'px,0) scale(' + (1 + e*0.07).toFixed(4) + ')';
-      svg.style.opacity   = (1 - e*0.5).toFixed(3);
-      svg.style.setProperty('--flow-glow', (0.38 + e*0.42).toFixed(3));
-      if(glow){ glow.style.transform = 'translate3d(' + (e*22).toFixed(1) + 'px,' + (e*-14).toFixed(1) + 'px,0)'; glow.style.opacity = (0.9 - e*0.6).toFixed(3); }
+    const zone   = document.querySelector('.hero-zone');
+    if(!zone) return;
+    const copy   = zone.querySelector('.hero .wrap');
+    const cue    = zone.querySelector('.scroll-cue');
+    const glow   = zone.querySelector('.hero-glow');
+    const canvas = document.getElementById('heroOrbit');
+    const ctx    = canvas ? canvas.getContext('2d') : null;
+    const desktop = matchMedia('(min-width:881px)');
+    function still(){ try{ return matchMedia('(prefers-reduced-motion:reduce)').matches; }catch(e){ return false; } }
+    const clamp = v => v < 0 ? 0 : v > 1 ? 1 : v;
+    const map   = (p,a,b) => clamp((p - a) / (b - a));
+    const easeOut = x => 1 - Math.pow(1 - x, 3);
+
+    // secuencia de la órbita (generada con Higgsfield · Seedance 2.0, troceada con ffmpeg)
+    const N = 76, DIR = 'assets/orbit/', EXT = '.webp';
+    const frames = new Array(N); let ready = false, lastIdx = -1;
+    function frameURL(i){ return DIR + 'f_' + String(i + 1).padStart(3, '0') + EXT; }
+
+    function sizeCanvas(){
+      const dpr = Math.min(devicePixelRatio || 1, 2);
+      const w = canvas.clientWidth, h = canvas.clientHeight;
+      canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
-    function onScroll(){ if(!ticking){ ticking = true; requestAnimationFrame(()=>{ ticking=false; update(); }); } }
-    update();
+    function drawCover(im){
+      const cw = canvas.clientWidth, ch = canvas.clientHeight, iw = im.naturalWidth, ih = im.naturalHeight;
+      if(!cw || !ch || !iw || !ih) return;
+      const s = Math.max(cw / iw, ch / ih), dw = iw * s, dh = ih * s;
+      ctx.clearRect(0, 0, cw, ch);
+      ctx.drawImage(im, (cw - dw) / 2, (ch - dh) / 2, dw, dh);
+    }
+    function drawIndex(i){
+      i = i < 0 ? 0 : i >= N ? N - 1 : i;
+      const f = frames[i];
+      if(f && f.complete && f.naturalWidth){ lastIdx = i; drawCover(f); }
+    }
+    function preload(){
+      for(let i = 0; i < N; i++){
+        const im = new Image(); frames[i] = im; im.decoding = 'async';
+        im.onload = function(){
+          if(!ready){ ready = true; zone.classList.add('orbit-on'); sizeCanvas(); drawIndex(Math.round(progress() * (N - 1))); }
+          else if(i === lastIdx){ drawCover(im); }   // si el frame visible llega tarde, repíntalo
+        };
+        im.src = frameURL(i);
+      }
+    }
+
+    let staged = false, ticking = false;
+    function progress(){
+      const track = zone.offsetHeight - innerHeight;
+      const r = zone.getBoundingClientRect();
+      return clamp((-r.top) / (track || 1));           // 0 arriba · 1 fin de la pista
+    }
+    function tick(){
+      if(!staged) return;
+      const p = progress();
+      if(ready){ const idx = Math.round(p * (N - 1)); if(idx !== lastIdx) drawIndex(idx); }
+      const inn = map(p, 0.06, 0.30);                  // titular: hero limpio → aparece el texto
+      if(copy){ copy.style.opacity = inn.toFixed(3); copy.style.transform = 'translateY(' + ((1 - easeOut(inn)) * 24).toFixed(1) + 'px)'; }
+      if(glow) glow.style.opacity = (inn * 0.85).toFixed(3);
+      if(cue)  cue.style.opacity = (1 - map(p, 0, 0.10)).toFixed(3);
+    }
+    function onScroll(){ if(!ticking){ ticking = true; requestAnimationFrame(() => { ticking = false; tick(); }); } }
+
+    function enable(){
+      staged = true; zone.classList.add('imgstage'); if(copy) copy.style.opacity = '0';
+      if(!frames[0]) preload();
+      else if(ready){ zone.classList.add('orbit-on'); sizeCanvas(); drawIndex(Math.round(progress() * (N - 1))); }
+      tick();
+    }
+    function disable(){
+      staged = false; zone.classList.remove('imgstage'); zone.classList.remove('orbit-on');
+      if(copy){ copy.style.opacity = ''; copy.style.transform = ''; }
+      if(cue) cue.style.opacity = ''; if(glow) glow.style.opacity = '';
+    }
+    function setup(){
+      if(desktop.matches && !still() && ctx){ if(!staged) enable(); }
+      else if(staged){ disable(); }
+    }
+
+    setup();
     addEventListener('scroll', onScroll, {passive:true});
-    addEventListener('resize', update, {passive:true});
+    addEventListener('resize', () => { setup(); if(staged && ready){ sizeCanvas(); lastIdx = -1; } tick(); }, {passive:true});
   })();
 </script>
 
@@ -1548,10 +2006,19 @@
   })();
 </script>
 
+<!-- (modulo WebGL del cubo retirado: hero por imagen fotorreal) -->
+
 <script>
-/* ——— MAZE INTRO · narrativa ——— */
+/* ——— SPLASH · intro cinematográfica sobre el cubo de cristal ———
+   Sustituye el laberinto dibujado en canvas por el render del cubo de cristal
+   (la misma imagen que el hero → al salir, el splash se funde con el hero sin
+   costura). Narrativa: el cubo aparece en la oscuridad → un haz recorre el
+   laberinto y sale recto por la derecha → "Del laberinto, una línea recta." →
+   firma. Hace de pantalla de carga: no se va hasta que la web ha cargado. */
 (function(){
   'use strict';
+  /* INTRO A PANTALLA COMPLETA · ACTIVA y forzada en cada carga (ver _forceIntro).
+     Para relegarla (solo 1ª visita y respetando reduced-motion), pon _forceIntro=false. */
 
   /* Al ir a una página interna (p.ej. hablemos.html), deja una marca para
      que la intro NO se reproduzca al volver. */
@@ -1559,520 +2026,190 @@
     a.addEventListener('click',function(){ try{ sessionStorage.setItem('mz_skip_intro','1'); }catch(e){} });
   });
 
-  /* Si venimos de vuelta desde una página interna, saltar la intro por completo. */
-  try{
-    var _fromQuery = /[?&]skipintro/.test(location.search);
-    if(_fromQuery || sessionStorage.getItem('mz_skip_intro')==='1'){
-      try{ sessionStorage.removeItem('mz_skip_intro'); }catch(e){}
-      try{ if(_fromQuery) history.replaceState(null,'',location.pathname+location.hash); }catch(e){} // limpia la URL
-      return; // no se crea el overlay: la web se muestra directamente
-    }
-  }catch(e){}
+  /* La intro se reproduce SIEMPRE, en cada carga/refresco: ignora el candado de
+     sesión, la marca de vuelta de página y reduced-motion (misma decisión de
+     marca que el hero). Para que solo salga una vez por sesión y respete
+     reduced-motion, pon _forceIntro=false. */
+  var _forceIntro=true;
 
-  /* Accesibilidad: si el visitante pide reducir movimiento, no se reproduce. */
-  try{
-    if(window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
-  }catch(e){}
-
-  /* Una vez por sesión: si ya se vio la intro en esta pestaña, no se repite. */
-  try{
-    if(sessionStorage.getItem('mz_intro_seen')==='1') return;
-    sessionStorage.setItem('mz_intro_seen','1');
-  }catch(e){}
-
-  function mk(tag,css,txt){
-    const el=document.createElement(tag);
-    el.style.cssText=css;
-    if(txt!==undefined) el.textContent=txt;
-    return el;
-  }
-
-  const BG  ='#0B0C10';
-  const COB ='#4361F0';
-  const SOFT='#8295F2';
-  const DR=[-1,0,1,0], DC=[0,1,0,-1], OP=[2,3,0,1];
-
-  /* ——— OVERLAY ——— */
-  const ov=mk('div',`position:fixed;inset:0;z-index:2000;background:${BG};overflow:hidden;cursor:pointer;`);
-
-  const cv=mk('canvas','position:absolute;inset:0;display:block');
-  ov.appendChild(cv);
-  const cx=cv.getContext('2d');
-
-  /* ——— TEXTOS NARRATIVOS ——— */
-  /* Acto 1: el problema */
-  const txOp=mk('div',`
-    position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-    font-family:'JetBrains Mono',ui-monospace,monospace;
-    font-size:11px;letter-spacing:.2em;text-transform:uppercase;
-    color:rgba(130,149,242,0);transition:color 1s ease;
-    white-space:nowrap;pointer-events:none;text-align:center;
-  `,'// tu operativa, hoy');
-
-  /* Acto 3: la solución */
-  const solBox=mk('div',`
-    position:absolute;top:50%;left:50%;
-    transform:translate(-50%,-50%);
-    display:flex;flex-direction:column;align-items:center;gap:8px;
-    pointer-events:none;text-align:center;width:90vw;
-  `);
-  const txL=mk('div',`
-    font-family:'Space Grotesk',system-ui,sans-serif;
-    font-weight:600;font-size:clamp(26px,4.6vw,58px);
-    letter-spacing:-.03em;line-height:1.05;
-    color:rgba(236,237,242,0);transition:color .65s ease;
-  `,'Del laberinto,');
-  const txR=mk('div',`
-    font-family:'Space Grotesk',system-ui,sans-serif;
-    font-weight:600;font-size:clamp(26px,4.6vw,58px);
-    letter-spacing:-.03em;line-height:1.05;
-    color:rgba(130,149,242,0);transition:color .65s ease;
-  `,'una línea recta.');
-  solBox.appendChild(txL); solBox.appendChild(txR);
-
-  /* hint */
-  const hint=mk('div',`
-    position:absolute;bottom:62px;left:50%;transform:translateX(-50%);
-    font-family:'JetBrains Mono',ui-monospace,monospace;
-    font-size:11px;letter-spacing:.15em;text-transform:uppercase;
-    color:transparent;transition:color .5s;
-    white-space:nowrap;pointer-events:none;
-  `,'// toca para resolver');
-
-  /* logo (aparece al final) */
-  const logoDiv=mk('div',`
-    position:absolute;bottom:52px;left:50%;transform:translateX(-50%);
-    display:flex;align-items:center;gap:17px;
-    opacity:0;transition:opacity .8s ease;pointer-events:none;
-  `);
-  logoDiv.innerHTML=`
-    <svg viewBox="0 0 132 52" style="height:32px;overflow:visible" aria-hidden="true">
-      <path fill="none" stroke="rgba(236,237,242,.8)" stroke-width="3.2"
-            stroke-linecap="round" stroke-linejoin="round"
-            d="M3 44L3 31 19 31 19 15 33 15 33 35 47 35 47 9 61 9 61 27 75 27 75 44 129 44"/>
-      <circle fill="${BG}" stroke="rgba(236,237,242,.8)" stroke-width="2.4" cx="3"  cy="44" r="4"/>
-      <circle fill="${BG}" stroke="rgba(236,237,242,.8)" stroke-width="2.4" cx="33" cy="15" r="3.2"/>
-      <circle fill="${BG}" stroke="rgba(236,237,242,.8)" stroke-width="2.4" cx="47" cy="9"  r="3.2"/>
-      <circle fill="${BG}" stroke="rgba(236,237,242,.8)" stroke-width="2.4" cx="75" cy="44" r="3.2"/>
-      <circle fill="${COB}" cx="129" cy="44" r="4.4"/>
-    </svg>
-    <span style="font-family:'Space Grotesk',system-ui,sans-serif;font-weight:600;font-size:33px;letter-spacing:-.02em;color:rgba(236,237,242,.85)">Mazestudio<span style="color:${COB}">.</span></span>`;
-
-  /* skip */
-  const skipBtn=mk('button',`
-    position:absolute;bottom:20px;right:22px;
-    background:transparent;border:1px solid rgba(255,255,255,.13);
-    border-radius:8px;color:rgba(148,152,168,.72);
-    font-family:'JetBrains Mono',ui-monospace,monospace;
-    font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
-    padding:7px 14px;cursor:pointer;
-    opacity:0;transition:opacity .5s,background .2s;
-  `,'saltar →');
-
-  [txOp,solBox,hint,logoDiv,skipBtn].forEach(el=>ov.appendChild(el));
-  document.body.prepend(ov);
-
-  /* ——— ESTADO ——— */
-  let COLS,ROWS,GRID,DPR;
-  let CXW,CZW;                 // centro del laberinto (mundo)
-  let S=1,ox=0,oy=0;          // escala y offset de proyección
-  let yaw=0;                   // ángulo de órbita de cámara
-  let maze=[],path=[],walls=[];
-  let phase='building';        // building|idle|solving|dissolving|done
-  let buildP=0, solveT=0, dissP=0, lastT=-1, txLshown=false, idleTimer=0;
-  const SOLVE_DUR=900;
-  const WALL_H=0.92;           // altura de pared (en celdas)
-  const ISO=0.56;             // achatado vertical axonométrico
-  const PATH_Y=0.06;          // el hilo flota apenas sobre el suelo
-  const ORBIT=0.000135;        // velocidad de órbita (rad/ms)
-
-  /* ——— PROYECCIÓN 3D (axonométrica con órbita) ——— */
-  function projRaw(x,y,z){
-    const dx=x-CXW, dz=z-CZW;
-    const c=Math.cos(yaw), s=Math.sin(yaw);
-    const rx=dx*c - dz*s, rz=dx*s + dz*c;
-    return { u:(rx-rz), v:(rx+rz)*ISO - y, d:(rx+rz) };
-  }
-  const P=(x,y,z)=>{ const p=projRaw(x,y,z); return { x:ox+p.u*S, y:oy+p.v*S }; };
-
-  /* ——— GENERACIÓN (recursive backtracker) ——— */
-  function genMaze(){
-    maze=Array.from({length:ROWS},()=>
-      Array.from({length:COLS},()=>({w:[1,1,1,1],vis:false})));
-    const stk=[{r:0,c:0}]; maze[0][0].vis=true;
-    while(stk.length){
-      const cur=stk[stk.length-1], nb=[];
-      for(let d=0;d<4;d++){
-        const nr=cur.r+DR[d],nc=cur.c+DC[d];
-        if(nr>=0&&nr<ROWS&&nc>=0&&nc<COLS&&!maze[nr][nc].vis) nb.push({d,nr,nc});
+  if(!_forceIntro){
+    try{
+      var _fromQuery = /[?&]skipintro/.test(location.search);
+      if(_fromQuery || sessionStorage.getItem('mz_skip_intro')==='1'){
+        try{ sessionStorage.removeItem('mz_skip_intro'); }catch(e){}
+        try{ if(_fromQuery) history.replaceState(null,'',location.pathname+location.hash); }catch(e){}
+        return; // no se crea el overlay: la web se muestra directamente
       }
-      if(nb.length){
-        const pk=nb[0|Math.random()*nb.length];
-        maze[cur.r][cur.c].w[pk.d]=0;
-        maze[pk.nr][pk.nc].w[OP[pk.d]]=0;
-        maze[pk.nr][pk.nc].vis=true;
-        stk.push({r:pk.nr,c:pk.nc});
-      } else stk.pop();
-    }
-    maze[0][0].w[0]=0; maze[ROWS-1][COLS-1].w[2]=0;
-  }
-
-  /* ——— BFS SOLVE ——— */
-  function solveMaze(){
-    const vis=Array.from({length:ROWS},()=>Array(COLS).fill(false));
-    const par=Array.from({length:ROWS},()=>Array(COLS).fill(null));
-    const q=[{r:0,c:0}]; vis[0][0]=true;
-    outer: while(q.length){
-      const{r,c}=q.shift();
-      for(let d=0;d<4;d++){
-        if(!maze[r][c].w[d]){
-          const nr=r+DR[d],nc=c+DC[d];
-          if(nr>=0&&nr<ROWS&&nc>=0&&nc<COLS&&!vis[nr][nc]){
-            vis[nr][nc]=true; par[nr][nc]={r,c}; q.push({r:nr,c:nc});
-            if(nr===ROWS-1&&nc===COLS-1) break outer;
-          }
-        }
-      }
-    }
-    const p=[]; let cur={r:ROWS-1,c:COLS-1};
-    while(cur){p.unshift(cur);cur=par[cur.r][cur.c];}
-    return p;
-  }
-
-  /* ——— SEGMENTOS DE PARED EN 3D (coords de rejilla: x=col, z=fila) ——— */
-  function buildWalls(){
-    const s=[];
-    for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){
-      const m=maze[r][c];
-      if(m.w[0]) s.push({x1:c,  z1:r,  x2:c+1,z2:r});            // norte
-      if(m.w[3]) s.push({x1:c,  z1:r,  x2:c,  z2:r+1});          // oeste
-      if(c===COLS-1&&m.w[1]) s.push({x1:c+1,z1:r,  x2:c+1,z2:r+1}); // este (borde)
-      if(r===ROWS-1&&m.w[2]) s.push({x1:c,  z1:r+1,x2:c+1,z2:r+1}); // sur (borde)
-    }
-    const maxD=Math.hypot(COLS/2,ROWS/2)||1;
-    s.forEach(w=>{
-      w.mx=(w.x1+w.x2)/2; w.mz=(w.z1+w.z2)/2;
-      const dist=Math.hypot(w.mx-CXW,w.mz-CZW);
-      w.rise=(dist/maxD)*0.55 + Math.random()*0.10; // las del centro suben primero
-      w.sink=Math.random()*0.28;                     // derrumbe escalonado
-    });
-    return s;
-  }
-
-  const cXY=(r,c)=>({x:c+0.5,z:r+0.5});   // centro de celda (coords mundo)
-
-  /* ——— AJUSTE A PANTALLA (cabe durante toda la órbita) ——— */
-  function fit(){
-    const W=window.innerWidth,H=window.innerHeight;
-    let minU=1e9,maxU=-1e9,minV=1e9,maxV=-1e9;
-    const corners=[[0,0],[COLS,0],[COLS,ROWS],[0,ROWS]];
-    const keep=yaw;
-    for(let a=0;a<Math.PI*2;a+=Math.PI/24){
-      yaw=a;
-      for(const[xw,zw] of corners) for(const hy of [0,WALL_H]){
-        const p=projRaw(xw,hy,zw);
-        if(p.u<minU)minU=p.u; if(p.u>maxU)maxU=p.u;
-        if(p.v<minV)minV=p.v; if(p.v>maxV)maxV=p.v;
-      }
-    }
-    yaw=keep;
-    const spanU=(maxU-minU)||1, spanV=(maxV-minV)||1;
-    const wf = W<560 ? 0.92 : 0.80;   // en móvil el laberinto ocupa más ancho (más inmersivo)
-    const hf = W<560 ? 0.64 : 0.70;
-    S=Math.min(W*wf/spanU, H*hf/spanV);
-    ox=W/2 - (minU+maxU)/2*S;
-    oy=H/2 - (minV+maxV)/2*S;
-  }
-
-  /* ——— SETUP ——— */
-  function setup(){
-    DPR=window.devicePixelRatio||1;
-    const W=window.innerWidth,H=window.innerHeight;
-    cv.width=W*DPR; cv.height=H*DPR;
-    cv.style.width=W+'px'; cv.style.height=H+'px';
-    cx.setTransform(DPR,0,0,DPR,0,0);
-    GRID = W<560?11 : W<1024?13 : 16;
-    COLS=GRID; ROWS=GRID;
-    CXW=COLS/2; CZW=ROWS/2;
-    genMaze(); path=solveMaze(); walls=buildWalls();
-    fit();
-  }
-
-  /* ——— REDIMENSIONAR (sin regenerar el laberinto) ——— */
-  function resize(){
-    DPR=window.devicePixelRatio||1;
-    const W=window.innerWidth,H=window.innerHeight;
-    cv.width=W*DPR; cv.height=H*DPR;
-    cv.style.width=W+'px'; cv.style.height=H+'px';
-    cx.setTransform(DPR,0,0,DPR,0,0);
-    fit();
-  }
-
-  /* ——— RENDER: suelo (resplandor + rejilla del plano) ——— */
-  function renderFloor(alpha){
-    if(alpha<0.01) return;
-    const W=window.innerWidth,H=window.innerHeight;
-    const ctr=P(CXW,0,CZW);
-    const g=cx.createRadialGradient(ctr.x,ctr.y,0,ctr.x,ctr.y,Math.max(W,H)*0.45);
-    g.addColorStop(0,`rgba(67,97,240,${0.10*alpha})`);
-    g.addColorStop(0.5,`rgba(67,97,240,${0.03*alpha})`);
-    g.addColorStop(1,'rgba(67,97,240,0)');
-    cx.fillStyle=g; cx.fillRect(0,0,W,H);
-    cx.save();
-    cx.strokeStyle=`rgba(130,149,242,${0.06*alpha})`;
-    cx.lineWidth=1; cx.beginPath();
-    for(let i=0;i<=COLS;i++){ const a=P(i,0,0),b=P(i,0,ROWS); cx.moveTo(a.x,a.y); cx.lineTo(b.x,b.y); }
-    for(let j=0;j<=ROWS;j++){ const a=P(0,0,j),b=P(COLS,0,j); cx.moveTo(a.x,a.y); cx.lineTo(b.x,b.y); }
-    cx.stroke(); cx.restore();
-  }
-
-  /* ——— RENDER: paredes 3D (paneles de cristal + borde de neón) ——— */
-  function renderWalls(hFn,aFn){
-    const order=walls.map((w,i)=>i).sort((a,b)=>
-      projRaw(walls[a].mx,0,walls[a].mz).d - projRaw(walls[b].mx,0,walls[b].mz).d);
-    cx.save(); cx.lineJoin='round';
-    for(const i of order){
-      const w=walls[i];
-      const a=aFn(w); if(a<=0.01) continue;
-      const h=hFn(w); if(h<=0.001) continue;
-      const b1=P(w.x1,0,w.z1), b2=P(w.x2,0,w.z2);
-      const t1=P(w.x1,h,w.z1), t2=P(w.x2,h,w.z2);
-      const g=cx.createLinearGradient((b1.x+b2.x)/2,(b1.y+b2.y)/2,(t1.x+t2.x)/2,(t1.y+t2.y)/2);
-      g.addColorStop(0,`rgba(15,19,33,${0.62*a})`);
-      g.addColorStop(0.72,`rgba(42,60,150,${0.22*a})`);
-      g.addColorStop(1,`rgba(99,126,255,${0.34*a})`);
-      cx.fillStyle=g;
-      cx.beginPath();
-      cx.moveTo(b1.x,b1.y); cx.lineTo(b2.x,b2.y);
-      cx.lineTo(t2.x,t2.y); cx.lineTo(t1.x,t1.y); cx.closePath(); cx.fill();
-      cx.strokeStyle=`rgba(146,164,255,${0.55*a})`; cx.lineWidth=1.4;
-      cx.beginPath(); cx.moveTo(t1.x,t1.y); cx.lineTo(t2.x,t2.y); cx.stroke();
-    }
-    cx.restore();
-  }
-
-  /* ——— RENDER: hilo solución 3D (halo · cobalto · filamento blanco) ——— */
-  function easeOut(t){return 1-Math.pow(1-t,2.5);}
-  function pathPts(steps,straight){
-    const n=path.length, lim=Math.max(0,Math.min(n,steps));
-    const W=window.innerWidth,H=window.innerHeight;
-    const Lx=W*0.13, Rx=W*0.87, Ly=H*0.5, pts=[];
-    for(let i=0;i<lim;i++){
-      const{r,c}=path[i], q=cXY(r,c);
-      let s=P(q.x,PATH_Y,q.z);
-      if(straight>0){
-        const tx=Lx+(i/(n-1))*(Rx-Lx);
-        s={x:s.x+(tx-s.x)*straight, y:s.y+(Ly-s.y)*straight};
-      }
-      pts.push(s);
-    }
-    return pts;
-  }
-  function strokePts(pts,w,col){
-    cx.lineWidth=w; cx.strokeStyle=col;
-    cx.beginPath(); cx.moveTo(pts[0].x,pts[0].y);
-    for(let i=1;i<pts.length;i++) cx.lineTo(pts[i].x,pts[i].y);
-    cx.stroke();
-  }
-  function renderPath(steps,alpha,straight){
-    const pts=pathPts(steps,straight||0);
-    if(pts.length<2) return;
-    cx.save(); cx.lineCap='round'; cx.lineJoin='round';
-    cx.shadowBlur=26; cx.shadowColor=SOFT;
-    strokePts(pts,S*0.34,`rgba(130,149,242,${0.34*alpha})`);
-    cx.shadowBlur=12; cx.shadowColor=COB;
-    strokePts(pts,S*0.13,`rgba(67,97,240,${0.88*alpha})`);
-    cx.shadowBlur=0;
-    strokePts(pts,S*0.045,`rgba(255,255,255,${0.9*alpha})`);
-    if(steps<path.length&&!straight){
-      const p=pts[pts.length-1];
-      cx.shadowBlur=30; cx.shadowColor='#fff'; cx.fillStyle='#fff';
-      cx.beginPath(); cx.arc(p.x,p.y,S*0.17,0,Math.PI*2); cx.fill();
-    }
-    cx.restore();
-  }
-
-  /* ——— RENDER: sonar en el suelo (entrada) ——— */
-  function renderSonar(ts){
-    const c0=cXY(0,0);
-    cx.save();
-    [0,0.5].forEach(off=>{
-      const pr=(((ts/2400)%1)+off)%1, rad=0.18+2.0*pr;
-      cx.beginPath();
-      for(let k=0;k<=28;k++){
-        const ang=k/28*Math.PI*2;
-        const p=P(c0.x+rad*Math.cos(ang),0.01,c0.z+rad*Math.sin(ang));
-        if(k===0) cx.moveTo(p.x,p.y); else cx.lineTo(p.x,p.y);
-      }
-      cx.strokeStyle=`rgba(130,149,242,${(1-pr)*0.45})`; cx.lineWidth=1; cx.stroke();
-    });
-    const e=P(c0.x,0.05,c0.z);
-    cx.shadowBlur=18; cx.shadowColor=SOFT; cx.fillStyle='rgba(146,164,255,.95)';
-    cx.beginPath(); cx.arc(e.x,e.y,S*0.13,0,Math.PI*2); cx.fill();
-    const ex0=cXY(ROWS-1,COLS-1), ex=P(ex0.x,0.05,ex0.z);
-    cx.shadowBlur=0; cx.fillStyle='rgba(130,149,242,.22)';
-    cx.beginPath(); cx.arc(ex.x,ex.y,S*0.10,0,Math.PI*2); cx.fill();
-    cx.restore();
-  }
-
-  /* ——— RENDER: viñeta ——— */
-  function vignette(){
-    const W=window.innerWidth,H=window.innerHeight;
-    const g=cx.createRadialGradient(W/2,H/2,Math.min(W,H)*0.35,W/2,H/2,Math.max(W,H)*0.72);
-    g.addColorStop(0,'rgba(11,12,16,0)');
-    g.addColorStop(1,'rgba(7,8,11,0.55)');
-    cx.fillStyle=g; cx.fillRect(0,0,W,H);
-  }
-
-  /* ——— LOOP PRINCIPAL ——— */
-  const clamp=t=>t<0?0:t>1?1:t;
-  function loop(ts){
-    if(phase==='done') return;
-    const dt=lastT<0?0:Math.min(ts-lastT,60);
-    lastT=ts;
-    yaw=ts*ORBIT;                       // órbita continua de cámara
-    const W=window.innerWidth,H=window.innerHeight;
-    cx.clearRect(0,0,W,H);
-    cx.fillStyle=BG; cx.fillRect(0,0,W,H);
-
-    /* — ACTO 1: el laberinto se levanta desde el centro — */
-    if(phase==='building'){
-      buildP=Math.min(1,buildP+dt/1300);
-      renderFloor(buildP);
-      renderWalls(
-        w=>WALL_H*easeOut(clamp((buildP-w.rise)/0.45)),
-        w=>clamp((buildP-w.rise)/0.45)
-      );
-      if(buildP>=1) toIdle();
-    }
-
-    /* — ACTO 2: laberinto completo, esperando — */
-    else if(phase==='idle'){
-      renderFloor(1);
-      renderWalls(()=>WALL_H,()=>1);
-      renderSonar(ts);
-    }
-
-    /* — ACTO 3: el hilo encuentra la salida — */
-    else if(phase==='solving'){
-      solveT=Math.min(SOLVE_DUR,solveT+dt);
-      const steps=Math.ceil(easeOut(solveT/SOLVE_DUR)*path.length);
-      renderFloor(1);
-      renderWalls(()=>WALL_H,()=>1);
-      renderPath(steps,1,0);
-      if(solveT>SOLVE_DUR*0.28 && !txLshown){ txLshown=true; txL.style.color='rgba(236,237,242,.92)'; }
-      if(solveT>=SOLVE_DUR){
-        phase='dissolving'; dissP=0;
-        txR.style.color='rgba(130,149,242,.95)';
-        setTimeout(()=>{ logoDiv.style.opacity='1'; },300);
-        hint.style.color='transparent';
-      }
-    }
-
-    /* — EPÍLOGO: las paredes se derrumban; el hilo se endereza — */
-    else if(phase==='dissolving'){
-      dissP=Math.min(1,dissP+dt/1500);            // cierre ágil: paredes caen + hilo recto
-      // las paredes caen en el primer tramo
-      renderFloor(clamp(1-dissP*1.7));
-      renderWalls(
-        w=>WALL_H*(1-easeOut(clamp((dissP-w.sink*0.4)/0.28))),
-        w=>clamp(1-(dissP-w.sink*0.4)/0.28)
-      );
-      // el hilo se endereza despacio (tramo central) y luego se mantiene visible
-      renderPath(path.length,1,easeOut(clamp((dissP-0.18)/0.42)));
-      if(dissP>=1){
-        phase='done';
-        ov.style.transition='opacity .6s ease';
-        ov.style.opacity='0';
-        setTimeout(dismiss,700);
+    }catch(e){}
+    try{ if(window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches) return; }catch(e){}
+    try{
+      if(sessionStorage.getItem('mz_intro_seen')==='1') return;
+      sessionStorage.setItem('mz_intro_seen','1');
+    }catch(e){}
+  } else {
+    /* aun forzada, si venimos de una página interna saltamos la intro */
+    try{
+      if(sessionStorage.getItem('mz_skip_intro')==='1' || /[?&]skipintro/.test(location.search)){
+        try{ sessionStorage.removeItem('mz_skip_intro'); }catch(e){}
+        try{ history.replaceState(null,'',location.pathname+location.hash); }catch(e){}
         return;
       }
-    }
-
-    vignette();
-    requestAnimationFrame(loop);
+    }catch(e){}
   }
 
-  /* ——— INTERACCIÓN ——— */
-  /* idle automático: tras construirse, el laberinto se resuelve solo (sin clic) */
-  function toIdle(){
-    if(phase!=='building'&&phase!=='idle') return;
-    phase='idle'; buildP=1;
-    txOp.style.color='rgba(130,149,242,.7)';
-    setTimeout(()=>{ if(phase==='idle') skipBtn.style.opacity='1'; },150);
-    clearTimeout(idleTimer);
-    idleTimer=setTimeout(startSolving,600);   // pausa breve y a resolver
+  var BG='#0B0C10', COB='#4361F0', SOFT='#8295F2';
+
+  /* ¿hay cubo 3D? (mismo gate que el módulo MZCube: escritorio + WebGL). Se
+     calcula aquí de forma independiente porque este script clásico corre ANTES
+     de que el módulo deferido haya creado window.MZCube. */
+  function _splashHasWebGL(){
+    try{ var c=document.createElement('canvas');
+      return !!(window.WebGLRenderingContext && (c.getContext('webgl')||c.getContext('experimental-webgl'))); }
+    catch(e){ return false; }
   }
-  function startSolving(){
-    if(phase!=='idle') return;
-    phase='solving'; solveT=0;
-    txOp.style.transition='color .4s'; txOp.style.color='rgba(130,149,242,0)';
+  var use3D = false;   // hero por imagen fotorreal (sin WebGL) → el splash usa la misma imagen
+
+  /* ——— estilos del splash (propios, con nombres únicos → no los desactiva
+     ninguna media query de reduced-motion de la página) ——— */
+  var st=document.createElement('style');
+  st.textContent=[
+    '.mz-splash{position:fixed;inset:0;z-index:2000;background:'+BG+';overflow:hidden;cursor:pointer;}',
+    '.mz-splash .mz-stage{position:absolute;inset:0;will-change:transform;transform:scale(1.0);}',
+    '.mz-splash.play .mz-stage{animation:mzKen 24s ease-in-out 2.4s infinite alternate;}',
+    /* mismo encuadre que el hero → el fundido de salida cae sobre la imagen idéntica (sin salto) */
+    '.mz-splash .mz-stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:64% 46%;display:block;}',
+    '@media (max-width:880px){.mz-splash .mz-stage img{object-position:58% 44%;}}',
+    '.mz-splash.play .mz-stage img{animation:mzImgIn 2.4s cubic-bezier(.16,1,.3,1) both;}',
+    /* atmósfera: viñeta + scrim inferior para que el texto respire */
+    '.mz-splash .mz-vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(125% 105% at 50% 45%, transparent 38%, rgba(11,12,16,.34) 70%, rgba(11,12,16,.74) 100%);}',
+    '.mz-splash .mz-scrim{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg, rgba(11,12,16,.46) 0%, transparent 26%, transparent 52%, rgba(11,12,16,.66) 82%, rgba(11,12,16,.94) 100%);}',
+    /* el haz: la "línea recta" que se forma a media altura */
+    '.mz-splash .mz-beam{position:absolute;left:0;right:0;top:50%;height:2px;transform:translateY(-50%) scaleX(0);transform-origin:left center;opacity:0;background:linear-gradient(90deg, rgba(67,97,240,0) 0%, '+COB+' 38%, '+SOFT+' 100%);box-shadow:0 0 26px 2px rgba(67,97,240,.55);pointer-events:none;}',
+    '.mz-splash.play .mz-beam{animation:mzBeam 1.3s cubic-bezier(.22,1,.36,1) 1s both;}',
+    '.mz-splash .mz-spark{position:absolute;top:50%;left:0;width:9px;height:9px;border-radius:50%;background:#eaf0ff;margin:-4.5px 0 0 -4.5px;opacity:0;box-shadow:0 0 10px 3px rgba(130,149,242,.95),0 0 34px 10px rgba(67,97,240,.7);pointer-events:none;}',
+    '.mz-splash.play .mz-spark{animation:mzSpark 1.35s cubic-bezier(.5,0,.2,1) 1s both;}',
+    '.mz-splash .mz-bloom{position:absolute;top:50%;right:0;width:34vw;max-width:520px;height:60vh;transform:translate(38%,-50%);pointer-events:none;opacity:0;background:radial-gradient(closest-side, rgba(130,149,242,.5), rgba(67,97,240,.16) 45%, transparent 72%);}',
+    '.mz-splash.play .mz-bloom{animation:mzBloomIn .9s ease 1.9s forwards, mzBreathe 3.6s ease-in-out 2.8s infinite;}',
+    /* textos */
+    '.mz-splash .mz-eye{position:absolute;top:13.5%;left:50%;transform:translateX(-50%);font-family:\'JetBrains Mono\',ui-monospace,monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:'+SOFT+';opacity:0;white-space:nowrap;pointer-events:none;}',
+    '.mz-splash.play .mz-eye{animation:mzEye 2.3s ease both .35s;}',
+    '.mz-splash .mz-sol{position:absolute;top:67%;left:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;width:92vw;pointer-events:none;}',
+    '.mz-splash .mz-l,.mz-splash .mz-r{font-family:\'Space Grotesk\',system-ui,sans-serif;font-weight:600;font-size:clamp(27px,4.8vw,58px);letter-spacing:-.03em;line-height:1.04;opacity:0;}',
+    '.mz-splash .mz-l{color:#ECEDF2;}',
+    '.mz-splash .mz-r{color:'+SOFT+';}',
+    '.mz-splash.play .mz-l{animation:mzUp .9s cubic-bezier(.16,1,.3,1) both 2.3s;}',
+    '.mz-splash.play .mz-r{animation:mzUp .9s cubic-bezier(.16,1,.3,1) both 2.58s;}',
+    /* firma */
+    '.mz-splash .mz-logo{position:absolute;bottom:50px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:16px;opacity:0;pointer-events:none;}',
+    '.mz-splash.play .mz-logo{animation:mzFade .8s ease both 3.25s;}',
+    '.mz-splash .mz-skip{position:absolute;bottom:20px;right:22px;background:transparent;border:1px solid rgba(255,255,255,.13);border-radius:8px;color:rgba(148,152,168,.72);font-family:\'JetBrains Mono\',ui-monospace,monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;padding:7px 14px;cursor:pointer;opacity:0;transition:opacity .5s,background .2s,color .2s,border-color .2s;}',
+    '.mz-splash.play .mz-skip{animation:mzFade .6s ease both 1.2s;}',
+    '.mz-splash .mz-skip:hover{background:rgba(255,255,255,.05);color:#ECEDF2;border-color:rgba(255,255,255,.24);}',
+    /* salida: empuje (dolly-in) + fundido → entrega al hero (misma imagen) */
+    '.mz-splash.leaving{opacity:0;transition:opacity .72s ease;}',
+    '.mz-splash.leaving .mz-stage{transform:scale(1.16);transition:transform .9s cubic-bezier(.5,0,.2,1);animation:none;}',
+    '.mz-splash.leaving .mz-stage img{filter:brightness(1.12) saturate(1.05);transition:filter .9s ease;}',
+    /* keyframes */
+    '@keyframes mzImgIn{from{transform:scale(1.1);filter:brightness(.4) saturate(.82) contrast(1.04);}to{transform:scale(1);filter:brightness(1) saturate(1) contrast(1);}}',
+    '@keyframes mzKen{from{transform:scale(1);}to{transform:scale(1.05);}}',
+    '@keyframes mzBeam{0%{transform:translateY(-50%) scaleX(0);opacity:0;}28%{opacity:1;}100%{transform:translateY(-50%) scaleX(1);opacity:.55;}}',
+    '@keyframes mzSpark{0%{left:-4vw;opacity:0;}12%{opacity:1;}88%{opacity:1;}100%{left:104vw;opacity:0;}}',
+    '@keyframes mzBloomIn{from{opacity:0;}to{opacity:1;}}',
+    '@keyframes mzBreathe{0%,100%{opacity:.7;}50%{opacity:1;}}',
+    '@keyframes mzEye{0%{opacity:0;}16%{opacity:.62;}66%{opacity:.62;}100%{opacity:0;}}',
+    '@keyframes mzUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}',
+    '@keyframes mzFade{from{opacity:0;}to{opacity:1;}}'
+  ].join('');
+  document.head.appendChild(st);
+
+  /* ——— overlay ——— */
+  var ov=document.createElement('div');
+  ov.className='mz-splash';
+  ov.setAttribute('aria-hidden','true');
+  /* con cubo 3D: overlay transparente sin imagen → se ve el cubo vivo del hero
+     detrás, con el haz/destello/textos del splash por encima. Sin él: imagen plana. */
+  var stageInner = use3D ? '' :
+    '<picture>'
+      +'<source media="(max-width:880px)" srcset="assets/hero-laberinto-mobile.jpg">'
+      +'<img src="assets/hero-laberinto.jpg" alt="" decoding="async" fetchpriority="high">'
+    +'</picture>';
+  if(use3D){ ov.style.background='transparent'; }
+  ov.innerHTML=
+    '<div class="mz-stage">'+stageInner+'</div>'
+    +'<div class="mz-vig"></div>'
+    +'<div class="mz-scrim"></div>'
+    +'<div class="mz-bloom"></div>'
+    +'<div class="mz-beam"></div>'
+    +'<div class="mz-spark"></div>'
+    +'<div class="mz-eye">// tu operativa, hoy</div>'
+    +'<div class="mz-sol"><div class="mz-l">Del laberinto,</div><div class="mz-r">una línea recta.</div></div>'
+    +'<div class="mz-logo">'
+      +'<svg viewBox="0 0 132 52" style="height:30px;overflow:visible" aria-hidden="true">'
+        +'<path fill="none" stroke="rgba(236,237,242,.82)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" d="M3 44L3 31 19 31 19 15 33 15 33 35 47 35 47 9 61 9 61 27 75 27 75 44 129 44"/>'
+        +'<circle fill="'+BG+'" stroke="rgba(236,237,242,.82)" stroke-width="2.4" cx="3" cy="44" r="4"/>'
+        +'<circle fill="'+BG+'" stroke="rgba(236,237,242,.82)" stroke-width="2.4" cx="33" cy="15" r="3.2"/>'
+        +'<circle fill="'+BG+'" stroke="rgba(236,237,242,.82)" stroke-width="2.4" cx="47" cy="9" r="3.2"/>'
+        +'<circle fill="'+BG+'" stroke="rgba(236,237,242,.82)" stroke-width="2.4" cx="75" cy="44" r="3.2"/>'
+        +'<circle fill="'+COB+'" cx="129" cy="44" r="4.4"/>'
+      +'</svg>'
+      +'<span style="font-family:\'Space Grotesk\',system-ui,sans-serif;font-weight:600;font-size:31px;letter-spacing:-.02em;color:rgba(236,237,242,.88)">Mazestudio<span style="color:'+COB+'">.</span></span>'
+    +'</div>'
+    +'<button class="mz-skip" type="button">saltar →</button>';
+  document.body.prepend(ov);
+
+  /* con cubo 3D: fija el encuadre mientras el splash está visible (sin scroll),
+     para que el cubo no se mueva detrás del overlay. Se restaura al salir. */
+  var _prevHtmlOverflow = use3D ? document.documentElement.style.overflow : null;
+  if(use3D){ document.documentElement.style.overflow='hidden'; }
+
+  /* lanzar la animación en el siguiente frame (para que el estado inicial pinte) */
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){ ov.classList.add('play'); }); });
+
+  /* ——— pantalla de carga: no salir hasta que la web haya cargado ———
+     El splash narra durante STORY_MS; si la página aún no ha cargado, se queda
+     (el bloom respira) hasta el evento load; entonces sale con el empuje final. */
+  var STORY_MS=4300, exited=false;
+  var pageLoaded=document.readyState==='complete';
+  var loadCbs=[];
+  function whenLoaded(cb){ if(pageLoaded) cb(); else loadCbs.push(cb); }
+  window.addEventListener('load',function(){
+    pageLoaded=true; while(loadCbs.length) loadCbs.shift()();
+  },{once:true});
+
+  function dismiss(){
+    if(!ov.parentNode) return;
+    ov.parentNode.removeChild(ov);
+    window.removeEventListener('keydown',onKey);
+    if(use3D){ document.documentElement.style.overflow = _prevHtmlOverflow || ''; }
+  }
+  function finish(){
+    if(exited) return; exited=true;
+    ov.classList.add('leaving');
+    setTimeout(dismiss,760);
   }
 
-  /* clic / tecla = acelerador opcional (adelanta la fase actual) */
-  function interact(){
-    if(phase==='building'){
-      toIdle();
-    } else if(phase==='idle'){
-      clearTimeout(idleTimer); startSolving();
-    } else if(phase==='solving'){
-      solveT=SOLVE_DUR; // saltar al final del acto 3
-    } else if(phase==='dissolving'){
-      // clic durante el enderezado → salir ya (fundido rápido)
-      phase='done';
-      ov.style.transition='opacity .6s ease'; ov.style.opacity='0';
-      setTimeout(dismiss,620);
-    }
+  /* salida natural: cuando termina la narrativa Y la web ha cargado */
+  setTimeout(function(){ whenLoaded(finish); }, STORY_MS);
+
+  /* interacción: clic/tecla = entrar ya */
+  function onKey(e){
+    if(e.key==='Enter'||e.key===' '||e.key==='Escape') finish();
   }
-
-  function dismiss(){ ov.remove(); window.removeEventListener('resize',onResize); }
-
-  let rT;
-  function onResize(){ clearTimeout(rT); rT=setTimeout(resize,150); }
-  window.addEventListener('resize',onResize);
-
-  ov.addEventListener('click',interact);
-  ov.addEventListener('touchend',e=>{e.preventDefault();interact();},{passive:false});
-  skipBtn.addEventListener('click',e=>{e.stopPropagation();dismiss();});
-  skipBtn.addEventListener('touchend',e=>{e.stopPropagation();e.preventDefault();dismiss();},{passive:false});
-  document.addEventListener('keydown',e=>{
-    if(e.key==='Enter'||e.key===' ') interact();
-    if(e.key==='Escape') dismiss();
-  });
-
-  setup();
-  requestAnimationFrame(loop);
+  ov.addEventListener('click',finish);
+  ov.addEventListener('touchend',function(e){ e.preventDefault(); finish(); },{passive:false});
+  window.addEventListener('keydown',onKey);
 })();
 </script>
 
 <script>
-/* ——— GRANO + CURSOR premium + botones magnéticos (estético) ——— */
+/* ——— GRANO · capa fija de ruido de film sobre todo (estético) ——— */
+/* (se retiraron el cursor personalizado y los "botones magnéticos": sumaban ruido de movimiento) */
 (function(){
   'use strict';
-
-  /* — grano: capa fija de ruido sobre todo — */
   const grain=document.createElement('div');
   grain.className='grain';
   grain.setAttribute('aria-hidden','true');
   document.body.appendChild(grain);
-
-  /* — todo lo que sigue: solo en dispositivos con puntero fino (no táctil) — */
-  const fine   = window.matchMedia && window.matchMedia('(pointer:fine)').matches;
-  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-  if(!fine) return;
-
-  /* — botones magnéticos: atraen el botón hacia el ratón — */
-  if(!reduce){
-    document.querySelectorAll('.btn').forEach(el=>{
-      el.addEventListener('mousemove',e=>{
-        const r=el.getBoundingClientRect();
-        const dx=(e.clientX-(r.left+r.width/2))*0.3;
-        const dy=(e.clientY-(r.top +r.height/2))*0.4;
-        el.style.transform=`translate(${dx}px,${dy}px)`;
-      });
-      el.addEventListener('mouseleave',()=>{ el.style.transform=''; });
-    });
-  }
 })();
 </script>
 
@@ -2135,13 +2272,11 @@
     /* nav + footer nav */
     "Servicios":"Services","Cómo funciona":"How it works","Soluciones":"Solutions","¿Nos necesitas?":"Need us?","Hablemos":" Let's talk",
     /* hero */
-    "sur de Tenerife":"south of Tenerife",
-    "Solucionamos":"We handle your business's ","el trabajo repetitivo":"repetitive work","de tu negocio.":".",
-    "Montamos los procesos para que se hagan solos — y los vigilamos para que nunca fallen.":"We build the processes so they run on their own — and we keep watch so they never fail.",
+    "sur de Tenerife":"south of Tenerife","sur de Tenerife · automatización con IA":"south of Tenerife · AI automation",
+    "Impulsamos y mejoramos":"We boost and improve","las tareas":"the tasks","de tu negocio.":"in your business.",
+    "Analizamos cómo trabajas hoy y volvemos con una demo hecha con tu propio negocio — sin coste y sin compromiso. Si encaja, lo montamos.":"We analyze how you work today and come back with a demo built with your own business — at no cost and no commitment. If it fits, we build it.",
+    "Quiero mi demo gratis":" Get my free demo",
     "Ver cómo funciona":"See how it works","sin guion · sin compromiso":"no script · no commitment",
-    /* manifiesto */
-    "// manifiesto":"// manifesto",
-    "No vendemos un sistema nuevo. Montamos":"We don't sell a new system. We build ","una capa de automatización encima de lo que ya usas":"an automation layer on top of what you already use","— para que el trabajo repetitivo pase solo, sin que se note.":" — so the repetitive work runs on its own, without you noticing.",
     /* servicios head */
     "servicios":"services","Lo que hacemos, en cuatro pasos claros.":"What we do, in four clear steps.","Sin paquetes raros ni jerga. Cada servicio es una función con un resultado concreto.":"No weird packages, no jargon. Each service is a function with a concrete result.",
     /* 01 */
@@ -2178,6 +2313,7 @@
     "03 · integraciones":"03 · integrations","Se coordina":"It coordinates","Tus herramientas se hablan: CRM, calendario, hojas, contabilidad, WhatsApp.":"Your tools talk to each other: CRM, calendar, sheets, accounting, WhatsApp.",
     "04 · resultado":"04 · result","Llega solo":"It arrives on its own","Factura enviada, cita confirmada, informe en tu bandeja, dato registrado. Sin manos.":"Invoice sent, appointment confirmed, report in your inbox, data logged. Hands-free.","Aviso":"Alert",
     "// construido sobre":"// built on ","tus herramientas actuales":"your current tools","— sin cambiar de software ni dependencias eternas":" — without switching software or endless dependencies",
+    "Demo de":"Process","procesos":"demos","Estas automatizaciones están funcionando ahora mismo. Ábrelas y juega con ellas.":"These automations are running right now. Open them and play with them.","por dentro":"under the hood",
     "// y esto no es un esquema — pruébalo tú":"// and this isn't a diagram — try it yourself","Míralo funcionar":"See it in action","facturas y nóminas que se archivan solas · ~60 s":"invoices and payslips that file themselves · ~60 s","o ábrela a pantalla completa ↗":"or open it full screen ↗",
     /* visor demos (dinámico) */
     "Demos disponibles":"Available demos","en vivo":"live","pronto":"soon",
@@ -2194,10 +2330,10 @@
     "Primer contacto al instante":"Instant first contact","El lead entra, recibe bienvenida, se cualifica y aterriza en el CRM. Respuesta en minutos, no días.":"The lead comes in, gets a welcome, is qualified and lands in the CRM. A reply in minutes, not days.","0 leads enfriados":"0 leads gone cold",
     "Informes automáticos":"Automatic reports","Cada lunes, un resumen de ventas y tareas en tu bandeja o Slack. Dashboard en tiempo real.":"Every Monday, a summary of sales and tasks in your inbox or Slack. Real-time dashboard.","4–8 h/mes recuperadas":"4–8 h/mo recovered",
     /* diagnóstico */
-    "diagnóstico · 3 preguntas · 2 minutos":"diagnosis · 3 questions · 2 minutes","¿lo necesitas?":"do you need it?","¿Nos necesitas? Descúbrelo":"Do you need us? Find out ","ahora.":"now.","Responde tres preguntas sobre tu día a día. Sin datos, sin compromiso.":"Answer three questions about your day-to-day. No data, no commitment.",
-    "¿Hay tareas que repites cada semana y sientes que podrías no tocar?":"Are there tasks you repeat every week that you feel you could stop doing?","Sí — correos, facturas, recordatorios, copiar datos...":"Yes — emails, invoices, reminders, copying data...","Puede ser, pero no tengo claro cuáles":"Maybe, but I'm not sure which ones","No — cada semana es diferente":"No — every week is different",
-    "¿Cuántas horas a la semana se van en trabajo que no necesita tu cabeza?":"How many hours a week go into work that doesn't need your brain?","Más de 5 horas — es una sangría seria":"More than 5 hours — it's a serious drain","Entre 2 y 5 horas — se nota pero lo aguanto":"Between 2 and 5 hours — noticeable but bearable","Menos de 2 — no es mi problema principal":"Less than 2 — it's not my main problem",
-    "Si esas horas volvieran, ¿en qué las pondrías?":"If those hours came back, what would you put them into?","Conseguir más clientes o cerrar más ventas":"Getting more clients or closing more sales","Mejorar el servicio o atender mejor a los que tengo":"Improving the service or taking better care of the clients I have","Descansar — llevo demasiado tiempo sin parar":"Resting — I've gone too long without stopping",
+    "diagnóstico · 3 preguntas · 2 minutos":"diagnosis · 3 questions · 2 minutes","¿lo necesitas?":"do you need it?","¿Nos":"Need","necesitas?":"us?","Responde tres preguntas sobre tu día a día. Sin datos, sin compromiso.":"Answer three questions about your day-to-day. No data, no commitment.",
+    "¿Hay tareas que repites cada semana y consideras que puedes delegar alguna parte?":"Are there tasks you repeat every week that you think you could delegate part of?","Sí — correos, facturas, recordatorios, copiar datos...":"Yes — emails, invoices, reminders, copying data...","Puede ser, pero no tengo claro cuáles":"Maybe, but I'm not sure which ones","No — cada semana es diferente":"No — every week is different",
+    "¿Cuántas horas de trabajo a la semana ocupan estas tareas?":"How many hours of work a week do these tasks take up?","Más de 5 horas — es una sangría seria":"More than 5 hours — it's a serious drain","Entre 2 y 5 horas — se nota pero lo aguanto":"Between 2 and 5 hours — noticeable but bearable","Menos de 2 — no es mi problema principal":"Less than 2 — it's not my main problem",
+    "¿Si pudieras aprovechar ese tiempo, en qué las invertirías?":"If you could make use of that time, what would you invest them in?","Conseguir más clientes o cerrar más ventas":"Getting more clients or closing more sales","Mejorar el servicio o atender mejor a los que tengo":"Improving the service or taking better care of the clients I have","Descansar — llevo demasiado tiempo sin parar":"Resting — I've gone too long without stopping",
     /* diagnóstico · resultados (dinámico) */
     "resultado · quizá no es el momento":"result · maybe not the right time","resultado · vale la pena explorar":"result · worth exploring","resultado · hay margen":"result · there's room","resultado · encajamos":"result · we're a fit",
     "Tu operativa ya funciona bastante":"Your operation already runs pretty ","bien.":"well.","Puede que no lo veas, pero":"You may not see it, but ","está ahí.":"it's there.","Poco tiempo perdido no significa que":"A little wasted time doesn't mean ","esté bien así.":"it's fine as is.","Sí. Podemos":"Yes. We can ","ayudarte.":"help you.",
