@@ -1,0 +1,1359 @@
+/* mazestudio · app.js — GENERADO por build.mjs. NO editar a mano.
+   Fuente: WEB/src/mazestudio-web.html · regenerar: npm run build */
+(function(){
+(function() {
+  const { useRef, useEffect } = React;
+  function FadingVideo({ src, poster, preload, style }) {
+    const ref = useRef(null);
+    const defer = !!window.__preloaderActive;
+    useEffect(() => {
+      const v = ref.current;
+      if (!v) return;
+      if (defer) {
+        const onDone = () => {
+          v.load();
+          v.play().catch(() => {
+          });
+        };
+        window.addEventListener("preloader-done", onDone, { once: true });
+        return () => window.removeEventListener("preloader-done", onDone);
+      }
+      v.play().catch(() => {
+      });
+    }, [src]);
+    const vp = {
+      ref,
+      src,
+      poster,
+      muted: true,
+      playsInline: true,
+      preload: preload ?? (defer ? "none" : "auto"),
+      loop: true,
+      className: "hero-fade",
+      style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0 }
+    };
+    if (!defer) vp.autoPlay = true;
+    return /* @__PURE__ */ React.createElement("div", { style: { position: "absolute", inset: 0, overflow: "hidden", ...style } }, /* @__PURE__ */ React.createElement("video", { ...vp }));
+  }
+  window.FadingVideo = FadingVideo;
+})();
+})();
+
+(function(){
+(function() {
+  const { useEffect, useRef, useState } = React;
+  const motion = window.Motion.motion;
+  function BlurText({ text, style }) {
+    const [inView, setInView] = useState(false);
+    const ref = useRef(null);
+    useEffect(() => {
+      const io = new IntersectionObserver(([e]) => {
+        if (e.isIntersecting) setInView(true);
+      }, { threshold: 0.1 });
+      if (ref.current) io.observe(ref.current);
+      return () => io.disconnect();
+    }, []);
+    return /* @__PURE__ */ React.createElement("p", { ref, style: { display: "flex", flexWrap: "wrap", justifyContent: "flex-start", rowGap: "0.1em", ...style } }, text.split(" ").map((w, i) => /* @__PURE__ */ React.createElement(
+      motion.span,
+      {
+        key: i,
+        initial: { filter: "blur(10px)", opacity: 0, y: 50 },
+        animate: inView ? { filter: "blur(0px)", opacity: 1, y: 0 } : {},
+        transition: { duration: 0.7, delay: i * 100 / 1e3, ease: "easeOut" },
+        style: { display: "inline-block", marginRight: "0.28em" }
+      },
+      w
+    )));
+  }
+  window.BlurText = BlurText;
+})();
+})();
+
+(function(){
+window.IconArrow = function IconArrow() {
+  return /* @__PURE__ */ React.createElement("svg", { width: "20", height: "20", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }, /* @__PURE__ */ React.createElement("line", { x1: "7", y1: "17", x2: "17", y2: "7" }), /* @__PURE__ */ React.createElement("polyline", { points: "7 7 17 7 17 17" }));
+};
+window.IconPlay = function IconPlay() {
+  return /* @__PURE__ */ React.createElement("svg", { width: "16", height: "16", viewBox: "0 0 24 24", fill: "currentColor" }, /* @__PURE__ */ React.createElement("polygon", { points: "6 4 20 12 6 20 6 4" }));
+};
+window.MazeLogo = function MazeLogo() {
+  return /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 132 52", width: "72", height: "29", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement(
+    "path",
+    {
+      d: "M3 44 L3 31 L19 31 L19 15 L33 15 L33 35 L47 35 L47 9 L61 9 L61 27 L75 27 L75 44 L129 44",
+      fill: "none",
+      stroke: "white",
+      strokeWidth: "3.2",
+      strokeLinecap: "round",
+      strokeLinejoin: "round"
+    }
+  ), /* @__PURE__ */ React.createElement("circle", { cx: "3", cy: "44", r: "4", fill: "#1E1D2C", stroke: "white", strokeWidth: "2.4" }), /* @__PURE__ */ React.createElement("circle", { cx: "33", cy: "15", r: "3.2", fill: "#1E1D2C", stroke: "white", strokeWidth: "2.4" }), /* @__PURE__ */ React.createElement("circle", { cx: "47", cy: "9", r: "3.2", fill: "#1E1D2C", stroke: "white", strokeWidth: "2.4" }), /* @__PURE__ */ React.createElement("circle", { cx: "75", cy: "44", r: "3.2", fill: "#1E1D2C", stroke: "white", strokeWidth: "2.4" }), /* @__PURE__ */ React.createElement("circle", { cx: "129", cy: "44", r: "4.4", fill: "#4B8CF7", stroke: "none" }));
+};
+})();
+
+(function(){
+(function() {
+  const { useEffect, useRef, useState } = React;
+  const motion = window.Motion.motion;
+  window.Reveal = function Reveal({ children, delay = 0, y = 26, style, className }) {
+    const [inView, setInView] = useState(false);
+    const ref = useRef(null);
+    useEffect(() => {
+      const io = new IntersectionObserver(([e]) => {
+        if (e.isIntersecting) {
+          setInView(true);
+          io.disconnect();
+        }
+      }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
+      if (ref.current) io.observe(ref.current);
+      return () => io.disconnect();
+    }, []);
+    return /* @__PURE__ */ React.createElement(
+      motion.div,
+      {
+        ref,
+        className,
+        initial: { opacity: 0, y, filter: "blur(8px)" },
+        animate: inView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {},
+        transition: { duration: 0.7, delay, ease: [0.16, 1, 0.3, 1] },
+        style
+      },
+      children
+    );
+  };
+  window.HeadReveal = function HeadReveal({ children, delay = 0, y = 28, style, className }) {
+    const ref = useRef(null);
+    React.useLayoutEffect(() => {
+      const el = ref.current;
+      if (!el || !window.gsap || !window.ScrollTrigger) return;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      const items = el.children.length ? Array.from(el.children) : [el];
+      const ctx = window.gsap.context(() => {
+        window.gsap.set(items, { opacity: 0, y, filter: "blur(10px)" });
+        window.gsap.to(items, {
+          opacity: 1,
+          y: 0,
+          filter: "blur(0px)",
+          duration: 1,
+          ease: "expo.out",
+          stagger: 0.085,
+          delay,
+          clearProps: "filter",
+          scrollTrigger: { trigger: el, start: "top 84%", once: true }
+        });
+      }, ref);
+      return () => ctx.revert();
+    }, []);
+    return /* @__PURE__ */ React.createElement("div", { ref, className, style }, children);
+  };
+  window.IconExternal = function IconExternal() {
+    return /* @__PURE__ */ React.createElement("svg", { width: "13", height: "13", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }, /* @__PURE__ */ React.createElement("line", { x1: "7", y1: "17", x2: "17", y2: "7" }), /* @__PURE__ */ React.createElement("polyline", { points: "7 7 17 7 17 17" }));
+  };
+  window.IconCheck = function IconCheck() {
+    return /* @__PURE__ */ React.createElement("svg", { width: "11", height: "11", viewBox: "0 0 24 24", fill: "none", stroke: "#fff", strokeWidth: "3", strokeLinecap: "round", strokeLinejoin: "round" }, /* @__PURE__ */ React.createElement("path", { d: "M5 13l4 4L19 7" }));
+  };
+})();
+})();
+
+(function(){
+(function() {
+  const { useEffect } = React;
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const coarse = window.matchMedia("(pointer: coarse)").matches;
+  window.ScrollFX = function ScrollFX() {
+    useEffect(() => {
+      const bar = document.getElementById("scrollProgress");
+      let raf = null;
+      const onScroll = () => {
+        if (raf) return;
+        raf = requestAnimationFrame(() => {
+          const h = document.documentElement;
+          const max = h.scrollHeight - h.clientHeight;
+          const p = max > 0 ? (h.scrollTop || window.scrollY) / max : 0;
+          if (bar) bar.style.width = (p * 100).toFixed(2) + "%";
+          raf = null;
+        });
+      };
+      window.addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
+      const ctx = window.gsap && window.ScrollTrigger && !reduced ? window.gsap.context(() => {
+        document.querySelectorAll(".fx-glow").forEach((el) => {
+          const depth = parseFloat(el.dataset.depth || "0.18");
+          window.gsap.to(el, {
+            yPercent: depth * 100,
+            ease: "none",
+            scrollTrigger: { trigger: el.closest("section") || el, start: "top bottom", end: "bottom top", scrub: 0.8, invalidateOnRefresh: true }
+          });
+        });
+        document.querySelectorAll(".v2-h2").forEach((el) => {
+          window.gsap.fromTo(el, { yPercent: 0 }, {
+            yPercent: -18,
+            ease: "none",
+            scrollTrigger: { trigger: el.closest("section") || el, start: "top bottom", end: "bottom top", scrub: 0.8, invalidateOnRefresh: true }
+          });
+        });
+        document.querySelectorAll("[data-parallax]").forEach((el) => {
+          const depth = parseFloat(el.dataset.parallax || "0");
+          if (!depth) return;
+          window.gsap.fromTo(el, { yPercent: 0 }, {
+            yPercent: depth * 100,
+            ease: "none",
+            scrollTrigger: {
+              trigger: el.closest("section") || el,
+              start: el.dataset.parallaxStart || "top bottom",
+              end: el.dataset.parallaxEnd || "bottom top",
+              scrub: 0.8,
+              invalidateOnRefresh: true
+            }
+          });
+        });
+      }) : null;
+      const cleanups = [];
+      if (!reduced && !coarse) {
+        document.querySelectorAll(".magnetic").forEach((el) => {
+          const move = (e) => {
+            const r = el.getBoundingClientRect();
+            const mx = e.clientX - (r.left + r.width / 2);
+            const my = e.clientY - (r.top + r.height / 2);
+            el.style.transform = `translate(${mx * 0.22}px, ${my * 0.3}px)`;
+          };
+          const leave = () => {
+            el.style.transform = "translate(0,0)";
+          };
+          el.addEventListener("pointermove", move);
+          el.addEventListener("pointerleave", leave);
+          cleanups.push(() => {
+            el.removeEventListener("pointermove", move);
+            el.removeEventListener("pointerleave", leave);
+          });
+        });
+      }
+      let rfTimer;
+      const refresh = () => {
+        clearTimeout(rfTimer);
+        rfTimer = setTimeout(() => window.ScrollTrigger && window.ScrollTrigger.refresh(), 120);
+      };
+      window.__refreshST = refresh;
+      window.addEventListener("load", refresh);
+      setTimeout(refresh, 1400);
+      return () => {
+        window.removeEventListener("scroll", onScroll);
+        window.removeEventListener("load", refresh);
+        clearTimeout(rfTimer);
+        cleanups.forEach((fn) => fn());
+        if (ctx) ctx.revert();
+      };
+    }, []);
+    return null;
+  };
+})();
+})();
+
+(function(){
+(function() {
+  const { useEffect } = React;
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  window.CinematicTransitions = function CinematicTransitions() {
+    useEffect(() => {
+      const desktop = window.matchMedia("(min-width:881px)").matches;
+      if (reduced || !desktop || !window.gsap || !window.ScrollTrigger) return;
+      const ctx = window.gsap.context(() => {
+        window.gsap.utils.toArray("#soluciones .v2-sol").forEach((card) => {
+          window.gsap.to(card, {
+            y: -36,
+            scale: 0.965,
+            opacity: 0.5,
+            ease: "none",
+            scrollTrigger: { trigger: "#soluciones", start: "bottom 85%", end: "bottom 35%", scrub: 0.8, invalidateOnRefresh: true }
+          });
+        });
+        const cta = document.querySelector("#contacto .cta-converge");
+        if (cta) window.gsap.from(cta, {
+          opacity: 0,
+          scale: 0.82,
+          filter: "blur(10px)",
+          ease: "power2.out",
+          scrollTrigger: { trigger: "#contacto", start: "top 80%", end: "top 38%", scrub: 0.6, invalidateOnRefresh: true }
+        });
+      });
+      if (window.__refreshST) window.__refreshST();
+      return () => {
+        ctx.revert();
+      };
+    }, []);
+    return null;
+  };
+})();
+})();
+
+(function(){
+(function() {
+  const { useState } = React;
+  window.Navbar = function Navbar() {
+    const [open, setOpen] = useState(false);
+    const links = [
+      { label: "C\xF3mo funciona", href: "#como" },
+      { label: "Ahorro", href: "#roi" },
+      { label: "Servicios", href: "#servicios" },
+      { label: "Soluciones", href: "#soluciones" },
+      { label: "\xBFNos necesitas?", href: "#diagnostico" }
+    ];
+    return /* @__PURE__ */ React.createElement("nav", { style: {
+      position: "fixed",
+      top: 16,
+      left: 0,
+      right: 0,
+      zIndex: 60,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      padding: "0 clamp(16.8px,4vw,42px)"
+    } }, /* @__PURE__ */ React.createElement(
+      "a",
+      {
+        href: "#top",
+        className: "lg",
+        style: { display: "flex", alignItems: "center", gap: 10, borderRadius: 9999, padding: "8px 14px" }
+      },
+      /* @__PURE__ */ React.createElement(window.MazeLogo, null),
+      /* @__PURE__ */ React.createElement("span", { style: {
+        fontFamily: "Bricolage Grotesque",
+        fontWeight: 600,
+        fontSize: 17.8,
+        color: "#EAE8F2",
+        letterSpacing: "-.02em",
+        whiteSpace: "nowrap"
+      } }, "Mazestudio", /* @__PURE__ */ React.createElement("span", { style: { color: "#4B8CF7" } }, "."))
+    ), /* @__PURE__ */ React.createElement("div", { className: "lg v2nav-links", style: { display: "flex", alignItems: "center", borderRadius: 9999, padding: "6px 6px", gap: 2 } }, links.map((l) => /* @__PURE__ */ React.createElement(
+      "a",
+      {
+        key: l.href,
+        href: l.href,
+        className: "nav-link",
+        style: {
+          fontFamily: "Bricolage Grotesque",
+          fontSize: 13.6,
+          fontWeight: 500,
+          color: "rgba(234,232,242,.88)",
+          padding: "8px 12px",
+          borderRadius: 9999,
+          whiteSpace: "nowrap",
+          transition: "background .18s"
+        }
+      },
+      l.label
+    )), /* @__PURE__ */ React.createElement(
+      "a",
+      {
+        href: "hablemos.html",
+        style: {
+          fontFamily: "Bricolage Grotesque",
+          fontSize: 13.6,
+          fontWeight: 600,
+          background: "white",
+          color: "#0B0A12",
+          padding: "8px 18px",
+          borderRadius: 9999,
+          whiteSpace: "nowrap",
+          marginLeft: 4
+        }
+      },
+      "Hablemos \u2192"
+    )), /* @__PURE__ */ React.createElement("div", { className: "v2nav-spacer", style: { width: 48 } }), /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        className: "lg v2nav-burger",
+        "aria-label": "Abrir men\xFA",
+        "aria-expanded": open,
+        onClick: () => setOpen((o) => !o),
+        style: {
+          display: "none",
+          alignItems: "center",
+          justifyContent: "center",
+          width: 46,
+          height: 46,
+          borderRadius: 9999,
+          border: "none",
+          background: "rgba(255,255,255,.015)",
+          color: "#fff",
+          cursor: "pointer"
+        }
+      },
+      /* @__PURE__ */ React.createElement("svg", { width: "20", height: "20", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round" }, open ? /* @__PURE__ */ React.createElement("g", null, /* @__PURE__ */ React.createElement("line", { x1: "6", y1: "6", x2: "18", y2: "18" }), /* @__PURE__ */ React.createElement("line", { x1: "6", y1: "18", x2: "18", y2: "6" })) : /* @__PURE__ */ React.createElement("g", null, /* @__PURE__ */ React.createElement("line", { x1: "3", y1: "6", x2: "21", y2: "6" }), /* @__PURE__ */ React.createElement("line", { x1: "3", y1: "12", x2: "21", y2: "12" }), /* @__PURE__ */ React.createElement("line", { x1: "3", y1: "18", x2: "21", y2: "18" })))
+    ), open && /* @__PURE__ */ React.createElement("div", { className: "lg", style: {
+      position: "absolute",
+      top: 66,
+      left: "clamp(16.8px,4vw,42px)",
+      right: "clamp(16.8px,4vw,42px)",
+      borderRadius: 18,
+      padding: 10,
+      display: "flex",
+      flexDirection: "column",
+      gap: 2,
+      zIndex: 70
+    } }, links.map((l) => /* @__PURE__ */ React.createElement(
+      "a",
+      {
+        key: l.href,
+        href: l.href,
+        onClick: () => setOpen(false),
+        style: { fontFamily: "Bricolage Grotesque", fontSize: 15.7, fontWeight: 500, color: "#EAE8F2", padding: "14px 14px", borderRadius: 12 }
+      },
+      l.label
+    )), /* @__PURE__ */ React.createElement(
+      "a",
+      {
+        href: "hablemos.html",
+        onClick: () => setOpen(false),
+        style: {
+          fontFamily: "Bricolage Grotesque",
+          fontSize: 15.7,
+          fontWeight: 600,
+          background: "#fff",
+          color: "#0B0A12",
+          padding: "14px 14px",
+          borderRadius: 12,
+          textAlign: "center",
+          marginTop: 6
+        }
+      },
+      "Hablemos \u2192"
+    )));
+  };
+})();
+})();
+
+(function(){
+(function() {
+  const motion = window.Motion.motion;
+  const HERO_VIDEO = "assets/referencias/referencia-cubo-cristal-01-4k60-loop.mp4";
+  const HERO_POSTER = "assets/referencias/poster-cubo-carga.jpg";
+  function fu(delay) {
+    return {
+      initial: { filter: "blur(10px)", opacity: 0, y: 20 },
+      animate: { filter: "blur(0px)", opacity: 1, y: 0 },
+      transition: { duration: 0.7, delay, ease: "easeOut" }
+    };
+  }
+  window.HeroSection = function HeroSection() {
+    return /* @__PURE__ */ React.createElement("section", { id: "top", style: { position: "relative", width: "100%", height: "100svh", minHeight: 640, background: "#08070C", overflow: "hidden" } }, /* @__PURE__ */ React.createElement(window.FadingVideo, { src: HERO_VIDEO, poster: HERO_POSTER, style: { zIndex: 0 } }), /* @__PURE__ */ React.createElement("div", { style: {
+      position: "absolute",
+      inset: 0,
+      zIndex: 1,
+      pointerEvents: "none",
+      background: "linear-gradient(90deg, rgba(8,7,12,.92) 0%, rgba(8,7,12,.66) 32%, rgba(8,7,12,.14) 58%, rgba(8,7,12,0) 78%), linear-gradient(180deg, rgba(8,7,12,.5) 0%, rgba(8,7,12,0) 26%, rgba(8,7,12,.42) 76%, rgba(8,7,12,.72) 100%)"
+    } }), /* @__PURE__ */ React.createElement("div", { style: { position: "relative", zIndex: 10, display: "flex", flexDirection: "column", height: "100%" } }, /* @__PURE__ */ React.createElement(window.Navbar, null), /* @__PURE__ */ React.createElement("div", { className: "hero-body", "data-parallax": "-0.16", "data-parallax-start": "top top", "data-parallax-end": "bottom top", style: { flex: 1, display: "flex", flexDirection: "column", alignItems: "flex-start", justifyContent: "center", willChange: "transform" } }, /* @__PURE__ */ React.createElement(
+      window.BlurText,
+      {
+        text: "Del laberinto, una l\xEDnea recta",
+        style: {
+          fontFamily: "Bricolage Grotesque",
+          letterSpacing: "-3px",
+          lineHeight: 0.85,
+          fontSize: "clamp(48.3px,7.5vw,92.4px)",
+          color: "white",
+          maxWidth: 672,
+          justifyContent: "flex-start",
+          textAlign: "left",
+          textShadow: "0 2px 30px rgba(0,0,0,.6), 0 1px 4px rgba(0,0,0,.4)"
+        }
+      }
+    ), /* @__PURE__ */ React.createElement(
+      motion.p,
+      {
+        ...fu(0.8),
+        style: {
+          marginTop: 16,
+          fontSize: "clamp(14.7px,1.4vw,16.8px)",
+          color: "rgba(255,255,255,.86)",
+          maxWidth: 600,
+          textAlign: "left",
+          fontFamily: "Bricolage Grotesque",
+          fontWeight: 300,
+          lineHeight: 1.45,
+          textShadow: "0 1px 16px rgba(0,0,0,.55)"
+        }
+      },
+      "Conectamos tus aplicaciones y montamos asistentes con IA para que correos, reservas y documentos se hagan solos. Sin cambiar de software. Sin tecnicismos."
+    ), /* @__PURE__ */ React.createElement(motion.div, { ...fu(1.1), style: { display: "flex", alignItems: "center", gap: 20, marginTop: 26, flexWrap: "wrap" } }, /* @__PURE__ */ React.createElement(
+      "a",
+      {
+        href: "#como",
+        className: "lg-s magnetic",
+        style: {
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 13,
+          borderRadius: 9999,
+          padding: "9px 26px 9px 9px",
+          fontSize: 15.8,
+          fontWeight: 500,
+          fontFamily: "Bricolage Grotesque",
+          color: "white"
+        }
+      },
+      /* @__PURE__ */ React.createElement("span", { style: {
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        width: 38,
+        height: 38,
+        borderRadius: 9999,
+        background: "var(--accent)",
+        color: "#fff",
+        flexShrink: 0,
+        boxShadow: "0 6px 18px -6px var(--accent)"
+      } }, /* @__PURE__ */ React.createElement("span", { style: { marginLeft: 2, display: "inline-flex" } }, /* @__PURE__ */ React.createElement(window.IconPlay, null))),
+      "Ver c\xF3mo funciona"
+    ))), /* @__PURE__ */ React.createElement("div", { className: "hero-free-wrap", style: {
+      position: "absolute",
+      left: 0,
+      right: 0,
+      bottom: "clamp(26px,5.5vh,60px)",
+      display: "flex",
+      justifyContent: "center",
+      zIndex: 12,
+      pointerEvents: "none",
+      padding: "0 16px"
+    } }, /* @__PURE__ */ React.createElement(motion.a, { ...fu(1.2), href: "hablemos.html", className: "hero-free", style: { pointerEvents: "auto", textDecoration: "none", cursor: "pointer" } }, /* @__PURE__ */ React.createElement("span", { className: "hero-free-chip" }, /* @__PURE__ */ React.createElement("span", { className: "hero-free-dot" }), "Gratis"), /* @__PURE__ */ React.createElement("span", { className: "hero-free-txt" }, /* @__PURE__ */ React.createElement("b", null, "Auditor\xEDa de tu negocio"), " sin compromiso"), /* @__PURE__ */ React.createElement("span", { className: "hero-free-arrow", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement(window.IconArrow, null))))));
+  };
+})();
+})();
+
+(function(){
+(function() {
+  const { useEffect, useRef } = React;
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const LEFT_WORDS = "Tu operativa hoy es un laberinto de tareas que se repiten.".split(" ");
+  const RIGHT_WORDS = "Nuestro trabajo es trazar el camino directo \u2014 y dejar que se recorra solo.".split(" ");
+  const Words = ({ list }) => list.map((w, i) => /* @__PURE__ */ React.createElement(React.Fragment, { key: i }, /* @__PURE__ */ React.createElement("span", { className: "w" }, w), " "));
+  window.LineaRectaSection = function LineaRectaSection() {
+    const secRef = useRef(null);
+    const stageRef = useRef(null);
+    const pathRef = useRef(null);
+    const nodeRef = useRef(null);
+    const ringRef = useRef(null);
+    const dotRef = useRef(null);
+    const ghostRef = useRef(null);
+    const topRef = useRef(null);
+    const botRef = useRef(null);
+    const flankRef = useRef(null);
+    const leftRef = useRef(null);
+    const rightRef = useRef(null);
+    useEffect(() => {
+      const path = pathRef.current, node = nodeRef.current, ring = ringRef.current, dot = dotRef.current, stage = stageRef.current, ghost = ghostRef.current, top = topRef.current, bot = botRef.current;
+      if (!path) return;
+      const len = path.getTotalLength();
+      path.style.strokeDasharray = len;
+      path.style.strokeDashoffset = len;
+      const place = (frac) => {
+        const pt = path.getPointAtLength(len * frac);
+        dot.setAttribute("cx", pt.x);
+        dot.setAttribute("cy", pt.y);
+      };
+      const setFinal = () => {
+        path.style.strokeDashoffset = 0;
+        if (node) {
+          node.setAttribute("r", "13");
+          node.style.opacity = 1;
+        }
+        if (ring) {
+          ring.setAttribute("r", "26");
+          ring.style.opacity = 1;
+        }
+        if (dot) {
+          place(1);
+          dot.style.opacity = 1;
+        }
+        if (ghost) ghost.style.opacity = 0.3;
+        if (top) top.style.opacity = 1;
+        if (bot) bot.style.opacity = 1;
+        if (stage) stage.querySelectorAll(".lr-wp").forEach((wp) => {
+          wp.setAttribute("r", "5.5");
+          wp.style.opacity = 1;
+        });
+        [leftRef.current, rightRef.current].forEach((el) => {
+          if (el) el.querySelectorAll(".w").forEach((w) => {
+            w.style.opacity = 1;
+            w.style.filter = "none";
+          });
+        });
+      };
+      if (reduced || !window.gsap || !window.ScrollTrigger) {
+        setFinal();
+        return;
+      }
+      const ctx = window.gsap.context(() => {
+        const tl = window.gsap.timeline({
+          // termina ANTES de que la columna quede centrada, para poder leerlo todo ya completo
+          scrollTrigger: { trigger: stage, start: "top 88%", end: "center 65%", scrub: 1 }
+        });
+        tl.fromTo(path, { strokeDashoffset: len }, { strokeDashoffset: 0, duration: 1, ease: "none" }, 0);
+        const proxy = { p: 0 };
+        tl.fromTo(proxy, { p: 0 }, { p: 1, duration: 1, ease: "none", onUpdate() {
+          place(proxy.p);
+        } }, 0);
+        tl.fromTo(dot, { opacity: 0 }, { opacity: 1, duration: 0.05, ease: "none" }, 0);
+        if (ghost) tl.fromTo(ghost, { opacity: 0 }, { opacity: 1, duration: 0.25, ease: "none" }, 0).to(ghost, { opacity: 0.3, duration: 0.5, ease: "none" }, 0.3);
+        stage.querySelectorAll(".lr-wp").forEach((wp) => {
+          const f = parseFloat(wp.dataset.frac || "0");
+          tl.fromTo(
+            wp,
+            { opacity: 0, attr: { r: 0 } },
+            { opacity: 1, attr: { r: 5.5 }, duration: 0.07, ease: "back.out(3)" },
+            Math.max(0, f - 0.015)
+          );
+        });
+        if (top) tl.fromTo(top, { opacity: 0, attr: { y: 48 } }, { opacity: 1, attr: { y: 58 }, duration: 0.16, ease: "power2.out" }, 0.03);
+        tl.fromTo(node, { opacity: 0, attr: { r: 0 } }, { opacity: 1, attr: { r: 13 }, duration: 0.2, ease: "back.out(2.4)" }, 0.82);
+        if (ring) tl.fromTo(ring, { opacity: 0, attr: { r: 8 } }, { opacity: 1, attr: { r: 26 }, duration: 0.2, ease: "power2.out" }, 0.82);
+        if (bot) tl.fromTo(bot, { opacity: 0, attr: { y: 886 } }, { opacity: 1, attr: { y: 878 }, duration: 0.16, ease: "power2.out" }, 0.84);
+        const flank = flankRef.current;
+        const leftW = leftRef.current ? leftRef.current.querySelectorAll(".w") : [];
+        const rightW = rightRef.current ? rightRef.current.querySelectorAll(".w") : [];
+        if (flank && (leftW.length || rightW.length)) {
+          const tlw = window.gsap.timeline({
+            // las frases acaban de revelarse también antes del centro
+            scrollTrigger: { trigger: flank, start: "top 84%", end: "center 66%", scrub: 1.5 }
+          });
+          const wordIn = { opacity: 0.06, filter: "blur(8px)" };
+          const wordOut = () => ({ opacity: 1, filter: "blur(0px)", ease: "sine.out", duration: 1.6, stagger: { each: 0.35, ease: "sine.inOut" } });
+          if (leftW.length) tlw.fromTo(leftW, wordIn, wordOut(), 0);
+          if (rightW.length) tlw.fromTo(rightW, wordIn, wordOut(), ">-0.8");
+        }
+      }, stage);
+      return () => ctx.revert();
+    }, []);
+    return /* @__PURE__ */ React.createElement("section", { ref: secRef, id: "idea", className: "lr-sec" }, /* @__PURE__ */ React.createElement("div", { className: "lr-blob", style: { width: 460, height: 460, left: "-8%", top: "2%", background: "rgba(99,80,170,.42)", animation: "lrFloat1 14s ease-in-out infinite" } }), /* @__PURE__ */ React.createElement("div", { className: "lr-blob", style: { width: 420, height: 420, right: "-6%", bottom: "-8%", background: "rgba(75,140,247,.4)", animation: "lrFloat2 17s ease-in-out infinite" } }), /* @__PURE__ */ React.createElement("div", { className: "lr-inner" }, /* @__PURE__ */ React.createElement(window.Reveal, null, /* @__PURE__ */ React.createElement("span", { className: "lr-kicker" }, "// la idea, en una imagen"), /* @__PURE__ */ React.createElement("h2", { className: "lr-title" }, "De lo enredado a lo simple. ", /* @__PURE__ */ React.createElement("em", null, "Una l\xEDnea recta."))), /* @__PURE__ */ React.createElement("div", { ref: flankRef, className: "lr-flank" }, /* @__PURE__ */ React.createElement("p", { ref: leftRef, className: "lr-side lr-side-l" }, /* @__PURE__ */ React.createElement(Words, { list: LEFT_WORDS })), /* @__PURE__ */ React.createElement("div", { ref: stageRef, className: "lr-stage" }, /* @__PURE__ */ React.createElement("svg", { className: "lr-svg", viewBox: "0 0 300 900", preserveAspectRatio: "xMidYMid meet", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("defs", null, /* @__PURE__ */ React.createElement("linearGradient", { id: "lr-grad-v", gradientUnits: "userSpaceOnUse", x1: "150", y1: "96", x2: "150", y2: "840" }, /* @__PURE__ */ React.createElement("stop", { offset: "0", stopColor: "#6E6D7E" }), /* @__PURE__ */ React.createElement("stop", { offset: "0.34", stopColor: "#4B8CF7" }), /* @__PURE__ */ React.createElement("stop", { offset: "1", stopColor: "#86E6FF" }))), /* @__PURE__ */ React.createElement("text", { ref: topRef, className: "lr-axis-top", x: "150", y: "58", textAnchor: "middle", style: { opacity: 0 } }, "ENREDADO"), /* @__PURE__ */ React.createElement("g", { ref: ghostRef, style: { opacity: 0 } }, /* @__PURE__ */ React.createElement("path", { className: "maze-ghost", d: "M70 140 V220 H180 V170 H120 V274" }), /* @__PURE__ */ React.createElement("path", { className: "maze-ghost", d: "M214 132 V214 H90 V292 H172" }), /* @__PURE__ */ React.createElement("path", { className: "maze-ghost", d: "M150 116 V152 H58 V206" })), /* @__PURE__ */ React.createElement(
+      "path",
+      {
+        ref: pathRef,
+        className: "maze-path",
+        d: "M150 96 H50 V164 H250 V120 H80 V230 H264 V184 H44 V296 H210 V250 H120 V360 H150 V840"
+      }
+    ), /* @__PURE__ */ React.createElement("circle", { className: "lr-wp", cx: "250", cy: "164", r: "5.5", "data-frac": "0.169" }), /* @__PURE__ */ React.createElement("circle", { className: "lr-wp", cx: "80", cy: "230", r: "5.5", "data-frac": "0.318" }), /* @__PURE__ */ React.createElement("circle", { className: "lr-wp", cx: "264", cy: "184", r: "5.5", "data-frac": "0.424" }), /* @__PURE__ */ React.createElement("circle", { className: "lr-wp", cx: "44", cy: "296", r: "5.5", "data-frac": "0.576" }), /* @__PURE__ */ React.createElement("circle", { className: "lr-wp", cx: "210", cy: "250", r: "5.5", "data-frac": "0.674" }), /* @__PURE__ */ React.createElement("circle", { ref: ringRef, cx: "150", cy: "840", r: "26", fill: "none", stroke: "rgba(134,230,255,.4)", strokeWidth: "1.5", style: { opacity: 0 } }), /* @__PURE__ */ React.createElement("circle", { ref: nodeRef, className: "maze-node", cx: "150", cy: "840", r: "13", fill: "#86E6FF", style: { opacity: 0 } }), /* @__PURE__ */ React.createElement("circle", { ref: dotRef, className: "lr-traveldot", cx: "150", cy: "96", r: "7", style: { opacity: 0 } }), /* @__PURE__ */ React.createElement("text", { ref: botRef, className: "lr-axis-bot", x: "150", y: "878", textAnchor: "middle", style: { opacity: 0 } }, "RESUELTO"))), /* @__PURE__ */ React.createElement("p", { ref: rightRef, className: "lr-side lr-side-r" }, /* @__PURE__ */ React.createElement(Words, { list: RIGHT_WORDS })))));
+  };
+})();
+})();
+
+(function(){
+(function() {
+  const TOOLS = [
+    { name: "Gmail", icon: "https://cdn.simpleicons.org/gmail" },
+    { name: "Google Calendar", icon: "https://cdn.simpleicons.org/googlecalendar" },
+    { name: "Google Sheets", icon: "https://cdn.simpleicons.org/googlesheets" },
+    { name: "Google Drive", icon: "https://cdn.simpleicons.org/googledrive" },
+    { name: "WhatsApp", icon: "https://cdn.simpleicons.org/whatsapp" },
+    { name: "Notion", icon: "https://cdn.simpleicons.org/notion/e8e6f2" },
+    { name: "Stripe", icon: "https://cdn.simpleicons.org/stripe" },
+    { name: "Cal.com", icon: "https://cdn.simpleicons.org/caldotcom/e8e6f2" },
+    { name: "n8n", icon: "https://cdn.simpleicons.org/n8n" },
+    { name: "HubSpot", icon: "https://cdn.simpleicons.org/hubspot" },
+    { name: "Telegram", icon: "https://cdn.simpleicons.org/telegram" },
+    { name: "Make", icon: "https://cdn.simpleicons.org/make" }
+  ];
+  window.MarqueeSection = function MarqueeSection() {
+    const row = [...TOOLS, ...TOOLS];
+    return /* @__PURE__ */ React.createElement("div", { className: "mq-sec" }, /* @__PURE__ */ React.createElement("p", { className: "mq-head" }, /* @__PURE__ */ React.createElement("span", { className: "mk" }, "//"), " nos conectamos a lo que ya usas ", /* @__PURE__ */ React.createElement("em", null, "\u2014 sin migrar de software")), /* @__PURE__ */ React.createElement("div", { className: "mq-mask" }, /* @__PURE__ */ React.createElement("div", { className: "mq-track" }, row.map((t, i) => /* @__PURE__ */ React.createElement("span", { className: "mq-chip", key: i }, /* @__PURE__ */ React.createElement("img", { className: "mq-icon", src: t.icon, alt: "", loading: "lazy" }), t.name)))));
+  };
+})();
+})();
+
+(function(){
+(function() {
+  const ANTES = [
+    "Correos que se acumulan sin responder",
+    "Facturas y albaranes que se traspapelan",
+    "Citas y reservas apuntadas a mano",
+    "Datos copiados de una app a otra",
+    "Tareas que dependen de que te acuerdes"
+  ];
+  const DESPUES = [
+    "Cada mensaje clasificado y respondido solo",
+    "Facturas generadas y archivadas sin tocar nada",
+    "Reservas con disponibilidad real y recordatorios",
+    "Tus herramientas sincronizadas entre ellas",
+    "Funciona 24/7, aunque t\xFA no est\xE9s"
+  ];
+  window.ServiciosSection = function ServiciosSection() {
+    return /* @__PURE__ */ React.createElement("section", { id: "servicios", style: { position: "relative", zIndex: 1, minHeight: "100svh", background: "#08070C", overflow: "hidden" } }, /* @__PURE__ */ React.createElement("div", { style: { position: "absolute", inset: 0, overflow: "hidden", zIndex: 0 } }, /* @__PURE__ */ React.createElement(
+      "img",
+      {
+        src: "assets/referencias/imagen-cubo-cristal.webp",
+        alt: "",
+        className: "hero-fade",
+        style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0 }
+      }
+    )), /* @__PURE__ */ React.createElement("div", { style: {
+      position: "absolute",
+      inset: 0,
+      zIndex: 1,
+      pointerEvents: "none",
+      background: "linear-gradient(180deg, rgba(8,7,12,.72) 0%, rgba(8,7,12,.38) 26%, rgba(8,7,12,.8) 60%, rgba(8,7,12,.92) 100%)"
+    } }), /* @__PURE__ */ React.createElement("div", { style: { position: "relative", zIndex: 10, display: "flex", flexDirection: "column", minHeight: "100svh", padding: "96px clamp(21px,6vw,84px) 48px" } }, /* @__PURE__ */ React.createElement("div", { style: { marginBottom: "auto" } }, /* @__PURE__ */ React.createElement("p", { style: { fontFamily: "JetBrains Mono", fontSize: 13.6, color: "rgba(255,255,255,.5)", marginBottom: 20 } }, "// lo que cambia"), /* @__PURE__ */ React.createElement("h2", { style: { fontFamily: "Bricolage Grotesque", color: "white", fontSize: "clamp(48.3px,7.5vw,100.8px)", lineHeight: 0.9, letterSpacing: "-3px" } }, "Antes.", /* @__PURE__ */ React.createElement("br", null), "Y despu\xE9s.")), /* @__PURE__ */ React.createElement("div", { className: "ba-grid" }, /* @__PURE__ */ React.createElement("div", { className: "ba-card ba-before" }, /* @__PURE__ */ React.createElement("span", { className: "ba-tag" }, "// antes \xB7 a mano"), /* @__PURE__ */ React.createElement("ul", null, ANTES.map((t, i) => /* @__PURE__ */ React.createElement("li", { key: i }, /* @__PURE__ */ React.createElement("span", { className: "ba-x" }, "\u2715"), t)))), /* @__PURE__ */ React.createElement("div", { className: "ba-arrow", "aria-hidden": "true" }, "\u2192"), /* @__PURE__ */ React.createElement("div", { className: "ba-card ba-after" }, /* @__PURE__ */ React.createElement("span", { className: "ba-tag ba-tag-on" }, "// despu\xE9s \xB7 solo"), /* @__PURE__ */ React.createElement("ul", null, DESPUES.map((t, i) => /* @__PURE__ */ React.createElement("li", { key: i }, /* @__PURE__ */ React.createElement("span", { className: "ba-check" }, /* @__PURE__ */ React.createElement(window.IconCheck, null)), t)))))));
+  };
+})();
+})();
+
+(function(){
+(function() {
+  const { useState, useEffect, useRef } = React;
+  const Reveal = window.Reveal;
+  const HeadReveal = window.HeadReveal;
+  const IC = {
+    folder: `<svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="11" width="23" height="16" rx="1" fill="#2D4ECC"/><rect x="2" y="10" width="23" height="16" rx="1" fill="#4361F0"/><path d="M2 10h11l2-4h10v4H2z" fill="#2D4ECC"/><path d="M2 10h10l2-4h9v4H2z" fill="#8295F2"/><rect x="2" y="10" width="23" height="3" rx="1" fill="#8295F2" opacity=".25"/><rect x="6" y="18" width="13" height="2" rx="1" fill="#ECEDF2" opacity=".55"/><rect x="6" y="21" width="9" height="2" rx="1" fill="#ECEDF2" opacity=".35"/><rect x="21" y="20" width="3" height="3" rx="1" fill="#8295F2" opacity=".5"/></svg>`,
+    calendar: `<svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="6" width="22" height="21" rx="1" fill="#2D4ECC"/><rect x="2" y="5" width="22" height="21" rx="1" fill="#4361F0"/><rect x="2" y="5" width="22" height="7" rx="1" fill="#8295F2"/><rect x="7" y="3" width="3" height="5" rx="1" fill="#ECEDF2"/><rect x="16" y="3" width="3" height="5" rx="1" fill="#ECEDF2"/><rect x="5" y="16" width="4" height="4" rx="1" fill="#ECEDF2" opacity=".7"/><rect x="11" y="16" width="4" height="4" rx="1" fill="#ECEDF2" opacity=".7"/><rect x="17" y="16" width="4" height="4" rx="1" fill="#8295F2"/><rect x="5" y="22" width="4" height="2" rx="1" fill="#ECEDF2" opacity=".4"/><rect x="11" y="22" width="4" height="2" rx="1" fill="#ECEDF2" opacity=".4"/></svg>`,
+    mountain: `<svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="24" height="24" rx="1" fill="#14161E"/><polygon points="15,6 24,22 6,22" fill="#2D4ECC"/><polygon points="8,12 20,26 2,26 2,22" fill="#4361F0"/><polygon points="15,6 18,13 12,13" fill="#ECEDF2" opacity=".85"/><polygon points="8,12 11,17 5,17" fill="#ECEDF2" opacity=".55"/><rect x="20" y="5" width="2" height="2" fill="#8295F2"/><rect x="5" y="7" width="2" height="2" fill="#8295F2" opacity=".6"/></svg>`,
+    chat: `<svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="22" height="17" rx="2" fill="#2D4ECC"/><rect x="2" y="4" width="22" height="17" rx="2" fill="#4361F0"/><rect x="2" y="4" width="22" height="4" rx="2" fill="#8295F2" opacity=".3"/><polygon points="6,21 14,21 6,27" fill="#2D4ECC"/><polygon points="5,20 13,20 5,26" fill="#4361F0"/><rect x="7" y="11" width="3" height="3" rx="1" fill="#ECEDF2" opacity=".85"/><rect x="12" y="11" width="3" height="3" rx="1" fill="#ECEDF2" opacity=".85"/><rect x="17" y="11" width="3" height="3" rx="1" fill="#8295F2" opacity=".6"/></svg>`,
+    envelope: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="6" width="20" height="13" rx="1" fill="#2D4ECC"/><rect x="1" y="5" width="20" height="13" rx="1" fill="#4361F0"/><path d="M1 5l10 8 10-8" stroke="#8295F2" stroke-width="1.5" fill="none"/><path d="M1 18l7-6M21 18l-7-6" stroke="#8295F2" stroke-width="1" opacity=".4"/></svg>`,
+    robot: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="11" y="1" width="2" height="4" fill="#8295F2"/><rect x="9" y="4" width="6" height="2" rx="1" fill="#8295F2"/><rect x="4" y="8" width="16" height="14" rx="1" fill="#2D4ECC"/><rect x="3" y="7" width="16" height="14" rx="1" fill="#4361F0"/><rect x="6" y="11" width="4" height="4" rx="1" fill="#ECEDF2"/><rect x="14" y="11" width="4" height="4" rx="1" fill="#ECEDF2"/><rect x="7" y="12" width="2" height="2" rx="1" fill="#8295F2"/><rect x="15" y="12" width="2" height="2" rx="1" fill="#8295F2"/><rect x="7" y="17" width="10" height="2" rx="1" fill="#8295F2" opacity=".8"/><rect x="0" y="11" width="3" height="5" rx="1" fill="#2D4ECC"/><rect x="21" y="11" width="3" height="5" rx="1" fill="#2D4ECC"/></svg>`,
+    driveFolder: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="9" width="20" height="13" rx="1" fill="#2D4ECC"/><rect x="1" y="8" width="20" height="13" rx="1" fill="#4361F0"/><path d="M1 8h9l2-3h9v3H1z" fill="#8295F2"/><rect x="4" y="15" width="12" height="2" rx="1" fill="#ECEDF2" opacity=".5"/><rect x="4" y="18" width="8" height="2" rx="1" fill="#ECEDF2" opacity=".35"/></svg>`,
+    clipboard: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="7" y="1" width="10" height="5" rx="1" fill="#8295F2"/><rect x="3" y="5" width="18" height="19" rx="1" fill="#2D4ECC"/><rect x="2" y="4" width="18" height="19" rx="1" fill="#4361F0"/><rect x="6" y="10" width="10" height="2" rx="1" fill="#ECEDF2" opacity=".6"/><rect x="6" y="14" width="8" height="2" rx="1" fill="#ECEDF2" opacity=".5"/><rect x="6" y="18" width="6" height="2" rx="1" fill="#ECEDF2" opacity=".35"/></svg>`,
+    phone: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="7" y="2" width="10" height="21" rx="2" fill="#2D4ECC"/><rect x="6" y="1" width="10" height="21" rx="2" fill="#4361F0"/><rect x="8" y="4" width="6" height="12" rx="1" fill="#0B0C10" opacity=".5"/><rect x="9" y="18" width="4" height="2" rx="1" fill="#8295F2" opacity=".7"/></svg>`,
+    lightning: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="14,1 5,13 12,13 10,23 19,11 12,11" fill="#2D4ECC"/><polygon points="13,1 4,13 11,13 9,23 18,11 11,11" fill="#4361F0"/><polygon points="13,1 4,13 11,13 9,23 18,11 11,11" fill="#8295F2" opacity=".25"/></svg>`,
+    check: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="19" height="19" rx="2" fill="#1a4a38"/><rect x="2" y="2" width="19" height="19" rx="2" fill="#065f46"/><rect x="2" y="2" width="19" height="5" rx="2" fill="#34D399" opacity=".2"/><path d="M6 12l4.5 4.5L18 8" stroke="#34D399" stroke-width="2.5" stroke-linecap="square" fill="none"/></svg>`
+  };
+  const DEMOS = [
+    {
+      id: "gestion",
+      num: "01",
+      name: "Gesti\xF3n documental",
+      icon: "folder",
+      desc: "Facturas y n\xF3minas que llegan por email se clasifican con IA y se archivan solas en Drive por proveedor.",
+      time: "~60s",
+      url: "https://gestion.demos.mazestudio.site/?v=2",
+      live: true,
+      mw: 1160,
+      steps: [{ ic: "envelope", t: "Llega un email con una factura o n\xF3mina" }, { ic: "robot", t: "La IA la lee y la clasifica sola" }, { ic: "driveFolder", t: "Se archiva en su carpeta de Drive" }]
+    },
+    {
+      id: "citas",
+      num: "02",
+      name: "Agendado de citas",
+      icon: "calendar",
+      desc: "Un cliente rellena un formulario, el sistema comprueba disponibilidad real y reserva el hueco con aviso autom\xE1tico.",
+      time: "~45s",
+      url: "https://inmobiliaria-demo.demos.mazestudio.site/",
+      live: true,
+      mw: 1160,
+      steps: [{ ic: "clipboard", t: "Tu cliente pide cita en un formulario" }, { ic: "calendar", t: "El sistema busca el hueco libre y lo reserva" }, { ic: "phone", t: "Le llega el aviso por WhatsApp" }]
+    },
+    {
+      id: "atencion",
+      num: "03",
+      name: "Atenci\xF3n al cliente",
+      icon: "chat",
+      desc: "Responde los emails de clientes con IA usando la informaci\xF3n real de tu negocio.",
+      time: "~90s",
+      url: "",
+      live: false,
+      steps: [{ ic: "envelope", t: "Entra el email de un cliente" }, { ic: "robot", t: "La IA responde con la info de tu negocio" }, { ic: "check", t: "Respuesta enviada \u2014 t\xFA no tocas nada" }]
+    }
+  ];
+  window.ComoFuncionaSection = function ComoFuncionaSection() {
+    const [cur, setCur] = useState(DEMOS.find((d) => d.live) || DEMOS[0]);
+    const [vis, setVis] = useState(true);
+    const [modal, setModal] = useState(false);
+    const [frameH, setFrameH] = useState(null);
+    const [vw, setVw] = useState(typeof window !== "undefined" ? window.innerWidth : 1280);
+    const iframeRef = useRef(null);
+    useEffect(() => {
+      document.body.style.overflow = modal ? "hidden" : "";
+      document.body.classList.toggle("demo-open", modal);
+      return () => {
+        document.body.style.overflow = "";
+        document.body.classList.remove("demo-open");
+      };
+    }, [modal]);
+    useEffect(() => {
+      const fn = (e) => {
+        if (e.key === "Escape") setModal(false);
+      };
+      window.addEventListener("keydown", fn);
+      return () => window.removeEventListener("keydown", fn);
+    }, []);
+    useEffect(() => {
+      const onR = () => setVw(window.innerWidth);
+      window.addEventListener("resize", onR);
+      return () => window.removeEventListener("resize", onR);
+    }, []);
+    useEffect(() => {
+      if (!modal || window.innerWidth <= 860) {
+        setFrameH(null);
+        return;
+      }
+      let ro;
+      const cap = () => Math.round(window.innerHeight * 0.92);
+      const apply = (h) => {
+        if (typeof h === "number" && h > 120) setFrameH(Math.min(h, cap()));
+      };
+      function fitSameOrigin() {
+        const f2 = iframeRef.current;
+        if (!f2) return;
+        try {
+          const d = f2.contentDocument;
+          if (d && d.body) {
+            apply(Math.max(d.body.scrollHeight, (d.documentElement || {}).scrollHeight || 0));
+            if (!ro && "ResizeObserver" in window) {
+              ro = new ResizeObserver(() => fitSameOrigin());
+              ro.observe(d.body);
+            }
+          }
+        } catch (e) {
+        }
+      }
+      const onMsg = (e) => {
+        const d = e && e.data;
+        if (d && d.type === "mazeDemoHeight") apply(d.height);
+      };
+      window.addEventListener("message", onMsg);
+      const f = iframeRef.current;
+      const onLoad = () => fitSameOrigin();
+      if (f) f.addEventListener("load", onLoad);
+      const iv = setInterval(fitSameOrigin, 700);
+      const tEnd = setTimeout(() => clearInterval(iv), 6e3);
+      fitSameOrigin();
+      return () => {
+        window.removeEventListener("message", onMsg);
+        if (f) f.removeEventListener("load", onLoad);
+        if (ro) ro.disconnect();
+        clearInterval(iv);
+        clearTimeout(tEnd);
+      };
+    }, [modal, cur, vw]);
+    function switchDemo(demo) {
+      if (demo === cur || !demo.live) return;
+      setVis(false);
+      setTimeout(() => {
+        setCur(demo);
+        setVis(true);
+      }, 200);
+    }
+    return /* @__PURE__ */ React.createElement("section", { id: "como", className: "v2-sec", style: modal ? { zIndex: 400 } : void 0 }, /* @__PURE__ */ React.createElement("div", { className: "fx-glow", "data-depth": "0.2", style: { width: 420, height: 420, right: "-8%", top: "4%", background: "rgba(75,140,247,.3)" } }), /* @__PURE__ */ React.createElement("div", { className: "v2-inner" }, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("p", { className: "v2-kicker" }, "// c\xF3mo funciona"), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2" }, "Demo de ", /* @__PURE__ */ React.createElement("em", null, "procesos")), /* @__PURE__ */ React.createElement("p", { className: "v2-note" }, "Estas automatizaciones est\xE1n funcionando ahora mismo. \xC1brelas y juega con ellas.")), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.05, style: { marginTop: 48 } }, /* @__PURE__ */ React.createElement("div", { className: "dp-stage" }, /* @__PURE__ */ React.createElement("div", { className: "dp" }, /* @__PURE__ */ React.createElement("div", { className: "dp-body" + (vis ? " vis" : "") }, /* @__PURE__ */ React.createElement("div", { className: "dp-head" }, /* @__PURE__ */ React.createElement("div", { className: "dp-head-txt" }, cur.live ? /* @__PURE__ */ React.createElement("span", { className: "dp-badge-live" }, /* @__PURE__ */ React.createElement("span", { className: "bdot" }), " En vivo") : /* @__PURE__ */ React.createElement("span", { className: "dp-badge-soon" }, "Pr\xF3ximamente"), /* @__PURE__ */ React.createElement("h3", { className: "dp-name" }, cur.name), /* @__PURE__ */ React.createElement("p", { className: "dp-desc" }, cur.desc)), /* @__PURE__ */ React.createElement("div", { className: "dp-head-cta" }, cur.live ? /* @__PURE__ */ React.createElement("button", { className: "dp-btn", onClick: () => setModal(true) }, "Ver demo ", /* @__PURE__ */ React.createElement("span", null, "\u2192")) : /* @__PURE__ */ React.createElement("span", { className: "dp-btn-dis" }, "Disponible pronto"), cur.live && /* @__PURE__ */ React.createElement("p", { className: "dp-time" }, "listo en ", /* @__PURE__ */ React.createElement("span", null, cur.time)))), /* @__PURE__ */ React.createElement("div", { className: "dp-steps" }, cur.steps.map((s, i) => /* @__PURE__ */ React.createElement("div", { className: "dp-step", key: i }, /* @__PURE__ */ React.createElement("div", { className: "dp-step-ic" }, /* @__PURE__ */ React.createElement("span", { className: "dp-step-svg", dangerouslySetInnerHTML: { __html: IC[s.ic] } }), /* @__PURE__ */ React.createElement("span", { className: "dp-step-n" }, i + 1)), /* @__PURE__ */ React.createElement("p", { className: "dp-step-t" }, s.t))))), /* @__PURE__ */ React.createElement("div", { className: "dp-footer" }, /* @__PURE__ */ React.createElement("span", { className: "dp-hint" }, "elige una automatizaci\xF3n \u2192"))), /* @__PURE__ */ React.createElement("div", { className: "dp-picker" }, DEMOS.map((d) => /* @__PURE__ */ React.createElement(
+      "div",
+      {
+        key: d.id,
+        role: d.live ? "button" : void 0,
+        tabIndex: d.live ? 0 : void 0,
+        className: "dp-card" + (d === cur ? " dp-act" : "") + (!d.live ? " dp-dis" : ""),
+        onClick: () => switchDemo(d),
+        onKeyDown: (e) => {
+          if (d.live && (e.key === "Enter" || e.key === " ")) {
+            e.preventDefault();
+            switchDemo(d);
+          }
+        }
+      },
+      /* @__PURE__ */ React.createElement("span", { className: "dp-cn" }, d.num),
+      /* @__PURE__ */ React.createElement("span", { className: "dp-ci", dangerouslySetInnerHTML: { __html: IC[d.icon] } }),
+      /* @__PURE__ */ React.createElement("span", { className: "dp-cname" }, d.name),
+      d.live ? /* @__PURE__ */ React.createElement("span", { className: "dp-livedot", "aria-label": "En vivo", title: "En vivo" }) : /* @__PURE__ */ React.createElement("span", { className: "dp-cst soon" }, "Pr\xF3ximamente")
+    )))))), modal && ReactDOM.createPortal(
+      /* @__PURE__ */ React.createElement("div", { className: "dp-modal", onClick: () => setModal(false) }, /* @__PURE__ */ React.createElement(
+        "div",
+        {
+          className: "dp-shell",
+          style: vw > 860 ? { maxWidth: "min(94vw, " + (cur.mw || 760) + "px)" } : void 0,
+          onClick: (e) => e.stopPropagation()
+        },
+        /* @__PURE__ */ React.createElement("button", { className: "dp-close", "aria-label": "Cerrar demo", onClick: () => setModal(false) }, "\u2715"),
+        /* @__PURE__ */ React.createElement("div", { className: "dp-frame", style: vw > 860 && frameH ? { height: frameH + "px" } : void 0 }, /* @__PURE__ */ React.createElement("iframe", { ref: iframeRef, src: cur.url + (cur.url.indexOf("?") < 0 ? "?" : "&") + "embed=1", title: cur.name, allow: "fullscreen" }))
+      )),
+      document.body
+    ));
+  };
+})();
+})();
+
+(function(){
+(function() {
+  const Reveal = window.Reveal;
+  const HeadReveal = window.HeadReveal;
+  const SOLS = [
+    { fn: "facturacion()", title: "Facturas y cobros autom\xE1ticos", body: "Genera, env\xEDa y archiva facturas sin tocar nada. Avisa por WhatsApp si una lleva +15 d\xEDas sin pagar.", metric: "3\u20136 h/mes recuperadas" },
+    {
+      fn: "agenda()",
+      title: "Reservas y citas sin fricci\xF3n",
+      body: "El cliente elige hueco con disponibilidad real, confirma solo y recibe recordatorios autom\xE1ticos. Sobre tu sistema de siempre.",
+      metric: "2\u20134 h/mes recuperadas",
+      demos: [{ label: "Ver demo", url: "https://inmobiliaria-demo.demos.mazestudio.site/" }]
+    },
+    { fn: "email()", title: "Bandejas sin colapso", body: "Clasificaci\xF3n, respuestas autom\xE1ticas y rutas seg\xFAn el tipo de mensaje. Alertas si un VIP escribe urgente.", metric: "5\u201310 h/mes recuperadas" },
+    {
+      fn: "documental()",
+      title: "Documentos en orden solos",
+      body: "Facturas y n\xF3minas de proveedores clasificadas, archivadas en Drive y enviadas a la asesor\xEDa.",
+      metric: "Cero documentos perdidos",
+      demos: [{ label: "Ver demo", url: "https://gestion.demos.mazestudio.site/" }]
+    },
+    { fn: "leads()", title: "Primer contacto al instante", body: "El lead entra, recibe bienvenida, se cualifica y aterriza en el CRM. Respuesta en minutos, no d\xEDas.", metric: "0 leads enfriados" },
+    { fn: "informes()", title: "Informes autom\xE1ticos", body: "Cada lunes, un resumen de ventas y tareas en tu bandeja o Slack. Dashboard en tiempo real.", metric: "4\u20138 h/mes recuperadas" }
+  ];
+  function spotlight(e) {
+    const c = e.currentTarget, r = c.getBoundingClientRect();
+    c.style.setProperty("--mx", ((e.clientX - r.left) / r.width * 100).toFixed(1) + "%");
+    c.style.setProperty("--my", ((e.clientY - r.top) / r.height * 100).toFixed(1) + "%");
+  }
+  window.SolucionesSection = function SolucionesSection() {
+    return /* @__PURE__ */ React.createElement("section", { id: "soluciones", className: "v2-sec" }, /* @__PURE__ */ React.createElement("div", { className: "fx-glow", "data-depth": "-0.16", style: { width: 460, height: 460, left: "-10%", top: "18%", background: "rgba(99,80,170,.34)" } }), /* @__PURE__ */ React.createElement("div", { className: "v2-inner" }, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("p", { className: "v2-kicker" }, "// soluciones"), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2" }, "Lo que ya hemos resuelto."), /* @__PURE__ */ React.createElement("p", { className: "v2-note" }, "Casos concretos, con resultado medible. Si el tuyo no est\xE1 aqu\xED, te lo dise\xF1amos.")), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.05, style: { marginTop: 48 } }, /* @__PURE__ */ React.createElement("div", { className: "v2-grid-3" }, SOLS.map((s) => /* @__PURE__ */ React.createElement("article", { key: s.fn, className: "v2-sol", onPointerMove: spotlight }, /* @__PURE__ */ React.createElement("span", { className: "v2-sol-fn" }, s.fn), /* @__PURE__ */ React.createElement("h3", null, s.title), /* @__PURE__ */ React.createElement("p", null, s.body), /* @__PURE__ */ React.createElement("div", { className: "v2-sol-foot" }, /* @__PURE__ */ React.createElement("span", { className: "v2-metric" }, s.metric), s.demos && s.demos.map((d) => /* @__PURE__ */ React.createElement("a", { key: d.url, className: "v2-demolink", href: d.url, target: "_blank", rel: "noopener" }, d.label, " ", /* @__PURE__ */ React.createElement(window.IconExternal, null))))))))));
+  };
+})();
+})();
+
+(function(){
+(function() {
+  const Reveal = window.Reveal;
+  const HeadReveal = window.HeadReveal;
+  function spotlight(e) {
+    const c = e.currentTarget, r = c.getBoundingClientRect();
+    c.style.setProperty("--mx", ((e.clientX - r.left) / r.width * 100).toFixed(1) + "%");
+    c.style.setProperty("--my", ((e.clientY - r.top) / r.height * 100).toFixed(1) + "%");
+  }
+  const VALUES = [
+    {
+      ic: /* @__PURE__ */ React.createElement("svg", { width: "22", height: "22", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.7", strokeLinecap: "round", strokeLinejoin: "round" }, /* @__PURE__ */ React.createElement("path", { d: "M12 21s-7-4.35-7-10a7 7 0 0 1 14 0c0 5.65-7 10-7 10z" }), /* @__PURE__ */ React.createElement("circle", { cx: "12", cy: "11", r: "2.5" })),
+      h: "Tenerife, de cerca",
+      p: "Estudio local en el sur de la isla. Hablamos tu idioma, conocemos tu mercado y estamos a una llamada."
+    },
+    {
+      ic: /* @__PURE__ */ React.createElement("svg", { width: "22", height: "22", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.7", strokeLinecap: "round", strokeLinejoin: "round" }, /* @__PURE__ */ React.createElement("rect", { x: "3", y: "3", width: "7", height: "7", rx: "1.5" }), /* @__PURE__ */ React.createElement("rect", { x: "14", y: "3", width: "7", height: "7", rx: "1.5" }), /* @__PURE__ */ React.createElement("rect", { x: "3", y: "14", width: "7", height: "7", rx: "1.5" }), /* @__PURE__ */ React.createElement("path", { d: "M14 17.5h7M17.5 14v7" })),
+      h: "Sobre tus herramientas",
+      p: "No te vendemos un sistema nuevo. Automatizamos sobre lo que ya usas: CRM, correo, calendario, hojas."
+    },
+    {
+      ic: /* @__PURE__ */ React.createElement("svg", { width: "22", height: "22", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.7", strokeLinecap: "round", strokeLinejoin: "round" }, /* @__PURE__ */ React.createElement("path", { d: "M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" })),
+      h: "Sin tecnicismos",
+      p: "Te lo explicamos en cristiano y te ense\xF1amos una demo de tu propio caso antes de que decidas nada."
+    },
+    {
+      ic: /* @__PURE__ */ React.createElement("svg", { width: "22", height: "22", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.7", strokeLinecap: "round", strokeLinejoin: "round" }, /* @__PURE__ */ React.createElement("path", { d: "M22 11.08V12a10 10 0 1 1-5.93-9.14" }), /* @__PURE__ */ React.createElement("polyline", { points: "22 4 12 14.01 9 11.01" })),
+      h: "Te acompa\xF1amos",
+      p: "No desaparecemos al entregar. Lo vigilamos, lo mantenemos y lo mejoramos mes a mes contigo."
+    }
+  ];
+  window.PorQueSection = function PorQueSection() {
+    return /* @__PURE__ */ React.createElement("section", { id: "empresa", className: "v2-sec", style: { paddingTop: "clamp(42px,6vh,75.6px)" } }, /* @__PURE__ */ React.createElement("div", { className: "v2-inner" }, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("p", { className: "v2-kicker" }, "// qui\xE9nes somos"), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2" }, "Un estudio de automatizaci\xF3n ", /* @__PURE__ */ React.createElement("em", null, "con IA"), " en Tenerife."), /* @__PURE__ */ React.createElement("p", { className: "v2-note" }, "Ayudamos a excursiones, comercios y peque\xF1as empresas a quitarse de encima el trabajo repetitivo \u2014 para que dediquen su tiempo a lo que de verdad mueve el negocio.")), /* @__PURE__ */ React.createElement("div", { className: "pq-grid" }, VALUES.map((v, i) => /* @__PURE__ */ React.createElement(Reveal, { key: v.h, delay: i * 0.06 }, /* @__PURE__ */ React.createElement("div", { className: "pq-card", onPointerMove: spotlight }, /* @__PURE__ */ React.createElement("div", { className: "pq-ic" }, v.ic), /* @__PURE__ */ React.createElement("h4", null, v.h), /* @__PURE__ */ React.createElement("p", null, v.p)))))));
+  };
+})();
+})();
+
+(function(){
+(function() {
+  const { useState, useEffect, useRef } = React;
+  const Reveal = window.Reveal;
+  const HeadReveal = window.HeadReveal;
+  const fmt = (n) => Math.round(n).toLocaleString("es-ES");
+  function useCountUp(target, duration = 850) {
+    const [display, setDisplay] = useState(0);
+    const fromRef = useRef(0);
+    const rafRef = useRef(0);
+    useEffect(() => {
+      const from = fromRef.current;
+      const start = performance.now();
+      const tick = (now) => {
+        const t = Math.min(1, (now - start) / duration);
+        const e = 1 - Math.pow(1 - t, 3);
+        const cur = from + (target - from) * e;
+        fromRef.current = cur;
+        setDisplay(cur);
+        if (t < 1) rafRef.current = requestAnimationFrame(tick);
+      };
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = requestAnimationFrame(tick);
+      return () => cancelAnimationFrame(rafRef.current);
+    }, [target, duration]);
+    return display;
+  }
+  window.RoiSection = function RoiSection() {
+    const [horas, setHoras] = useState(12);
+    const [coste, setCoste] = useState(18);
+    const [lvl, setLvl] = useState(0.85);
+    const wrapRef = useRef(null);
+    const [inView, setInView] = useState(false);
+    useEffect(() => {
+      const io = new IntersectionObserver(([e]) => {
+        if (e.isIntersecting) {
+          setInView(true);
+          io.disconnect();
+        }
+      }, { threshold: 0.25 });
+      if (wrapRef.current) io.observe(wrapRef.current);
+      return () => io.disconnect();
+    }, []);
+    const hMonth = horas * 4.33 * lvl;
+    const mMonth = hMonth * coste;
+    const yEUR = mMonth * 12;
+    const dDays = hMonth * 12 / 8;
+    const gate = inView ? 1 : 0;
+    const cY = useCountUp(yEUR * gate);
+    const cM = useCountUp(mMonth * gate);
+    const cH = useCountUp(hMonth * gate);
+    const cD = useCountUp(dDays * gate);
+    const levels = [["Alta", 0.85], ["Media", 0.6], ["Baja", 0.35]];
+    const hPct = horas / 40 * 100;
+    const cPct = (coste - 8) / (30 - 8) * 100;
+    const recPct = Math.round(lvl * 100);
+    return /* @__PURE__ */ React.createElement("section", { id: "roi", className: "roi2-sec", ref: wrapRef }, /* @__PURE__ */ React.createElement("div", { className: "roi2-atmos", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("div", { className: "roi2-blob", style: { width: 480, height: 480, background: "rgba(75,140,247,.16)", top: "-120px", left: "-60px", animation: "roi2Float 14s ease-in-out infinite" } }), /* @__PURE__ */ React.createElement("div", { className: "roi2-blob", style: { width: 420, height: 420, background: "rgba(99,80,170,.15)", bottom: "-150px", right: "-50px", animation: "roi2Float 17s ease-in-out infinite reverse" } })), /* @__PURE__ */ React.createElement("div", { className: "roi2-inner" }, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("div", { className: "roi2-head" }, /* @__PURE__ */ React.createElement("p", { className: "v2-kicker", style: { textAlign: "center" } }, "// tu retorno de inversi\xF3n \xB7 ROI"), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2", style: { fontSize: "clamp(26px,5.6vw,69.3px)", textAlign: "center" } }, "\xBFCu\xE1nto te cuesta ", /* @__PURE__ */ React.createElement("em", null, "hacerlo a mano?")))), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.12 }, /* @__PURE__ */ React.createElement("div", { className: "roi2-card" }, /* @__PURE__ */ React.createElement("div", { className: "roi2-controls" }, /* @__PURE__ */ React.createElement("div", { className: "roi2-field" }, /* @__PURE__ */ React.createElement("div", { className: "roi2-flbl" }, /* @__PURE__ */ React.createElement("span", null, "Horas/semana en tareas repetitivas"), /* @__PURE__ */ React.createElement("span", { className: "roi2-fval" }, horas, /* @__PURE__ */ React.createElement("small", null, "h"))), /* @__PURE__ */ React.createElement(
+      "input",
+      {
+        className: "roi2-range",
+        type: "range",
+        min: "0",
+        max: "40",
+        step: "1",
+        value: horas,
+        style: { "--p": hPct + "%" },
+        onChange: (e) => setHoras(+e.target.value),
+        "aria-label": "Horas por semana en tareas repetitivas"
+      }
+    )), /* @__PURE__ */ React.createElement("div", { className: "roi2-field" }, /* @__PURE__ */ React.createElement("div", { className: "roi2-flbl" }, /* @__PURE__ */ React.createElement("span", null, "Coste por hora de ese trabajo"), /* @__PURE__ */ React.createElement("span", { className: "roi2-fval" }, coste, /* @__PURE__ */ React.createElement("small", null, "\u20AC"))), /* @__PURE__ */ React.createElement(
+      "input",
+      {
+        className: "roi2-range",
+        type: "range",
+        min: "8",
+        max: "30",
+        step: "1",
+        value: coste,
+        style: { "--p": cPct + "%" },
+        onChange: (e) => setCoste(+e.target.value),
+        "aria-label": "Coste por hora"
+      }
+    )), /* @__PURE__ */ React.createElement("div", { className: "roi2-field" }, /* @__PURE__ */ React.createElement("div", { className: "roi2-flbl" }, /* @__PURE__ */ React.createElement("span", null, "Nivel de repetici\xF3n de esas tareas")), /* @__PURE__ */ React.createElement("div", { className: "roi2-levels" }, levels.map(([lbl, v]) => /* @__PURE__ */ React.createElement("button", { key: lbl, type: "button", className: "roi2-lvl" + (lvl === v ? " active" : ""), onClick: () => setLvl(v) }, lbl))))), /* @__PURE__ */ React.createElement("div", { className: "roi2-result" }, /* @__PURE__ */ React.createElement("div", { className: "roi2-glow", "aria-hidden": "true" }), /* @__PURE__ */ React.createElement("p", { className: "roi2-rlabel" }, "ROI \xB7 ahorro cada mes"), /* @__PURE__ */ React.createElement("div", { className: "roi2-big" }, fmt(cM), /* @__PURE__ */ React.createElement("span", { className: "roi2-big-cur" }, " \u20AC/mes")), /* @__PURE__ */ React.createElement("p", { className: "roi2-sub" }, "\u2248 ", fmt(cY), " \u20AC al a\xF1o \xB7 sobre las herramientas que ya usas"), /* @__PURE__ */ React.createElement("div", { className: "roi2-split" }, /* @__PURE__ */ React.createElement("div", { className: "roi2-stat" }, /* @__PURE__ */ React.createElement("div", { className: "n" }, fmt(cH), /* @__PURE__ */ React.createElement("small", null, "h")), /* @__PURE__ */ React.createElement("div", { className: "l" }, "horas que recuperas", /* @__PURE__ */ React.createElement("br", null), "al mes")), /* @__PURE__ */ React.createElement("div", { className: "roi2-stat" }, /* @__PURE__ */ React.createElement("div", { className: "n" }, fmt(cD), /* @__PURE__ */ React.createElement("small", null, "d\xEDas")), /* @__PURE__ */ React.createElement("div", { className: "l" }, "jornadas libres", /* @__PURE__ */ React.createElement("br", null), "al a\xF1o"))), /* @__PURE__ */ React.createElement("div", { className: "roi2-barwrap" }, /* @__PURE__ */ React.createElement("div", { className: "roi2-barlbl" }, /* @__PURE__ */ React.createElement("span", null, "De ese trabajo repetitivo"), /* @__PURE__ */ React.createElement("span", null, "automatizable")), /* @__PURE__ */ React.createElement("div", { className: "roi2-bar" }, /* @__PURE__ */ React.createElement("div", { className: "roi2-bar-fill", style: { width: (inView ? recPct : 0) + "%" } })), /* @__PURE__ */ React.createElement("div", { className: "roi2-barnote" }, "Nos encargamos de ~", recPct, "% de esas tareas, sin que t\xFA toques nada.")), /* @__PURE__ */ React.createElement("div", { className: "roi2-cta" }, /* @__PURE__ */ React.createElement("a", { className: "v2-btn v2-btn-accent", href: "hablemos.html" }, "\u2192 Quiero este ahorro"), /* @__PURE__ */ React.createElement("a", { className: "v2-btn v2-btn-ghost", href: "#como" }, "Ver c\xF3mo funciona")), /* @__PURE__ */ React.createElement("p", { className: "roi2-note" }, "// estimaci\xF3n orientativa \u2014 los n\xFAmeros exactos los afinamos contigo, gratis"))))));
+  };
+})();
+})();
+
+(function(){
+(function() {
+  const { useState, useEffect, useRef } = React;
+  const Reveal = window.Reveal;
+  const HeadReveal = window.HeadReveal;
+  const QS = [
+    {
+      id: "q1",
+      q: "\xBFHay tareas que repites cada semana y consideras que puedes delegar alguna parte?",
+      opts: [["a", "S\xED \u2014 correos, facturas, recordatorios, copiar datos..."], ["b", "Puede ser, pero no tengo claro cu\xE1les"], ["c", "No \u2014 cada semana es diferente"]]
+    },
+    {
+      id: "q2",
+      q: "\xBFCu\xE1ntas horas de trabajo a la semana ocupan estas tareas?",
+      opts: [["a", "M\xE1s de 5 horas \u2014 es una sangr\xEDa seria"], ["b", "Entre 2 y 5 horas \u2014 se nota pero lo aguanto"], ["c", "Menos de 2 \u2014 no es mi problema principal"]]
+    },
+    {
+      id: "q3",
+      q: "Si pudieras aprovechar ese tiempo, \xBFen qu\xE9 lo invertir\xEDas?",
+      opts: [["a", "Conseguir m\xE1s clientes o cerrar m\xE1s ventas"], ["b", "Mejorar el servicio o atender mejor a los que tengo"], ["c", "Descansar \u2014 llevo demasiado tiempo sin parar"]]
+    }
+  ];
+  function result(a) {
+    if (a.q1 == null || a.q2 == null || a.q3 == null) return null;
+    if (a.q1 === "c" && a.q2 === "c") return {
+      tag: "resultado \xB7 quiz\xE1 no es el momento",
+      title: /* @__PURE__ */ React.createElement(React.Fragment, null, "Tu operativa ya funciona bastante ", /* @__PURE__ */ React.createElement("em", null, "bien.")),
+      body: "No detectamos una p\xE9rdida de tiempo clara. Si esto cambia, nos cuentas y lo miramos sin compromiso."
+    };
+    if (a.q1 === "c") return {
+      tag: "resultado \xB7 vale la pena explorar",
+      title: /* @__PURE__ */ React.createElement(React.Fragment, null, "Puede que no lo veas, pero ", /* @__PURE__ */ React.createElement("em", null, "est\xE1 ah\xED.")),
+      body: "Las tareas que roban tiempo se vuelven invisibles cuando te acostumbras. Una conversaci\xF3n de 45 minutos suele sacarlas a la luz."
+    };
+    if (a.q2 === "c") return {
+      tag: "resultado \xB7 hay margen",
+      title: /* @__PURE__ */ React.createElement(React.Fragment, null, "Poco tiempo perdido no significa que ", /* @__PURE__ */ React.createElement("em", null, "est\xE9 bien as\xED.")),
+      body: "Con 2 horas semanales recuperadas ya se nota la diferencia \u2014 y ese margen crece cuando eliminas el primer cuello de botella."
+    };
+    let body = "Tienes tareas repetitivas que te roban tiempo, y sabes qu\xE9 har\xEDas con esas horas de vuelta.";
+    if (a.q3 === "c") body = "Llevas demasiado tiempo aguantando. " + body;
+    body = body + " Una llamada de 45 minutos \u2014 sin guion, sin compromiso \u2014 y te mostramos d\xF3nde est\xE1 la salida.";
+    return { tag: "resultado \xB7 encajamos", title: /* @__PURE__ */ React.createElement(React.Fragment, null, "S\xED. Podemos ", /* @__PURE__ */ React.createElement("em", null, "ayudarte.")), body };
+  }
+  window.DiagnosticoSection = function DiagnosticoSection() {
+    const [answers, setAnswers] = useState({ q1: null, q2: null, q3: null });
+    const [openQ, setOpenQ] = useState(null);
+    const resRef = useRef(null);
+    useEffect(() => {
+      const t = setTimeout(() => setOpenQ("q1"), 500);
+      return () => clearTimeout(t);
+    }, []);
+    const answered = ["q1", "q2", "q3"].filter((k) => answers[k] != null).length;
+    const res = result(answers);
+    useEffect(() => {
+      if (res && resRef.current) {
+        const t = setTimeout(() => {
+          resRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }, 150);
+        return () => clearTimeout(t);
+      }
+    }, [res]);
+    function choose(qid, val) {
+      setAnswers((a) => ({ ...a, [qid]: val }));
+      const order = ["q1", "q2", "q3"];
+      const next = order[order.indexOf(qid) + 1] || null;
+      setTimeout(() => setOpenQ(next), 180);
+    }
+    return /* @__PURE__ */ React.createElement("section", { id: "diagnostico", className: "v2-sec" }, /* @__PURE__ */ React.createElement("div", { className: "v2-inner" }, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("span", { className: "v2-diag-tag" }, /* @__PURE__ */ React.createElement("span", { className: "dot" }), "diagn\xF3stico \xB7 3 preguntas \xB7 2 minutos"), /* @__PURE__ */ React.createElement("p", { className: "v2-kicker" }, "// \xBFlo necesitas?"), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2" }, "\xBFNos ", /* @__PURE__ */ React.createElement("em", null, "necesitas?")), /* @__PURE__ */ React.createElement("p", { className: "v2-note" }, "Responde tres preguntas sobre tu d\xEDa a d\xEDa. Sin datos, sin compromiso.")), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.05, style: { marginTop: 40 } }, /* @__PURE__ */ React.createElement("div", { className: "v2-progress" }, /* @__PURE__ */ React.createElement("div", { className: "v2-progress-fill", style: { width: answered / 3 * 100 + "%" } })), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 14, marginTop: 28 } }, QS.map((Q, i) => {
+      const isOpen = openQ === Q.id;
+      return /* @__PURE__ */ React.createElement("div", { key: Q.id, className: "v2-diag-q" + (isOpen ? " open" : "") }, /* @__PURE__ */ React.createElement(
+        "div",
+        {
+          className: "v2-diag-head",
+          role: "button",
+          tabIndex: 0,
+          "aria-expanded": isOpen,
+          onClick: () => setOpenQ(isOpen ? null : Q.id),
+          onKeyDown: (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              setOpenQ(isOpen ? null : Q.id);
+            }
+          }
+        },
+        /* @__PURE__ */ React.createElement("span", { className: "v2-diag-num" }, "0" + (i + 1)),
+        /* @__PURE__ */ React.createElement("span", { className: "v2-diag-qtext" }, Q.q),
+        /* @__PURE__ */ React.createElement("span", { className: "v2-diag-icon" }, "+")
+      ), /* @__PURE__ */ React.createElement("div", { style: { maxHeight: isOpen ? 360 : 0, overflow: "hidden", transition: "max-height .35s ease" } }, /* @__PURE__ */ React.createElement("div", { className: "v2-diag-opts" }, Q.opts.map(([v, label]) => {
+        const sel = answers[Q.id] === v;
+        return /* @__PURE__ */ React.createElement(
+          "div",
+          {
+            key: v,
+            className: "v2-diag-opt" + (sel ? " sel" : ""),
+            role: "button",
+            tabIndex: 0,
+            onClick: () => choose(Q.id, v),
+            onKeyDown: (e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                choose(Q.id, v);
+              }
+            }
+          },
+          /* @__PURE__ */ React.createElement("span", { className: "v2-diag-check" }, sel && /* @__PURE__ */ React.createElement(window.IconCheck, null)),
+          label
+        );
+      }))));
+    })), res && /* @__PURE__ */ React.createElement("div", { className: "v2-diag-result", ref: resRef }, /* @__PURE__ */ React.createElement("span", { className: "rtag" }, res.tag), /* @__PURE__ */ React.createElement("h3", null, res.title), /* @__PURE__ */ React.createElement("p", null, res.body), /* @__PURE__ */ React.createElement("div", { className: "acts" }, /* @__PURE__ */ React.createElement("a", { className: "v2-btn v2-btn-accent", href: "hablemos.html" }, "\u2192 Empezar conversaci\xF3n"), /* @__PURE__ */ React.createElement("a", { className: "v2-btn v2-btn-ghost", href: "#como" }, "Ver c\xF3mo funciona"))))));
+  };
+})();
+})();
+
+(function(){
+(function() {
+  const motion = window.Motion.motion;
+  function fu(delay) {
+    return {
+      initial: { filter: "blur(10px)", opacity: 0, y: 20 },
+      whileInView: { filter: "blur(0px)", opacity: 1, y: 0 },
+      viewport: { once: true, amount: 0.4 },
+      transition: { duration: 0.7, delay, ease: "easeOut" }
+    };
+  }
+  window.CtaSection = function CtaSection() {
+    return /* @__PURE__ */ React.createElement("section", { id: "contacto", style: { position: "relative", overflow: "hidden", background: "#08070C", padding: "clamp(100.8px,16vh,176.4px) clamp(21px,6vw,84px)" } }, /* @__PURE__ */ React.createElement("div", { style: { position: "absolute", inset: 0, zIndex: 0, overflow: "hidden" } }, /* @__PURE__ */ React.createElement(
+      "img",
+      {
+        src: "assets/referencias/referencia-cubo-cristal-movil.webp",
+        alt: "",
+        "aria-hidden": "true",
+        decoding: "async",
+        className: "hero-fade",
+        style: {
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          filter: "brightness(.78) saturate(.92) blur(1px)"
+        }
+      }
+    )), /* @__PURE__ */ React.createElement("div", { style: {
+      position: "absolute",
+      inset: 0,
+      zIndex: 1,
+      pointerEvents: "none",
+      background: "radial-gradient(120% 120% at 50% 30%, rgba(8,7,12,0) 40%, rgba(8,7,12,.74) 100%)"
+    } }), /* @__PURE__ */ React.createElement("div", { className: "cta-converge", style: { position: "relative", zIndex: 10, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" } }, /* @__PURE__ */ React.createElement(motion.h2, { ...fu(0), style: { fontFamily: "Bricolage Grotesque", fontWeight: 700, fontSize: "clamp(28px,4vw,52px)", letterSpacing: "-1.5px", lineHeight: 1.1, color: "#fff", marginBottom: 42, maxWidth: 560 } }, "Empieza a trazar tu l\xEDnea recta"), /* @__PURE__ */ React.createElement(motion.div, { ...fu(0.12), style: { transform: "scale(1.2)", marginBottom: 8 } }, /* @__PURE__ */ React.createElement(window.MazeLogo, null)), /* @__PURE__ */ React.createElement(motion.div, { ...fu(0.28), style: { marginTop: 34 } }, /* @__PURE__ */ React.createElement("a", { href: "hablemos.html", className: "v2-btn v2-btn-white magnetic", style: { padding: "15px 28px", fontSize: 16.2 } }, "Empezar conversaci\xF3n ", /* @__PURE__ */ React.createElement(window.IconArrow, null))), /* @__PURE__ */ React.createElement(motion.p, { ...fu(0.4), style: { marginTop: 22, fontFamily: "JetBrains Mono", fontSize: 13.2, color: "rgba(255,255,255,.65)" } }, "info@mazestudio.site \xB7 respondemos en 24 h")));
+  };
+  window.Footer = function Footer() {
+    const links = [
+      { label: "C\xF3mo funciona", href: "#como" },
+      { label: "Ahorro", href: "#roi" },
+      { label: "Servicios", href: "#servicios" },
+      { label: "Soluciones", href: "#soluciones" },
+      { label: "\xBFNos necesitas?", href: "#diagnostico" }
+    ];
+    return /* @__PURE__ */ React.createElement("footer", { className: "v2-footer" }, /* @__PURE__ */ React.createElement("div", { className: "inner" }, /* @__PURE__ */ React.createElement("div", { className: "top" }, /* @__PURE__ */ React.createElement("a", { href: "#top", style: { display: "flex", alignItems: "center", gap: 10 }, "aria-label": "Mazestudio" }, /* @__PURE__ */ React.createElement(window.MazeLogo, null), /* @__PURE__ */ React.createElement("span", { style: { fontFamily: "Bricolage Grotesque", fontWeight: 600, fontSize: 18.9, color: "#EAE8F2", letterSpacing: "-.02em" } }, "Mazestudio", /* @__PURE__ */ React.createElement("span", { style: { color: "#4B8CF7" } }, "."))), /* @__PURE__ */ React.createElement("nav", null, links.map((l) => /* @__PURE__ */ React.createElement("a", { key: l.href, href: l.href }, l.label)))), /* @__PURE__ */ React.createElement("div", { className: "bot" }, /* @__PURE__ */ React.createElement("span", null, "\xA9 2026 Mazestudio \xB7 estudio de automatizaci\xF3n con IA \xB7 Tenerife"), /* @__PURE__ */ React.createElement("span", { className: "legal" }, /* @__PURE__ */ React.createElement("a", { href: "aviso-legal.html" }, "Aviso legal"), /* @__PURE__ */ React.createElement("a", { href: "privacidad.html" }, "Privacidad"), /* @__PURE__ */ React.createElement("a", { href: "cookies.html" }, "Cookies")))));
+  };
+})();
+})();
+
+(function(){
+(function() {
+  const { useState, useEffect, useRef } = React;
+  const motion = window.Motion.motion;
+  const PRE_VIDEO = "assets/referencias/referencia-cubo-cristal-01-4k60-loop.mp4";
+  const PRE_POSTER = "assets/referencias/poster-cubo-carga.jpg";
+  window.__preloaderActive = true;
+  function MazeSolve() {
+    return /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 240 240", width: "100%", height: "100%", style: { display: "block", overflow: "visible" } }, /* @__PURE__ */ React.createElement("g", { stroke: "rgba(255,255,255,.16)", strokeWidth: "2", fill: "none", strokeLinecap: "round" }, /* @__PURE__ */ React.createElement("rect", { x: "2", y: "2", width: "236", height: "236", rx: "8" }), /* @__PURE__ */ React.createElement("line", { x1: "0", y1: "42", x2: "198", y2: "42" }), /* @__PURE__ */ React.createElement("line", { x1: "42", y1: "82", x2: "240", y2: "82" }), /* @__PURE__ */ React.createElement("line", { x1: "0", y1: "122", x2: "198", y2: "122" }), /* @__PURE__ */ React.createElement("line", { x1: "42", y1: "162", x2: "240", y2: "162" }), /* @__PURE__ */ React.createElement("line", { x1: "0", y1: "202", x2: "198", y2: "202" })), /* @__PURE__ */ React.createElement(
+      "path",
+      {
+        d: "M20 22 H220 V62 H20 V102 H220 V142 H20 V182 H220 V222 H20",
+        fill: "none",
+        stroke: "var(--accent)",
+        strokeOpacity: ".14",
+        strokeWidth: "4",
+        strokeLinecap: "round",
+        strokeLinejoin: "round"
+      }
+    ), /* @__PURE__ */ React.createElement(
+      motion.path,
+      {
+        d: "M20 22 H220 V62 H20 V102 H220 V142 H20 V182 H220 V222 H20",
+        fill: "none",
+        stroke: "var(--accent)",
+        strokeWidth: "4.5",
+        strokeLinecap: "round",
+        strokeLinejoin: "round",
+        style: { filter: "drop-shadow(0 0 5px var(--accent)) drop-shadow(0 0 12px rgba(75,140,247,.55))" },
+        initial: { pathLength: 0, opacity: 0.9 },
+        animate: { pathLength: 1, opacity: 1 },
+        transition: { duration: 3.4, ease: "easeInOut" }
+      }
+    ));
+  }
+  function Preloader() {
+    const [pct, setPct] = useState(0);
+    const [hide, setHide] = useState(false);
+    const [gone, setGone] = useState(false);
+    const vref = useRef(null);
+    useEffect(() => {
+      const v = vref.current;
+      if (v) v.play().catch(() => {
+      });
+    }, []);
+    useEffect(() => {
+      const DUR = 3400, start = performance.now();
+      let raf;
+      const tick = (t) => {
+        const p = Math.min(1, (t - start) / DUR);
+        const e = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+        setPct(Math.round(e * 100));
+        if (p < 1) raf = requestAnimationFrame(tick);
+      };
+      raf = requestAnimationFrame(tick);
+      return () => cancelAnimationFrame(raf);
+    }, []);
+    useEffect(() => {
+      let done = false;
+      const finish = () => {
+        if (done) return;
+        done = true;
+        setHide(true);
+        setTimeout(() => {
+          window.__preloaderActive = false;
+          window.dispatchEvent(new Event("preloader-done"));
+          setGone(true);
+        }, 1300);
+      };
+      const t = setTimeout(() => {
+        if (document.readyState === "complete") finish();
+        else window.addEventListener("load", finish, { once: true });
+      }, 3700);
+      const hard = setTimeout(finish, 9e3);
+      return () => {
+        clearTimeout(t);
+        clearTimeout(hard);
+        window.removeEventListener("load", finish);
+      };
+    }, []);
+    useEffect(() => {
+      document.body.style.overflow = gone ? "" : "hidden";
+    }, [gone]);
+    if (gone) return null;
+    return /* @__PURE__ */ React.createElement(
+      motion.div,
+      {
+        animate: { opacity: hide ? 0 : 1 },
+        transition: { duration: 1.2, ease: [0.4, 0, 0.2, 1] },
+        style: {
+          position: "fixed",
+          inset: 0,
+          zIndex: 9999,
+          background: "#08070C",
+          overflow: "hidden",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          pointerEvents: hide ? "none" : "auto"
+        }
+      },
+      /* @__PURE__ */ React.createElement(
+        "video",
+        {
+          ref: vref,
+          src: PRE_VIDEO,
+          poster: PRE_POSTER,
+          muted: true,
+          playsInline: true,
+          loop: true,
+          autoPlay: true,
+          preload: "auto",
+          style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }
+        }
+      ),
+      /* @__PURE__ */ React.createElement("div", { style: {
+        position: "absolute",
+        inset: 0,
+        background: "radial-gradient(120% 120% at 50% 50%, rgba(8,7,12,.42) 0%, rgba(8,7,12,.84) 100%)"
+      } }),
+      /* @__PURE__ */ React.createElement("div", { style: { position: "relative", zIndex: 2, display: "flex", flexDirection: "column", alignItems: "center", gap: 26 } }, /* @__PURE__ */ React.createElement("div", { style: { width: "clamp(180px,40vw,256px)", aspectRatio: "1" } }, /* @__PURE__ */ React.createElement(MazeSolve, null)), /* @__PURE__ */ React.createElement("div", { style: {
+        fontFamily: "JetBrains Mono",
+        fontSize: 12.6,
+        letterSpacing: ".2em",
+        textTransform: "uppercase",
+        color: "rgba(255,255,255,.62)"
+      } }, "Trazando la l\xEDnea recta \xB7 ", pct, "%"))
+    );
+  }
+  window.Preloader = Preloader;
+})();
+})();
+
+(function(){
+(function() {
+  const { useEffect, useRef } = React;
+  const MotionConfig = window.Motion.MotionConfig;
+  function SmoothScroll() {
+    useEffect(() => {
+      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (reduced || !window.gsap || !window.ScrollTrigger || !window.ScrollSmoother) return;
+      window.gsap.registerPlugin(window.ScrollTrigger, window.ScrollSmoother);
+      const smoother = window.ScrollSmoother.create({
+        wrapper: "#smooth-wrapper",
+        content: "#smooth-content",
+        smooth: 1.2,
+        // segundos de "catch-up" del contenido
+        effects: true,
+        // habilita data-speed / data-lag
+        smoothTouch: 0.1
+        // suavizado ligero en táctil
+      });
+      const refresh = () => window.ScrollTrigger.refresh();
+      window.addEventListener("load", refresh);
+      const t = setTimeout(refresh, 1e3);
+      return () => {
+        window.removeEventListener("load", refresh);
+        clearTimeout(t);
+        if (smoother) smoother.kill();
+      };
+    }, []);
+    return null;
+  }
+  function App() {
+    return /* @__PURE__ */ React.createElement(MotionConfig, { reducedMotion: "user" }, /* @__PURE__ */ React.createElement(SmoothScroll, null), /* @__PURE__ */ React.createElement(window.Preloader, null), /* @__PURE__ */ React.createElement("div", { id: "smooth-wrapper" }, /* @__PURE__ */ React.createElement("div", { id: "smooth-content" }, /* @__PURE__ */ React.createElement(window.ScrollFX, null), /* @__PURE__ */ React.createElement(window.CinematicTransitions, null), /* @__PURE__ */ React.createElement(window.HeroSection, null), /* @__PURE__ */ React.createElement(window.LineaRectaSection, null), /* @__PURE__ */ React.createElement(window.MarqueeSection, null), /* @__PURE__ */ React.createElement(window.ComoFuncionaSection, null), /* @__PURE__ */ React.createElement(window.RoiSection, null), /* @__PURE__ */ React.createElement(window.ServiciosSection, null), /* @__PURE__ */ React.createElement(window.SolucionesSection, null), /* @__PURE__ */ React.createElement(window.PorQueSection, null), /* @__PURE__ */ React.createElement(window.DiagnosticoSection, null), /* @__PURE__ */ React.createElement(window.CtaSection, null), /* @__PURE__ */ React.createElement(window.Footer, null))));
+  }
+  ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App, null));
+})();
+})();
