@@ -821,34 +821,46 @@ window.MazeLogo = function MazeLogo() {
         clearTimeout(tEnd);
       };
     }, [modal, cur, vw]);
+    const switchingRef = useRef(false);
     function switchDemo(demo) {
-      if (demo === cur || !demo.live) return;
+      if (demo === cur || switchingRef.current) return;
+      switchingRef.current = true;
       setVis(false);
       setTimeout(() => {
         setCur(demo);
         setVis(true);
+        switchingRef.current = false;
       }, 200);
     }
-    return /* @__PURE__ */ React.createElement("section", { id: "como", className: "v2-sec", style: modal ? { zIndex: 400 } : void 0 }, /* @__PURE__ */ React.createElement("div", { className: "fx-glow", "data-depth": "0.2", style: { width: 420, height: 420, right: "-8%", top: "4%", background: "rgba(75,140,247,.3)" } }), /* @__PURE__ */ React.createElement("div", { className: "v2-inner" }, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("p", { className: "v2-kicker" }, "// c\xF3mo funciona"), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2" }, "Demo de ", /* @__PURE__ */ React.createElement("em", null, "procesos")), /* @__PURE__ */ React.createElement("p", { className: "v2-note" }, "Estas automatizaciones est\xE1n funcionando ahora mismo. \xC1brelas y juega con ellas.")), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.05, style: { marginTop: 48 } }, /* @__PURE__ */ React.createElement("div", { className: "dp-stage" }, /* @__PURE__ */ React.createElement("div", { className: "dp" }, /* @__PURE__ */ React.createElement("div", { className: "dp-body" + (vis ? " vis" : "") }, /* @__PURE__ */ React.createElement("div", { className: "dp-head" }, /* @__PURE__ */ React.createElement("div", { className: "dp-head-txt" }, cur.live ? /* @__PURE__ */ React.createElement("span", { className: "dp-badge-live" }, /* @__PURE__ */ React.createElement("span", { className: "bdot" }), " En vivo") : /* @__PURE__ */ React.createElement("span", { className: "dp-badge-soon" }, "Pr\xF3ximamente"), /* @__PURE__ */ React.createElement("h3", { className: "dp-name" }, cur.name), /* @__PURE__ */ React.createElement("p", { className: "dp-desc" }, cur.desc)), /* @__PURE__ */ React.createElement("div", { className: "dp-head-cta" }, cur.live ? /* @__PURE__ */ React.createElement("button", { className: "dp-btn", onClick: () => setModal(true) }, "Ver demo ", /* @__PURE__ */ React.createElement("span", null, "\u2192")) : /* @__PURE__ */ React.createElement("span", { className: "dp-btn-dis" }, "Disponible pronto"), cur.live && /* @__PURE__ */ React.createElement("p", { className: "dp-time" }, "listo en ", /* @__PURE__ */ React.createElement("span", null, cur.time)))), /* @__PURE__ */ React.createElement("div", { className: "dp-steps" }, cur.steps.map((s, i) => /* @__PURE__ */ React.createElement("div", { className: "dp-step", key: i }, /* @__PURE__ */ React.createElement("div", { className: "dp-step-ic" }, /* @__PURE__ */ React.createElement("span", { className: "dp-step-svg", dangerouslySetInnerHTML: { __html: IC[s.ic] } }), /* @__PURE__ */ React.createElement("span", { className: "dp-step-n" }, i + 1)), /* @__PURE__ */ React.createElement("p", { className: "dp-step-t" }, s.t))))), /* @__PURE__ */ React.createElement("div", { className: "dp-footer" }, /* @__PURE__ */ React.createElement("span", { className: "dp-hint" }, "elige una automatizaci\xF3n \u2192"))), /* @__PURE__ */ React.createElement("div", { className: "dp-picker" }, DEMOS.map((d) => /* @__PURE__ */ React.createElement(
-      "div",
+    const itemRefs = useRef([]);
+    const threadRef = useRef(null);
+    function moveThread() {
+      const idx = DEMOS.findIndex((d) => d.id === cur.id);
+      const item = itemRefs.current[idx];
+      const thread = threadRef.current;
+      if (!item || !thread) return;
+      const name = item.querySelector(".dpl-mname");
+      const top = item.offsetTop + (name ? name.offsetTop : 0);
+      thread.style.top = top + "px";
+      thread.style.height = (name ? name.offsetHeight : item.offsetHeight) + "px";
+    }
+    useEffect(moveThread, [cur, vw]);
+    useEffect(() => {
+      document.fonts && document.fonts.ready.then(moveThread);
+    }, []);
+    return /* @__PURE__ */ React.createElement("section", { id: "como", className: "v2-sec" }, /* @__PURE__ */ React.createElement("div", { className: "fx-glow", "data-depth": "0.2", style: { width: 420, height: 420, right: "-8%", top: "4%", background: "rgba(75,140,247,.3)" } }), /* @__PURE__ */ React.createElement("div", { className: "fx-glow", "data-depth": "0.12", style: { width: 480, height: 480, left: "-60px", bottom: "-190px", background: "rgba(75,140,247,.16)", filter: "blur(90px)", opacity: 1 } }), /* @__PURE__ */ React.createElement("div", { className: "fx-glow", "data-depth": "0.12", style: { width: 420, height: 420, right: "-50px", bottom: "-160px", background: "rgba(99,80,170,.15)", filter: "blur(90px)", opacity: 1 } }), /* @__PURE__ */ React.createElement("div", { className: "v2-inner" }, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("p", { className: "v2-kicker" }, "// c\xF3mo funciona"), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2" }, "Demo de ", /* @__PURE__ */ React.createElement("em", null, "procesos")), /* @__PURE__ */ React.createElement("p", { className: "v2-note" }, "Estas automatizaciones est\xE1n funcionando ahora mismo. \xC1brelas y juega con ellas.")), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.05, style: { marginTop: 48 } }, /* @__PURE__ */ React.createElement("div", { className: "dpl-stage" }, /* @__PURE__ */ React.createElement("nav", { className: "dpl-menu", "aria-label": "Biblioteca de demos" }, /* @__PURE__ */ React.createElement("span", { className: "dpl-thread", ref: threadRef, "aria-hidden": "true" }), DEMOS.map((d, i) => /* @__PURE__ */ React.createElement(
+      "button",
       {
         key: d.id,
-        role: d.live ? "button" : void 0,
-        tabIndex: d.live ? 0 : void 0,
-        className: "dp-card" + (d === cur ? " dp-act" : "") + (!d.live ? " dp-dis" : ""),
-        onClick: () => switchDemo(d),
-        onKeyDown: (e) => {
-          if (d.live && (e.key === "Enter" || e.key === " ")) {
-            e.preventDefault();
-            switchDemo(d);
-          }
-        }
+        type: "button",
+        ref: (el) => itemRefs.current[i] = el,
+        className: "dpl-mitem" + (d === cur ? " act" : "") + (!d.live ? " soon" : ""),
+        onClick: () => switchDemo(d)
       },
-      /* @__PURE__ */ React.createElement("span", { className: "dp-cn" }, d.num),
-      /* @__PURE__ */ React.createElement("span", { className: "dp-ci", dangerouslySetInnerHTML: { __html: IC[d.icon] } }),
-      /* @__PURE__ */ React.createElement("span", { className: "dp-cname" }, d.name),
-      d.live ? /* @__PURE__ */ React.createElement("span", { className: "dp-livedot", "aria-label": "En vivo", title: "En vivo" }) : /* @__PURE__ */ React.createElement("span", { className: "dp-cst soon" }, "Pr\xF3ximamente")
-    )))))), modal && ReactDOM.createPortal(
+      /* @__PURE__ */ React.createElement("span", { className: "dpl-mnum" }, "/", d.num),
+      /* @__PURE__ */ React.createElement("span", { className: "dpl-mname" }, d.name),
+      /* @__PURE__ */ React.createElement("span", { className: "dpl-mstatus" }, d.live ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("i", { "aria-hidden": "true" }), " en vivo") : "pr\xF3ximamente")
+    ))), /* @__PURE__ */ React.createElement("div", { className: "dpl-panel" }, /* @__PURE__ */ React.createElement("span", { className: "dpl-ghost", "aria-hidden": "true" }, cur.num), /* @__PURE__ */ React.createElement("div", { className: "dpl-body" + (vis ? " vis" : "") }, cur.live ? /* @__PURE__ */ React.createElement("span", { className: "dp-badge-live" }, /* @__PURE__ */ React.createElement("span", { className: "bdot" }), " En vivo") : /* @__PURE__ */ React.createElement("span", { className: "dp-badge-soon" }, "Pr\xF3ximamente"), /* @__PURE__ */ React.createElement("p", { className: "dpl-desc" }, cur.desc), /* @__PURE__ */ React.createElement("div", { className: "dpl-steps" }, cur.steps.map((s, i) => /* @__PURE__ */ React.createElement("div", { className: "dpl-step", key: i }, /* @__PURE__ */ React.createElement("div", { className: "dp-step-ic" }, /* @__PURE__ */ React.createElement("span", { className: "dp-step-svg", dangerouslySetInnerHTML: { __html: IC[s.ic] } }), /* @__PURE__ */ React.createElement("span", { className: "dp-step-n" }, i + 1)), /* @__PURE__ */ React.createElement("p", { className: "dp-step-t" }, s.t))), /* @__PURE__ */ React.createElement("span", { className: "dpl-signal", "aria-hidden": "true" })), /* @__PURE__ */ React.createElement("div", { className: "dpl-cta" }, cur.live ? /* @__PURE__ */ React.createElement("button", { className: "dp-btn", onClick: () => setModal(true) }, "Ver demo ", /* @__PURE__ */ React.createElement("span", null, "\u2192")) : /* @__PURE__ */ React.createElement("span", { className: "dp-btn-dis" }, "Disponible pronto"), cur.live && /* @__PURE__ */ React.createElement("p", { className: "dp-time" }, "listo en ", /* @__PURE__ */ React.createElement("span", null, cur.time)))))))), modal && ReactDOM.createPortal(
       /* @__PURE__ */ React.createElement("div", { className: "dp-modal", onClick: () => setModal(false) }, /* @__PURE__ */ React.createElement(
         "div",
         {
@@ -931,8 +943,38 @@ window.MazeLogo = function MazeLogo() {
       p: "No desaparecemos al entregar. Lo vigilamos, lo mantenemos y lo mejoramos mes a mes contigo."
     }
   ];
+  function CuboMarca() {
+    return /* @__PURE__ */ React.createElement("div", { className: "qd-cell qd-tr qd-anim", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("div", { className: "cubo-halo" }), /* @__PURE__ */ React.createElement("div", { className: "cubo-scene" }, /* @__PURE__ */ React.createElement("img", { className: "cubo-img", src: "assets/referencias/cubo-laberinto-3d.webp", alt: "", loading: "lazy", decoding: "async" })), /* @__PURE__ */ React.createElement("p", { className: "qd-cap" }, "// el laberinto, bajo control"));
+  }
+  const PL_NODES = [
+    {
+      t: "Entra el trabajo",
+      ic: /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.7", strokeLinecap: "round", strokeLinejoin: "round" }, /* @__PURE__ */ React.createElement("rect", { x: "3", y: "5", width: "18", height: "14", rx: "2" }), /* @__PURE__ */ React.createElement("path", { d: "M3 7l9 6 9-6" }))
+    },
+    {
+      t: "La IA lo resuelve",
+      ic: /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.7", strokeLinecap: "round", strokeLinejoin: "round" }, /* @__PURE__ */ React.createElement("path", { d: "M12 3l1.8 4.6L18 9.4l-4.2 1.8L12 16l-1.8-4.8L6 9.4l4.2-1.8z" }), /* @__PURE__ */ React.createElement("path", { d: "M19 15l.9 2.3L22 18l-2.1.7L19 21l-.9-2.3L16 18l2.1-.7z" }))
+    },
+    {
+      t: "Hecho \u2014 sin tocar nada",
+      ic: /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.7", strokeLinecap: "round", strokeLinejoin: "round" }, /* @__PURE__ */ React.createElement("circle", { cx: "12", cy: "12", r: "9" }), /* @__PURE__ */ React.createElement("path", { d: "M8.5 12.5l2.5 2.5 5-5.5" }))
+    }
+  ];
+  const PL_CAPS = [
+    "factura_237.pdf \u2192 clasificada \u2192 archivada en Drive",
+    "cita del martes \u2192 hueco libre \u2192 confirmada por WhatsApp",
+    "duda de un cliente \u2192 respondida con tu info \xB7 09:41"
+  ];
+  function PipelineMarca() {
+    const [cap, setCap] = React.useState(0);
+    React.useEffect(() => {
+      const iv = setInterval(() => setCap((c) => (c + 1) % PL_CAPS.length), 5400);
+      return () => clearInterval(iv);
+    }, []);
+    return /* @__PURE__ */ React.createElement("div", { className: "qd-cell qd-bl qd-anim", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("p", { className: "qd-cap qd-cap-top" }, "// esto est\xE1 pasando solo, ahora"), /* @__PURE__ */ React.createElement("div", { className: "pl-wrap" }, /* @__PURE__ */ React.createElement("div", { className: "pl-steps" }, /* @__PURE__ */ React.createElement("span", { className: "pl-signal" }), PL_NODES.map((n, k) => /* @__PURE__ */ React.createElement("div", { key: k, className: "pl-node" }, /* @__PURE__ */ React.createElement("span", { className: "pl-ic" }, n.ic), /* @__PURE__ */ React.createElement("span", { className: "pl-txt" }, n.t)))), /* @__PURE__ */ React.createElement("p", { className: "pl-cap", key: cap }, PL_CAPS[cap])));
+  }
   window.PorQueSection = function PorQueSection() {
-    return /* @__PURE__ */ React.createElement("section", { id: "empresa", className: "v2-sec", style: { paddingTop: "clamp(42px,6vh,75.6px)" } }, /* @__PURE__ */ React.createElement("div", { className: "v2-inner" }, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("p", { className: "v2-kicker" }, "// qui\xE9nes somos"), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2" }, "Un estudio de automatizaci\xF3n ", /* @__PURE__ */ React.createElement("em", null, "con IA"), " en Tenerife."), /* @__PURE__ */ React.createElement("p", { className: "v2-note" }, "Ayudamos a excursiones, comercios y peque\xF1as empresas a quitarse de encima el trabajo repetitivo \u2014 para que dediquen su tiempo a lo que de verdad mueve el negocio.")), /* @__PURE__ */ React.createElement("div", { className: "pq-grid" }, VALUES.map((v, i) => /* @__PURE__ */ React.createElement(Reveal, { key: v.h, delay: i * 0.06 }, /* @__PURE__ */ React.createElement("div", { className: "pq-card", onPointerMove: spotlight }, /* @__PURE__ */ React.createElement("div", { className: "pq-ic" }, v.ic), /* @__PURE__ */ React.createElement("h4", null, v.h), /* @__PURE__ */ React.createElement("p", null, v.p)))))));
+    return /* @__PURE__ */ React.createElement("section", { id: "empresa", className: "qd-sec" }, /* @__PURE__ */ React.createElement("div", { className: "qd-grid" }, /* @__PURE__ */ React.createElement("div", { className: "qd-cell qd-tl" }, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("p", { className: "v2-kicker" }, "// qui\xE9nes somos"), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2" }, "Un estudio de automatizaci\xF3n ", /* @__PURE__ */ React.createElement("em", null, "con IA"), " en Tenerife."), /* @__PURE__ */ React.createElement("p", { className: "v2-note" }, "Ayudamos a excursiones, comercios y peque\xF1as empresas a quitarse de encima el trabajo repetitivo \u2014 para que dediquen su tiempo a lo que de verdad mueve el negocio.")), /* @__PURE__ */ React.createElement("div", { className: "pq-grid" }, VALUES.map((v, i) => /* @__PURE__ */ React.createElement(Reveal, { key: v.h, delay: i * 0.06 }, /* @__PURE__ */ React.createElement("div", { className: "pq-card", onPointerMove: spotlight }, /* @__PURE__ */ React.createElement("div", { className: "pq-ic" }, v.ic), /* @__PURE__ */ React.createElement("h4", null, v.h), /* @__PURE__ */ React.createElement("p", null, v.p)))))), /* @__PURE__ */ React.createElement(CuboMarca, null), /* @__PURE__ */ React.createElement(PipelineMarca, null), /* @__PURE__ */ React.createElement("div", { id: "diagnostico", className: "qd-cell qd-br cd-center" }, /* @__PURE__ */ React.createElement(window.DiagnosticoInner, null))));
   };
 })();
 })();
@@ -1029,111 +1071,121 @@ window.MazeLogo = function MazeLogo() {
   const { useState, useEffect, useRef } = React;
   const Reveal = window.Reveal;
   const HeadReveal = window.HeadReveal;
-  const QS = [
-    {
-      id: "q1",
-      q: "\xBFHay tareas que repites cada semana y consideras que puedes delegar alguna parte?",
-      opts: [["a", "S\xED \u2014 correos, facturas, recordatorios, copiar datos..."], ["b", "Puede ser, pero no tengo claro cu\xE1les"], ["c", "No \u2014 cada semana es diferente"]]
-    },
-    {
-      id: "q2",
-      q: "\xBFCu\xE1ntas horas de trabajo a la semana ocupan estas tareas?",
-      opts: [["a", "M\xE1s de 5 horas \u2014 es una sangr\xEDa seria"], ["b", "Entre 2 y 5 horas \u2014 se nota pero lo aguanto"], ["c", "Menos de 2 \u2014 no es mi problema principal"]]
-    },
-    {
-      id: "q3",
-      q: "Si pudieras aprovechar ese tiempo, \xBFen qu\xE9 lo invertir\xEDas?",
-      opts: [["a", "Conseguir m\xE1s clientes o cerrar m\xE1s ventas"], ["b", "Mejorar el servicio o atender mejor a los que tengo"], ["c", "Descansar \u2014 llevo demasiado tiempo sin parar"]]
-    }
+  const CARDS = [
+    "Cada semana repites tareas que podr\xEDas delegar: correos, facturas, recordatorios...",
+    "Le dedicas m\xE1s de 5 horas a la semana a trabajo que no es estrat\xE9gico.",
+    "Se te escapan mensajes o citas porque no das abasto a responder a tiempo.",
+    "Si recuperases ese tiempo, lo usar\xEDas para conseguir m\xE1s clientes o cuidar mejor a los que ya tienes.",
+    'Llevas meses pensando "esto lo deber\xEDa automatizar" y nunca encuentras el momento.'
   ];
-  function result(a) {
-    if (a.q1 == null || a.q2 == null || a.q3 == null) return null;
-    if (a.q1 === "c" && a.q2 === "c") return {
+  function verdict(n) {
+    if (n <= 1) return {
       tag: "resultado \xB7 quiz\xE1 no es el momento",
-      title: /* @__PURE__ */ React.createElement(React.Fragment, null, "Tu operativa ya funciona bastante ", /* @__PURE__ */ React.createElement("em", null, "bien.")),
-      body: "No detectamos una p\xE9rdida de tiempo clara. Si esto cambia, nos cuentas y lo miramos sin compromiso."
+      title: /* @__PURE__ */ React.createElement(React.Fragment, null, "Tu d\xEDa a d\xEDa ya va bastante ", /* @__PURE__ */ React.createElement("em", null, "fluido.")),
+      body: "No detectamos una fuga de tiempo clara ahora mismo. Si esto cambia, nos cuentas y lo miramos sin compromiso."
     };
-    if (a.q1 === "c") return {
-      tag: "resultado \xB7 vale la pena explorar",
-      title: /* @__PURE__ */ React.createElement(React.Fragment, null, "Puede que no lo veas, pero ", /* @__PURE__ */ React.createElement("em", null, "est\xE1 ah\xED.")),
-      body: "Las tareas que roban tiempo se vuelven invisibles cuando te acostumbras. Una conversaci\xF3n de 45 minutos suele sacarlas a la luz."
+    if (n <= 3) return {
+      tag: "resultado \xB7 vale la pena mirarlo",
+      title: /* @__PURE__ */ React.createElement(React.Fragment, null, "Hay una fuga de tiempo ", /* @__PURE__ */ React.createElement("em", null, "ah\xED.")),
+      body: "Con lo que has marcado ya hay margen real para recuperar horas. Una conversaci\xF3n de 20 minutos lo aclara."
     };
-    if (a.q2 === "c") return {
-      tag: "resultado \xB7 hay margen",
-      title: /* @__PURE__ */ React.createElement(React.Fragment, null, "Poco tiempo perdido no significa que ", /* @__PURE__ */ React.createElement("em", null, "est\xE9 bien as\xED.")),
-      body: "Con 2 horas semanales recuperadas ya se nota la diferencia \u2014 y ese margen crece cuando eliminas el primer cuello de botella."
+    return {
+      tag: "resultado \xB7 encajamos",
+      title: /* @__PURE__ */ React.createElement(React.Fragment, null, "S\xED. Podemos ", /* @__PURE__ */ React.createElement("em", null, "ayudarte.")),
+      body: "Todo esto se puede automatizar sobre las herramientas que ya usas. Hablemos y te ense\xF1amos por d\xF3nde empezar."
     };
-    let body = "Tienes tareas repetitivas que te roban tiempo, y sabes qu\xE9 har\xEDas con esas horas de vuelta.";
-    if (a.q3 === "c") body = "Llevas demasiado tiempo aguantando. " + body;
-    body = body + " Una llamada de 45 minutos \u2014 sin guion, sin compromiso \u2014 y te mostramos d\xF3nde est\xE1 la salida.";
-    return { tag: "resultado \xB7 encajamos", title: /* @__PURE__ */ React.createElement(React.Fragment, null, "S\xED. Podemos ", /* @__PURE__ */ React.createElement("em", null, "ayudarte.")), body };
   }
-  window.DiagnosticoSection = function DiagnosticoSection() {
-    const [answers, setAnswers] = useState({ q1: null, q2: null, q3: null });
-    const [openQ, setOpenQ] = useState(null);
-    const resRef = useRef(null);
+  function ResultBox({ res, onRestart }) {
+    const [show, setShow] = useState(false);
     useEffect(() => {
-      const t = setTimeout(() => setOpenQ("q1"), 500);
-      return () => clearTimeout(t);
+      const id = requestAnimationFrame(() => setShow(true));
+      return () => cancelAnimationFrame(id);
     }, []);
-    const answered = ["q1", "q2", "q3"].filter((k) => answers[k] != null).length;
-    const res = result(answers);
-    useEffect(() => {
-      if (res && resRef.current) {
-        const t = setTimeout(() => {
-          resRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
-        }, 150);
-        return () => clearTimeout(t);
+    return /* @__PURE__ */ React.createElement("div", { className: "cd-result" + (show ? " show" : ""), "aria-live": "polite" }, /* @__PURE__ */ React.createElement("span", { className: "rtag" }, res.tag), /* @__PURE__ */ React.createElement("h3", null, res.title), /* @__PURE__ */ React.createElement("p", null, res.body), /* @__PURE__ */ React.createElement("div", { className: "acts" }, /* @__PURE__ */ React.createElement("a", { className: "v2-btn v2-btn-accent", href: "hablemos.html" }, "\u2192 Empezar conversaci\xF3n"), /* @__PURE__ */ React.createElement("a", { className: "v2-btn v2-btn-ghost", href: "#como" }, "Ver c\xF3mo funciona")), /* @__PURE__ */ React.createElement("button", { className: "cd-restart", onClick: onRestart }, "Volver a intentarlo"));
+  }
+  window.DiagnosticoInner = function DiagnosticoInner() {
+    const [idx, setIdx] = useState(0);
+    const [yes, setYes] = useState(0);
+    const done = idx >= CARDS.length;
+    const frontRef = useRef(null);
+    const busyRef = useRef(false);
+    const dragRef = useRef({ on: false, x0: 0, dx: 0 });
+    function resolve(isYes) {
+      if (busyRef.current || done) return;
+      busyRef.current = true;
+      const el = frontRef.current;
+      if (el) {
+        el.style.transition = "transform .45s cubic-bezier(.16,1,.3,1), opacity .4s";
+        el.style.transform = "translateX(" + (isYes ? 140 : -140) + "%) rotate(" + (isYes ? 18 : -18) + "deg)";
+        el.style.opacity = "0";
       }
-    }, [res]);
-    function choose(qid, val) {
-      setAnswers((a) => ({ ...a, [qid]: val }));
-      const order = ["q1", "q2", "q3"];
-      const next = order[order.indexOf(qid) + 1] || null;
-      setTimeout(() => setOpenQ(next), 180);
+      setTimeout(() => {
+        if (isYes) setYes((y) => y + 1);
+        setIdx((i) => i + 1);
+        busyRef.current = false;
+      }, 260);
     }
-    return /* @__PURE__ */ React.createElement("section", { id: "diagnostico", className: "v2-sec" }, /* @__PURE__ */ React.createElement("div", { className: "v2-inner" }, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("span", { className: "v2-diag-tag" }, /* @__PURE__ */ React.createElement("span", { className: "dot" }), "diagn\xF3stico \xB7 3 preguntas \xB7 2 minutos"), /* @__PURE__ */ React.createElement("p", { className: "v2-kicker" }, "// \xBFlo necesitas?"), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2" }, "\xBFNos ", /* @__PURE__ */ React.createElement("em", null, "necesitas?")), /* @__PURE__ */ React.createElement("p", { className: "v2-note" }, "Responde tres preguntas sobre tu d\xEDa a d\xEDa. Sin datos, sin compromiso.")), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.05, style: { marginTop: 40 } }, /* @__PURE__ */ React.createElement("div", { className: "v2-progress" }, /* @__PURE__ */ React.createElement("div", { className: "v2-progress-fill", style: { width: answered / 3 * 100 + "%" } })), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 14, marginTop: 28 } }, QS.map((Q, i) => {
-      const isOpen = openQ === Q.id;
-      return /* @__PURE__ */ React.createElement("div", { key: Q.id, className: "v2-diag-q" + (isOpen ? " open" : "") }, /* @__PURE__ */ React.createElement(
+    function onDown(e) {
+      if (busyRef.current) return;
+      dragRef.current = { on: true, x0: e.clientX, dx: 0 };
+      const el = frontRef.current;
+      if (el) {
+        if (el.setPointerCapture) el.setPointerCapture(e.pointerId);
+        el.classList.add("dragging");
+      }
+    }
+    function onMove(e) {
+      if (!dragRef.current.on) return;
+      const dx = e.clientX - dragRef.current.x0;
+      dragRef.current.dx = dx;
+      const el = frontRef.current;
+      if (!el) return;
+      el.style.transform = "translateX(" + dx + "px) rotate(" + dx / 18 + "deg)";
+      const p = Math.min(Math.abs(dx) / 120, 1);
+      const bn = el.querySelector(".cd-badge.no"), bs = el.querySelector(".cd-badge.si");
+      if (bn) bn.style.opacity = dx < 0 ? p : 0;
+      if (bs) bs.style.opacity = dx > 0 ? p : 0;
+    }
+    function onUp() {
+      if (!dragRef.current.on) return;
+      const dx = dragRef.current.dx;
+      dragRef.current.on = false;
+      const el = frontRef.current;
+      if (el) el.classList.remove("dragging");
+      if (Math.abs(dx) > 100) {
+        resolve(dx > 0);
+      } else if (el) {
+        el.style.transform = "";
+        const bn = el.querySelector(".cd-badge.no"), bs = el.querySelector(".cd-badge.si");
+        if (bn) bn.style.opacity = 0;
+        if (bs) bs.style.opacity = 0;
+      }
+    }
+    function restart() {
+      setIdx(0);
+      setYes(0);
+    }
+    const res = done ? verdict(yes) : null;
+    return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("span", { className: "v2-diag-tag" }, /* @__PURE__ */ React.createElement("span", { className: "dot" }), "5 cartas \xB7 30 segundos"), /* @__PURE__ */ React.createElement("p", { className: "v2-kicker" }, "// \xBFlo necesitas?"), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2" }, "\xBFNos ", /* @__PURE__ */ React.createElement("em", null, "necesitas?")), /* @__PURE__ */ React.createElement("p", { className: "v2-note" }, "Una frase, una decisi\xF3n. Desliza o pulsa \u2014 al final te decimos si encajamos.")), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.05 }, /* @__PURE__ */ React.createElement("div", { className: "cd-dots", "aria-hidden": "true" }, CARDS.map((_, i) => /* @__PURE__ */ React.createElement("span", { key: i, className: "cd-dot" + (i < idx ? " done" : "") + (i === idx && !done ? " cur" : "") }))), !done && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "cd-stage" }, [0, 1, 2].map((k) => {
+      const i = idx + k;
+      if (i >= CARDS.length) return null;
+      const front = k === 0;
+      return /* @__PURE__ */ React.createElement(
         "div",
         {
-          className: "v2-diag-head",
-          role: "button",
-          tabIndex: 0,
-          "aria-expanded": isOpen,
-          onClick: () => setOpenQ(isOpen ? null : Q.id),
-          onKeyDown: (e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              setOpenQ(isOpen ? null : Q.id);
-            }
-          }
+          key: i,
+          ref: front ? frontRef : null,
+          className: "cd-card",
+          style: { zIndex: 10 - k, transform: "translateY(" + k * 12 + "px) scale(" + (1 - k * 0.055) + ")", opacity: k === 2 ? 0.5 : k === 1 ? 0.8 : 1 },
+          onPointerDown: front ? onDown : void 0,
+          onPointerMove: front ? onMove : void 0,
+          onPointerUp: front ? onUp : void 0,
+          onPointerCancel: front ? onUp : void 0
         },
-        /* @__PURE__ */ React.createElement("span", { className: "v2-diag-num" }, "0" + (i + 1)),
-        /* @__PURE__ */ React.createElement("span", { className: "v2-diag-qtext" }, Q.q),
-        /* @__PURE__ */ React.createElement("span", { className: "v2-diag-icon" }, "+")
-      ), /* @__PURE__ */ React.createElement("div", { style: { maxHeight: isOpen ? 360 : 0, overflow: "hidden", transition: "max-height .35s ease" } }, /* @__PURE__ */ React.createElement("div", { className: "v2-diag-opts" }, Q.opts.map(([v, label]) => {
-        const sel = answers[Q.id] === v;
-        return /* @__PURE__ */ React.createElement(
-          "div",
-          {
-            key: v,
-            className: "v2-diag-opt" + (sel ? " sel" : ""),
-            role: "button",
-            tabIndex: 0,
-            onClick: () => choose(Q.id, v),
-            onKeyDown: (e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                choose(Q.id, v);
-              }
-            }
-          },
-          /* @__PURE__ */ React.createElement("span", { className: "v2-diag-check" }, sel && /* @__PURE__ */ React.createElement(window.IconCheck, null)),
-          label
-        );
-      }))));
-    })), res && /* @__PURE__ */ React.createElement("div", { className: "v2-diag-result", ref: resRef }, /* @__PURE__ */ React.createElement("span", { className: "rtag" }, res.tag), /* @__PURE__ */ React.createElement("h3", null, res.title), /* @__PURE__ */ React.createElement("p", null, res.body), /* @__PURE__ */ React.createElement("div", { className: "acts" }, /* @__PURE__ */ React.createElement("a", { className: "v2-btn v2-btn-accent", href: "hablemos.html" }, "\u2192 Empezar conversaci\xF3n"), /* @__PURE__ */ React.createElement("a", { className: "v2-btn v2-btn-ghost", href: "#como" }, "Ver c\xF3mo funciona"))))));
+        /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", { className: "cd-badge no" }, "No"), /* @__PURE__ */ React.createElement("span", { className: "cd-badge si" }, "S\xED"), /* @__PURE__ */ React.createElement("span", { className: "cd-num" }, "0" + (i + 1) + " / 0" + CARDS.length), /* @__PURE__ */ React.createElement("p", { className: "cd-txt" }, CARDS[i])),
+        /* @__PURE__ */ React.createElement("span", { className: "cd-hint" }, "Desliza o usa los botones \u2193")
+      );
+    })), /* @__PURE__ */ React.createElement("div", { className: "cd-actions" }, /* @__PURE__ */ React.createElement("button", { className: "cd-abtn no", onClick: () => resolve(false) }, /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2.4", strokeLinecap: "round" }, /* @__PURE__ */ React.createElement("path", { d: "M6 6l12 12M18 6L6 18" })), "No me pasa"), /* @__PURE__ */ React.createElement("button", { className: "cd-abtn si", onClick: () => resolve(true) }, /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2.6", strokeLinecap: "round", strokeLinejoin: "round" }, /* @__PURE__ */ React.createElement("path", { d: "M4 12l5 5L20 6" })), "S\xED, me suena"))), done && res && /* @__PURE__ */ React.createElement(ResultBox, { res, onRestart: restart })));
   };
 })();
 })();
@@ -1352,7 +1404,7 @@ window.MazeLogo = function MazeLogo() {
     return null;
   }
   function App() {
-    return /* @__PURE__ */ React.createElement(MotionConfig, { reducedMotion: "user" }, /* @__PURE__ */ React.createElement(SmoothScroll, null), /* @__PURE__ */ React.createElement(window.Preloader, null), /* @__PURE__ */ React.createElement("div", { id: "smooth-wrapper" }, /* @__PURE__ */ React.createElement("div", { id: "smooth-content" }, /* @__PURE__ */ React.createElement(window.ScrollFX, null), /* @__PURE__ */ React.createElement(window.CinematicTransitions, null), /* @__PURE__ */ React.createElement(window.HeroSection, null), /* @__PURE__ */ React.createElement(window.LineaRectaSection, null), /* @__PURE__ */ React.createElement(window.MarqueeSection, null), /* @__PURE__ */ React.createElement(window.ComoFuncionaSection, null), /* @__PURE__ */ React.createElement(window.RoiSection, null), /* @__PURE__ */ React.createElement(window.ServiciosSection, null), /* @__PURE__ */ React.createElement(window.SolucionesSection, null), /* @__PURE__ */ React.createElement(window.PorQueSection, null), /* @__PURE__ */ React.createElement(window.DiagnosticoSection, null), /* @__PURE__ */ React.createElement(window.CtaSection, null), /* @__PURE__ */ React.createElement(window.Footer, null))));
+    return /* @__PURE__ */ React.createElement(MotionConfig, { reducedMotion: "user" }, /* @__PURE__ */ React.createElement(SmoothScroll, null), /* @__PURE__ */ React.createElement(window.Preloader, null), /* @__PURE__ */ React.createElement("div", { id: "smooth-wrapper" }, /* @__PURE__ */ React.createElement("div", { id: "smooth-content" }, /* @__PURE__ */ React.createElement(window.ScrollFX, null), /* @__PURE__ */ React.createElement(window.CinematicTransitions, null), /* @__PURE__ */ React.createElement(window.HeroSection, null), /* @__PURE__ */ React.createElement(window.LineaRectaSection, null), /* @__PURE__ */ React.createElement(window.MarqueeSection, null), /* @__PURE__ */ React.createElement(window.ComoFuncionaSection, null), /* @__PURE__ */ React.createElement(window.RoiSection, null), /* @__PURE__ */ React.createElement(window.ServiciosSection, null), /* @__PURE__ */ React.createElement(window.SolucionesSection, null), /* @__PURE__ */ React.createElement(window.PorQueSection, null), /* @__PURE__ */ React.createElement(window.CtaSection, null), /* @__PURE__ */ React.createElement(window.Footer, null))));
   }
   ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App, null));
 })();
