@@ -121,26 +121,113 @@ window.MazeLogo = function MazeLogo() {
       children
     );
   };
-  window.HeadReveal = function HeadReveal({ children, delay = 0, y = 28, style, className }) {
+  const HR_CHARS = "\u2593\u2592\u2591#$%&/{}[]<>=+*_01";
+  function hrDecode(el) {
+    const orig = el.dataset.hrOrig || el.textContent;
+    el.dataset.hrOrig = orig;
+    const dur = 950, t0 = performance.now();
+    el.classList.add("hr-caret");
+    const frame = (now) => {
+      const p = Math.min(1, (now - t0) / dur);
+      const lock = Math.floor(p * orig.length);
+      let txt = orig.slice(0, lock);
+      for (let i = lock; i < orig.length; i++)
+        txt += orig[i] === " " ? " " : HR_CHARS[Math.random() * HR_CHARS.length | 0];
+      el.textContent = txt;
+      if (p < 1) requestAnimationFrame(frame);
+      else {
+        el.textContent = orig;
+        setTimeout(() => el.classList.remove("hr-caret"), 650);
+      }
+    };
+    requestAnimationFrame(frame);
+  }
+  function hrSplit(h2) {
+    if (h2.dataset.hrSplit) return Array.from(h2.querySelectorAll(".hr-w"));
+    const process = (node) => {
+      const frag = document.createDocumentFragment();
+      Array.from(node.childNodes).forEach((child) => {
+        if (child.nodeType === 3) {
+          child.textContent.split(/(\s+)/).forEach((part) => {
+            if (!part) return;
+            if (/^\s+$/.test(part)) {
+              frag.appendChild(document.createTextNode(" "));
+              return;
+            }
+            const wm = document.createElement("span");
+            wm.className = "hr-wm";
+            const w = document.createElement("span");
+            w.className = "hr-w";
+            w.textContent = part;
+            wm.appendChild(w);
+            frag.appendChild(wm);
+          });
+        } else if (child.nodeType === 1 && child.tagName === "EM") {
+          const em = document.createElement("em");
+          em.appendChild(process(child));
+          frag.appendChild(em);
+        } else if (child.nodeType === 1) {
+          frag.appendChild(child.cloneNode(true));
+        }
+      });
+      return frag;
+    };
+    const out = process(h2);
+    h2.textContent = "";
+    h2.appendChild(out);
+    h2.classList.add("hr-split");
+    h2.dataset.hrSplit = "1";
+    return Array.from(h2.querySelectorAll(".hr-w"));
+  }
+  window.HeadReveal = function HeadReveal({ children, delay = 0, y = 18, style, className }) {
     const ref = useRef(null);
     React.useLayoutEffect(() => {
       const el = ref.current;
       if (!el || !window.gsap || !window.ScrollTrigger) return;
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
       const items = el.children.length ? Array.from(el.children) : [el];
+      const h2 = el.querySelector(":scope > h2");
+      const olh = el.querySelector(":scope > .hr-olh");
+      const kicker = items.find((n) => n !== h2 && n.tagName === "P" && /^\s*\/\//.test(n.textContent));
+      const others = items.filter((n) => n !== h2 && n !== kicker && n !== olh);
       const ctx = window.gsap.context(() => {
-        window.gsap.set(items, { opacity: 0, y, filter: "blur(10px)" });
-        window.gsap.to(items, {
-          opacity: 1,
-          y: 0,
-          filter: "blur(0px)",
-          duration: 1,
-          ease: "expo.out",
-          stagger: 0.085,
+        const words = h2 ? hrSplit(h2) : [];
+        const ems = h2 ? Array.from(h2.querySelectorAll("em")) : olh ? Array.from(olh.querySelectorAll(".hr-olfill em")) : [];
+        const fill = olh ? olh.querySelector(".hr-olfill") : null;
+        const beam = olh ? olh.querySelector(".hr-olbeam") : null;
+        if (kicker) window.gsap.set(kicker, { opacity: 0, y: 14 });
+        if (words.length) window.gsap.set(words, { yPercent: 135, rotation: 4, transformOrigin: "0% 100%" });
+        if (olh) window.gsap.set(olh, { opacity: 0 });
+        if (fill) window.gsap.set(fill, { clipPath: "inset(-10% 102% -10% -2%)" });
+        if (others.length) window.gsap.set(others, { opacity: 0, y });
+        const tl = window.gsap.timeline({
           delay,
-          clearProps: "filter",
           scrollTrigger: { trigger: el, start: "top 84%", once: true }
         });
+        if (kicker) {
+          tl.to(kicker, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0);
+          tl.call(() => hrDecode(kicker), null, 0.02);
+        }
+        if (words.length) {
+          tl.to(words, { yPercent: 0, rotation: 0, duration: 0.85, ease: "expo.out", stagger: 0.07, clearProps: "transform" }, 0.1);
+          if (ems.length) tl.call(() => ems.forEach((e) => e.classList.add("hr-ignite")), null, 1.05);
+        }
+        if (olh) {
+          tl.to(olh, { opacity: 1, duration: 0.5, ease: "power1.out" }, 0.15);
+          if (fill) {
+            tl.to(fill, { clipPath: "inset(-10% -2% -10% -2%)", duration: 1.15, ease: "power2.inOut" }, 0.7);
+            tl.set(fill, { clearProps: "clipPath" }, 1.95);
+          }
+          if (beam) {
+            tl.to(beam, { opacity: 1, duration: 0.12, ease: "none" }, 0.7);
+            tl.fromTo(beam, { left: "-2%" }, { left: "102%", duration: 1.15, ease: "power2.inOut" }, 0.7);
+            tl.to(beam, { opacity: 0, duration: 0.15, ease: "none" }, 1.72);
+          }
+          if (ems.length) tl.call(() => ems.forEach((e) => e.classList.add("hr-ignite")), null, 1.6);
+        }
+        if (others.length) {
+          tl.to(others, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out", stagger: 0.09 }, olh ? 1.35 : 0.55);
+        }
       }, ref);
       return () => ctx.revert();
     }, []);
@@ -661,36 +748,120 @@ window.MazeLogo = function MazeLogo() {
 
 (function(){
 (function() {
-  const ANTES = [
-    "Correos que se acumulan sin responder",
-    "Facturas y albaranes que se traspapelan",
-    "Citas y reservas apuntadas a mano",
-    "Datos copiados de una app a otra",
-    "Tareas que dependen de que te acuerdes"
-  ];
-  const DESPUES = [
-    "Cada mensaje clasificado y respondido solo",
-    "Facturas generadas y archivadas sin tocar nada",
-    "Reservas con disponibilidad real y recordatorios",
-    "Tus herramientas sincronizadas entre ellas",
-    "Funciona 24/7, aunque t\xFA no est\xE9s"
+  const { useEffect, useRef, useState } = React;
+  const Reveal = window.Reveal;
+  const HeadReveal = window.HeadReveal;
+  const PARES = [
+    ["Correos que se acumulan sin responder", "Cada mensaje clasificado y respondido solo"],
+    ["Facturas y albaranes que se traspapelan", "Facturas generadas y archivadas sin tocar nada"],
+    ["Citas y reservas apuntadas a mano", "Reservas con disponibilidad real y recordatorios"],
+    ["Datos copiados de una app a otra", "Tus herramientas sincronizadas entre ellas"],
+    ["Tareas que dependen de que te acuerdes", "Funciona 24/7, aunque t\xFA no est\xE9s"]
   ];
   window.ServiciosSection = function ServiciosSection() {
-    return /* @__PURE__ */ React.createElement("section", { id: "servicios", style: { position: "relative", zIndex: 1, minHeight: "100svh", background: "#08070C", overflow: "hidden" } }, /* @__PURE__ */ React.createElement("div", { style: { position: "absolute", inset: 0, overflow: "hidden", zIndex: 0 } }, /* @__PURE__ */ React.createElement(
-      "img",
+    const [after, setAfter] = useState(false);
+    const [hintOff, setHintOff] = useState(false);
+    const secRef = useRef(null);
+    const panelRef = useRef(null);
+    const manualRef = useRef(false);
+    const timersRef = useRef([]);
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    useEffect(() => {
+      const el = secRef.current;
+      if (!el) return;
+      const io = new IntersectionObserver(([e]) => {
+        if (!e.isIntersecting) return;
+        io.disconnect();
+        if (reduced) {
+          setAfter(true);
+          setHintOff(true);
+          return;
+        }
+        timersRef.current.push(setTimeout(() => {
+          if (!manualRef.current) setAfter(true);
+        }, 2200));
+        timersRef.current.push(setTimeout(() => {
+          if (manualRef.current) return;
+          timersRef.current.push(setInterval(() => {
+            if (!manualRef.current) setAfter((a) => !a);
+          }, 5200));
+        }, 2300));
+      }, { threshold: 0.35 });
+      io.observe(el);
+      return () => {
+        io.disconnect();
+        timersRef.current.forEach((t) => {
+          clearTimeout(t);
+          clearInterval(t);
+        });
+      };
+    }, []);
+    useEffect(() => {
+      if (!after || reduced) return;
+      const p = panelRef.current;
+      if (!p) return;
+      p.classList.remove("sweep");
+      void p.offsetWidth;
+      p.classList.add("sweep");
+    }, [after]);
+    const onToggle = () => {
+      manualRef.current = true;
+      timersRef.current.forEach((t) => {
+        clearTimeout(t);
+        clearInterval(t);
+      });
+      timersRef.current = [];
+      setHintOff(true);
+      setAfter((a) => !a);
+    };
+    return /* @__PURE__ */ React.createElement(
+      "section",
       {
-        src: "assets/referencias/imagen-cubo-cristal.webp",
-        alt: "",
-        className: "hero-fade",
-        style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0 }
-      }
-    )), /* @__PURE__ */ React.createElement("div", { style: {
-      position: "absolute",
-      inset: 0,
-      zIndex: 1,
-      pointerEvents: "none",
-      background: "linear-gradient(180deg, rgba(8,7,12,.72) 0%, rgba(8,7,12,.38) 26%, rgba(8,7,12,.8) 60%, rgba(8,7,12,.92) 100%)"
-    } }), /* @__PURE__ */ React.createElement("div", { style: { position: "relative", zIndex: 10, display: "flex", flexDirection: "column", minHeight: "100svh", padding: "96px clamp(21px,6vw,84px) 48px" } }, /* @__PURE__ */ React.createElement("div", { style: { marginBottom: "auto" } }, /* @__PURE__ */ React.createElement("p", { style: { fontFamily: "JetBrains Mono", fontSize: 13.6, color: "rgba(255,255,255,.5)", marginBottom: 20 } }, "// lo que cambia"), /* @__PURE__ */ React.createElement("h2", { style: { fontFamily: "Bricolage Grotesque", color: "white", fontSize: "clamp(48.3px,7.5vw,100.8px)", lineHeight: 0.9, letterSpacing: "-3px" } }, "Antes.", /* @__PURE__ */ React.createElement("br", null), "Y despu\xE9s.")), /* @__PURE__ */ React.createElement("div", { className: "ba-grid" }, /* @__PURE__ */ React.createElement("div", { className: "ba-card ba-before" }, /* @__PURE__ */ React.createElement("span", { className: "ba-tag" }, "// antes \xB7 a mano"), /* @__PURE__ */ React.createElement("ul", null, ANTES.map((t, i) => /* @__PURE__ */ React.createElement("li", { key: i }, /* @__PURE__ */ React.createElement("span", { className: "ba-x" }, "\u2715"), t)))), /* @__PURE__ */ React.createElement("div", { className: "ba-arrow", "aria-hidden": "true" }, "\u2192"), /* @__PURE__ */ React.createElement("div", { className: "ba-card ba-after" }, /* @__PURE__ */ React.createElement("span", { className: "ba-tag ba-tag-on" }, "// despu\xE9s \xB7 solo"), /* @__PURE__ */ React.createElement("ul", null, DESPUES.map((t, i) => /* @__PURE__ */ React.createElement("li", { key: i }, /* @__PURE__ */ React.createElement("span", { className: "ba-check" }, /* @__PURE__ */ React.createElement(window.IconCheck, null)), t)))))));
+        id: "servicios",
+        ref: secRef,
+        className: after ? "is-after" : void 0,
+        style: { position: "relative", zIndex: 1, minHeight: "100svh", background: "#08070C", overflow: "hidden" }
+      },
+      /* @__PURE__ */ React.createElement("div", { style: { position: "absolute", inset: 0, overflow: "hidden", zIndex: 0 } }, /* @__PURE__ */ React.createElement(
+        "img",
+        {
+          src: "assets/referencias/imagen-cubo-cristal.webp",
+          alt: "",
+          className: "hero-fade",
+          style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0 }
+        }
+      )),
+      /* @__PURE__ */ React.createElement("div", { style: {
+        position: "absolute",
+        inset: 0,
+        zIndex: 1,
+        pointerEvents: "none",
+        background: "linear-gradient(180deg, rgba(8,7,12,.72) 0%, rgba(8,7,12,.38) 26%, rgba(8,7,12,.8) 60%, rgba(8,7,12,.92) 100%)"
+      } }),
+      /* @__PURE__ */ React.createElement("div", { className: "ba-halo", style: { zIndex: 1 } }),
+      /* @__PURE__ */ React.createElement("div", { style: {
+        position: "relative",
+        zIndex: 10,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: "100svh",
+        padding: "96px clamp(21px,6vw,84px) 64px"
+      } }, /* @__PURE__ */ React.createElement(HeadReveal, { style: { textAlign: "center", marginBottom: "clamp(36px,6vh,64px)" } }, /* @__PURE__ */ React.createElement("p", { style: { fontFamily: "JetBrains Mono", fontSize: 13.6, color: "rgba(255,255,255,.5)", marginBottom: 20 } }, "// lo que cambia"), /* @__PURE__ */ React.createElement("h2", { style: { fontFamily: "Bricolage Grotesque", color: "white", fontSize: "clamp(48.3px,7.5vw,100.8px)", lineHeight: 0.9, letterSpacing: "-3px" } }, "Antes. Y despu\xE9s.")), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.1, style: { display: "flex", flexDirection: "column", alignItems: "center", width: "100%" } }, /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          className: "ba-switch",
+          role: "switch",
+          "aria-checked": after,
+          onClick: onToggle,
+          "aria-label": "Cambiar entre a mano y en autom\xE1tico"
+        },
+        /* @__PURE__ */ React.createElement("span", { className: "ba-thumb", "aria-hidden": "true" }),
+        /* @__PURE__ */ React.createElement("span", { className: "ba-opt o-before" }, /* @__PURE__ */ React.createElement("span", { className: "ba-ico" }, "\u2715"), "A mano"),
+        /* @__PURE__ */ React.createElement("span", { className: "ba-opt o-after" }, /* @__PURE__ */ React.createElement("span", { className: "ba-ico" }, "\u26A1"), "En autom\xE1tico")
+      ), /* @__PURE__ */ React.createElement("p", { className: "ba-hint" + (hintOff ? " off" : "") }, "pulsa el interruptor \u2014 o espera, cambia solo")), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.2, style: { width: "100%", display: "flex", justifyContent: "center" } }, /* @__PURE__ */ React.createElement("div", { className: "ba-panel", ref: panelRef }, /* @__PURE__ */ React.createElement("div", { className: "ba-tags" }, /* @__PURE__ */ React.createElement("span", { className: "ba-tag-before" }, "// antes \xB7 a mano"), /* @__PURE__ */ React.createElement("span", { className: "ba-tag-after" }, "// despu\xE9s \xB7 solo")), /* @__PURE__ */ React.createElement("div", null, PARES.map(([antes, despues], i) => /* @__PURE__ */ React.createElement("div", { className: "ba-row", key: i }, /* @__PURE__ */ React.createElement("div", { className: "ba-flip", style: { "--d": i * 0.09 + "s" } }, /* @__PURE__ */ React.createElement("div", { className: "ba-face f-before" }, /* @__PURE__ */ React.createElement("span", { className: "ba-x" }, "\u2715"), /* @__PURE__ */ React.createElement("span", null, antes)), /* @__PURE__ */ React.createElement("div", { className: "ba-face f-after" }, /* @__PURE__ */ React.createElement("span", { className: "ba-check" }, /* @__PURE__ */ React.createElement(window.IconCheck, null)), /* @__PURE__ */ React.createElement("span", null, despues), i === PARES.length - 1 && /* @__PURE__ */ React.createElement("span", { className: "ba-247" }, "24/7")))))))))
+    );
   };
 })();
 })();
@@ -907,7 +1078,7 @@ window.MazeLogo = function MazeLogo() {
     c.style.setProperty("--my", ((e.clientY - r.top) / r.height * 100).toFixed(1) + "%");
   }
   window.SolucionesSection = function SolucionesSection() {
-    return /* @__PURE__ */ React.createElement("section", { id: "soluciones", className: "v2-sec" }, /* @__PURE__ */ React.createElement("div", { className: "fx-glow", "data-depth": "-0.16", style: { width: 460, height: 460, left: "-10%", top: "18%", background: "rgba(99,80,170,.34)" } }), /* @__PURE__ */ React.createElement("div", { className: "v2-inner" }, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("p", { className: "v2-kicker" }, "// soluciones"), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2" }, "Lo que ya hemos resuelto."), /* @__PURE__ */ React.createElement("p", { className: "v2-note" }, "Casos concretos, con resultado medible. Si el tuyo no est\xE1 aqu\xED, te lo dise\xF1amos.")), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.05, style: { marginTop: 48 } }, /* @__PURE__ */ React.createElement("div", { className: "v2-grid-3" }, SOLS.map((s) => /* @__PURE__ */ React.createElement("article", { key: s.fn, className: "v2-sol", onPointerMove: spotlight }, /* @__PURE__ */ React.createElement("span", { className: "v2-sol-fn" }, s.fn), /* @__PURE__ */ React.createElement("h3", null, s.title), /* @__PURE__ */ React.createElement("p", null, s.body), /* @__PURE__ */ React.createElement("div", { className: "v2-sol-foot" }, /* @__PURE__ */ React.createElement("span", { className: "v2-metric" }, s.metric), s.demos && s.demos.map((d) => /* @__PURE__ */ React.createElement("a", { key: d.url, className: "v2-demolink", href: d.url, target: "_blank", rel: "noopener" }, d.label, " ", /* @__PURE__ */ React.createElement(window.IconExternal, null))))))))));
+    return /* @__PURE__ */ React.createElement("section", { id: "soluciones", className: "v2-sec" }, /* @__PURE__ */ React.createElement("div", { className: "fx-glow", "data-depth": "-0.16", style: { width: 460, height: 460, left: "-10%", top: "18%", background: "rgba(99,80,170,.34)" } }), /* @__PURE__ */ React.createElement("div", { className: "v2-inner" }, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("p", { className: "v2-kicker" }, "// soluciones"), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2" }, "Lo que ya hemos ", /* @__PURE__ */ React.createElement("em", null, "resuelto.")), /* @__PURE__ */ React.createElement("p", { className: "v2-note" }, "Casos concretos, con resultado medible. Si el tuyo no est\xE1 aqu\xED, te lo dise\xF1amos.")), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.05, style: { marginTop: 48 } }, /* @__PURE__ */ React.createElement("div", { className: "v2-grid-3" }, SOLS.map((s) => /* @__PURE__ */ React.createElement("article", { key: s.fn, className: "v2-sol", onPointerMove: spotlight }, /* @__PURE__ */ React.createElement("span", { className: "v2-sol-fn" }, s.fn), /* @__PURE__ */ React.createElement("h3", null, s.title), /* @__PURE__ */ React.createElement("p", null, s.body), /* @__PURE__ */ React.createElement("div", { className: "v2-sol-foot" }, /* @__PURE__ */ React.createElement("span", { className: "v2-metric" }, s.metric), s.demos && s.demos.map((d) => /* @__PURE__ */ React.createElement("a", { key: d.url, className: "v2-demolink", href: d.url, target: "_blank", rel: "noopener" }, d.label, " ", /* @__PURE__ */ React.createElement(window.IconExternal, null))))))))));
   };
 })();
 })();
@@ -946,35 +1117,8 @@ window.MazeLogo = function MazeLogo() {
   function CuboMarca() {
     return /* @__PURE__ */ React.createElement("div", { className: "qd-cell qd-tr qd-anim", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("div", { className: "cubo-halo" }), /* @__PURE__ */ React.createElement("div", { className: "cubo-scene" }, /* @__PURE__ */ React.createElement("img", { className: "cubo-img", src: "assets/referencias/cubo-laberinto-3d.webp", alt: "", loading: "lazy", decoding: "async" })), /* @__PURE__ */ React.createElement("p", { className: "qd-cap" }, "// el laberinto, bajo control"));
   }
-  const PL_NODES = [
-    {
-      t: "Entra el trabajo",
-      ic: /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.7", strokeLinecap: "round", strokeLinejoin: "round" }, /* @__PURE__ */ React.createElement("rect", { x: "3", y: "5", width: "18", height: "14", rx: "2" }), /* @__PURE__ */ React.createElement("path", { d: "M3 7l9 6 9-6" }))
-    },
-    {
-      t: "La IA lo resuelve",
-      ic: /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.7", strokeLinecap: "round", strokeLinejoin: "round" }, /* @__PURE__ */ React.createElement("path", { d: "M12 3l1.8 4.6L18 9.4l-4.2 1.8L12 16l-1.8-4.8L6 9.4l4.2-1.8z" }), /* @__PURE__ */ React.createElement("path", { d: "M19 15l.9 2.3L22 18l-2.1.7L19 21l-.9-2.3L16 18l2.1-.7z" }))
-    },
-    {
-      t: "Hecho \u2014 sin tocar nada",
-      ic: /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.7", strokeLinecap: "round", strokeLinejoin: "round" }, /* @__PURE__ */ React.createElement("circle", { cx: "12", cy: "12", r: "9" }), /* @__PURE__ */ React.createElement("path", { d: "M8.5 12.5l2.5 2.5 5-5.5" }))
-    }
-  ];
-  const PL_CAPS = [
-    "factura_237.pdf \u2192 clasificada \u2192 archivada en Drive",
-    "cita del martes \u2192 hueco libre \u2192 confirmada por WhatsApp",
-    "duda de un cliente \u2192 respondida con tu info \xB7 09:41"
-  ];
-  function PipelineMarca() {
-    const [cap, setCap] = React.useState(0);
-    React.useEffect(() => {
-      const iv = setInterval(() => setCap((c) => (c + 1) % PL_CAPS.length), 5400);
-      return () => clearInterval(iv);
-    }, []);
-    return /* @__PURE__ */ React.createElement("div", { className: "qd-cell qd-bl qd-anim", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("p", { className: "qd-cap qd-cap-top" }, "// esto est\xE1 pasando solo, ahora"), /* @__PURE__ */ React.createElement("div", { className: "pl-wrap" }, /* @__PURE__ */ React.createElement("div", { className: "pl-steps" }, /* @__PURE__ */ React.createElement("span", { className: "pl-signal" }), PL_NODES.map((n, k) => /* @__PURE__ */ React.createElement("div", { key: k, className: "pl-node" }, /* @__PURE__ */ React.createElement("span", { className: "pl-ic" }, n.ic), /* @__PURE__ */ React.createElement("span", { className: "pl-txt" }, n.t)))), /* @__PURE__ */ React.createElement("p", { className: "pl-cap", key: cap }, PL_CAPS[cap])));
-  }
   window.PorQueSection = function PorQueSection() {
-    return /* @__PURE__ */ React.createElement("section", { id: "empresa", className: "qd-sec" }, /* @__PURE__ */ React.createElement("div", { className: "qd-grid" }, /* @__PURE__ */ React.createElement("div", { className: "qd-cell qd-tl" }, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("p", { className: "v2-kicker" }, "// qui\xE9nes somos"), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2" }, "Un estudio de automatizaci\xF3n ", /* @__PURE__ */ React.createElement("em", null, "con IA"), " en Tenerife."), /* @__PURE__ */ React.createElement("p", { className: "v2-note" }, "Ayudamos a excursiones, comercios y peque\xF1as empresas a quitarse de encima el trabajo repetitivo \u2014 para que dediquen su tiempo a lo que de verdad mueve el negocio.")), /* @__PURE__ */ React.createElement("div", { className: "pq-grid" }, VALUES.map((v, i) => /* @__PURE__ */ React.createElement(Reveal, { key: v.h, delay: i * 0.06 }, /* @__PURE__ */ React.createElement("div", { className: "pq-card", onPointerMove: spotlight }, /* @__PURE__ */ React.createElement("div", { className: "pq-ic" }, v.ic), /* @__PURE__ */ React.createElement("h4", null, v.h), /* @__PURE__ */ React.createElement("p", null, v.p)))))), /* @__PURE__ */ React.createElement(CuboMarca, null), /* @__PURE__ */ React.createElement(PipelineMarca, null), /* @__PURE__ */ React.createElement("div", { id: "diagnostico", className: "qd-cell qd-br cd-center" }, /* @__PURE__ */ React.createElement(window.DiagnosticoInner, null))));
+    return /* @__PURE__ */ React.createElement("section", { id: "empresa", className: "qd-sec" }, /* @__PURE__ */ React.createElement("div", { className: "qd-grid" }, /* @__PURE__ */ React.createElement("div", { className: "qd-cell qd-tl" }, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("p", { className: "v2-kicker" }, "// qui\xE9nes somos"), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2" }, "Un estudio de automatizaci\xF3n ", /* @__PURE__ */ React.createElement("em", null, "con IA"), " en Tenerife."), /* @__PURE__ */ React.createElement("p", { className: "v2-note" }, "Ayudamos a excursiones, comercios y peque\xF1as empresas a quitarse de encima el trabajo repetitivo \u2014 para que dediquen su tiempo a lo que de verdad mueve el negocio.")), /* @__PURE__ */ React.createElement("div", { className: "pq-grid" }, VALUES.map((v, i) => /* @__PURE__ */ React.createElement(Reveal, { key: v.h, delay: i * 0.06 }, /* @__PURE__ */ React.createElement("div", { className: "pq-card", onPointerMove: spotlight }, /* @__PURE__ */ React.createElement("div", { className: "pq-ic" }, v.ic), /* @__PURE__ */ React.createElement("h4", null, v.h), /* @__PURE__ */ React.createElement("p", null, v.p)))))), /* @__PURE__ */ React.createElement(CuboMarca, null), /* @__PURE__ */ React.createElement("div", { id: "diagnostico", className: "qd-cell qd-br cd-center" }, /* @__PURE__ */ React.createElement(window.DiagnosticoInner, null))));
   };
 })();
 })();
@@ -1035,7 +1179,7 @@ window.MazeLogo = function MazeLogo() {
     const hPct = horas / 40 * 100;
     const cPct = (coste - 8) / (30 - 8) * 100;
     const recPct = Math.round(lvl * 100);
-    return /* @__PURE__ */ React.createElement("section", { id: "roi", className: "roi2-sec", ref: wrapRef }, /* @__PURE__ */ React.createElement("div", { className: "roi2-atmos", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("div", { className: "roi2-blob", style: { width: 480, height: 480, background: "rgba(75,140,247,.16)", top: "-120px", left: "-60px", animation: "roi2Float 14s ease-in-out infinite" } }), /* @__PURE__ */ React.createElement("div", { className: "roi2-blob", style: { width: 420, height: 420, background: "rgba(99,80,170,.15)", bottom: "-150px", right: "-50px", animation: "roi2Float 17s ease-in-out infinite reverse" } })), /* @__PURE__ */ React.createElement("div", { className: "roi2-inner" }, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("div", { className: "roi2-head" }, /* @__PURE__ */ React.createElement("p", { className: "v2-kicker", style: { textAlign: "center" } }, "// tu retorno de inversi\xF3n \xB7 ROI"), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2", style: { fontSize: "clamp(26px,5.6vw,69.3px)", textAlign: "center" } }, "\xBFCu\xE1nto te cuesta ", /* @__PURE__ */ React.createElement("em", null, "hacerlo a mano?")))), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.12 }, /* @__PURE__ */ React.createElement("div", { className: "roi2-card" }, /* @__PURE__ */ React.createElement("div", { className: "roi2-controls" }, /* @__PURE__ */ React.createElement("div", { className: "roi2-field" }, /* @__PURE__ */ React.createElement("div", { className: "roi2-flbl" }, /* @__PURE__ */ React.createElement("span", null, "Horas/semana en tareas repetitivas"), /* @__PURE__ */ React.createElement("span", { className: "roi2-fval" }, horas, /* @__PURE__ */ React.createElement("small", null, "h"))), /* @__PURE__ */ React.createElement(
+    return /* @__PURE__ */ React.createElement("section", { id: "roi", className: "roi2-sec", ref: wrapRef }, /* @__PURE__ */ React.createElement("div", { className: "roi2-atmos", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("div", { className: "roi2-blob", style: { width: 480, height: 480, background: "rgba(75,140,247,.16)", top: "-120px", left: "-60px", animation: "roi2Float 14s ease-in-out infinite" } }), /* @__PURE__ */ React.createElement("div", { className: "roi2-blob", style: { width: 420, height: 420, background: "rgba(99,80,170,.15)", bottom: "-150px", right: "-50px", animation: "roi2Float 17s ease-in-out infinite reverse" } })), /* @__PURE__ */ React.createElement("div", { className: "roi2-inner" }, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("div", { className: "roi2-head" }, /* @__PURE__ */ React.createElement("p", { className: "v2-kicker", style: { textAlign: "center" } }, "// tu ahorro estimado"), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2", style: { fontSize: "clamp(26px,5.6vw,69.3px)", textAlign: "center" } }, "\xBFCu\xE1nto te ahorras ", /* @__PURE__ */ React.createElement("em", null, "al mes?")))), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.12 }, /* @__PURE__ */ React.createElement("div", { className: "roi2-card" }, /* @__PURE__ */ React.createElement("div", { className: "roi2-controls" }, /* @__PURE__ */ React.createElement("div", { className: "roi2-field" }, /* @__PURE__ */ React.createElement("div", { className: "roi2-flbl" }, /* @__PURE__ */ React.createElement("span", null, "Horas/semana en tareas repetitivas"), /* @__PURE__ */ React.createElement("span", { className: "roi2-fval" }, horas, /* @__PURE__ */ React.createElement("small", null, "h"))), /* @__PURE__ */ React.createElement(
       "input",
       {
         className: "roi2-range",
@@ -1061,7 +1205,7 @@ window.MazeLogo = function MazeLogo() {
         onChange: (e) => setCoste(+e.target.value),
         "aria-label": "Coste por hora"
       }
-    )), /* @__PURE__ */ React.createElement("div", { className: "roi2-field" }, /* @__PURE__ */ React.createElement("div", { className: "roi2-flbl" }, /* @__PURE__ */ React.createElement("span", null, "Nivel de repetici\xF3n de esas tareas")), /* @__PURE__ */ React.createElement("div", { className: "roi2-levels" }, levels.map(([lbl, v]) => /* @__PURE__ */ React.createElement("button", { key: lbl, type: "button", className: "roi2-lvl" + (lvl === v ? " active" : ""), onClick: () => setLvl(v) }, lbl))))), /* @__PURE__ */ React.createElement("div", { className: "roi2-result" }, /* @__PURE__ */ React.createElement("div", { className: "roi2-glow", "aria-hidden": "true" }), /* @__PURE__ */ React.createElement("p", { className: "roi2-rlabel" }, "ROI \xB7 ahorro cada mes"), /* @__PURE__ */ React.createElement("div", { className: "roi2-big" }, fmt(cM), /* @__PURE__ */ React.createElement("span", { className: "roi2-big-cur" }, " \u20AC/mes")), /* @__PURE__ */ React.createElement("p", { className: "roi2-sub" }, "\u2248 ", fmt(cY), " \u20AC al a\xF1o \xB7 sobre las herramientas que ya usas"), /* @__PURE__ */ React.createElement("div", { className: "roi2-split" }, /* @__PURE__ */ React.createElement("div", { className: "roi2-stat" }, /* @__PURE__ */ React.createElement("div", { className: "n" }, fmt(cH), /* @__PURE__ */ React.createElement("small", null, "h")), /* @__PURE__ */ React.createElement("div", { className: "l" }, "horas que recuperas", /* @__PURE__ */ React.createElement("br", null), "al mes")), /* @__PURE__ */ React.createElement("div", { className: "roi2-stat" }, /* @__PURE__ */ React.createElement("div", { className: "n" }, fmt(cD), /* @__PURE__ */ React.createElement("small", null, "d\xEDas")), /* @__PURE__ */ React.createElement("div", { className: "l" }, "jornadas libres", /* @__PURE__ */ React.createElement("br", null), "al a\xF1o"))), /* @__PURE__ */ React.createElement("div", { className: "roi2-barwrap" }, /* @__PURE__ */ React.createElement("div", { className: "roi2-barlbl" }, /* @__PURE__ */ React.createElement("span", null, "De ese trabajo repetitivo"), /* @__PURE__ */ React.createElement("span", null, "automatizable")), /* @__PURE__ */ React.createElement("div", { className: "roi2-bar" }, /* @__PURE__ */ React.createElement("div", { className: "roi2-bar-fill", style: { width: (inView ? recPct : 0) + "%" } })), /* @__PURE__ */ React.createElement("div", { className: "roi2-barnote" }, "Nos encargamos de ~", recPct, "% de esas tareas, sin que t\xFA toques nada.")), /* @__PURE__ */ React.createElement("div", { className: "roi2-cta" }, /* @__PURE__ */ React.createElement("a", { className: "v2-btn v2-btn-accent", href: "hablemos.html" }, "\u2192 Quiero este ahorro"), /* @__PURE__ */ React.createElement("a", { className: "v2-btn v2-btn-ghost", href: "#como" }, "Ver c\xF3mo funciona")), /* @__PURE__ */ React.createElement("p", { className: "roi2-note" }, "// estimaci\xF3n orientativa \u2014 los n\xFAmeros exactos los afinamos contigo, gratis"))))));
+    )), /* @__PURE__ */ React.createElement("div", { className: "roi2-field" }, /* @__PURE__ */ React.createElement("div", { className: "roi2-flbl" }, /* @__PURE__ */ React.createElement("span", null, "Nivel de repetici\xF3n de esas tareas")), /* @__PURE__ */ React.createElement("div", { className: "roi2-levels" }, levels.map(([lbl, v]) => /* @__PURE__ */ React.createElement("button", { key: lbl, type: "button", className: "roi2-lvl" + (lvl === v ? " active" : ""), onClick: () => setLvl(v) }, lbl))))), /* @__PURE__ */ React.createElement("div", { className: "roi2-result" }, /* @__PURE__ */ React.createElement("div", { className: "roi2-glow", "aria-hidden": "true" }), /* @__PURE__ */ React.createElement("p", { className: "roi2-rlabel" }, "tu ahorro cada mes"), /* @__PURE__ */ React.createElement("div", { className: "roi2-big" }, fmt(cM), /* @__PURE__ */ React.createElement("span", { className: "roi2-big-cur" }, " \u20AC/mes")), /* @__PURE__ */ React.createElement("p", { className: "roi2-sub" }, "\u2248 ", fmt(cY), " \u20AC al a\xF1o \xB7 sobre las herramientas que ya usas"), /* @__PURE__ */ React.createElement("div", { className: "roi2-split" }, /* @__PURE__ */ React.createElement("div", { className: "roi2-stat" }, /* @__PURE__ */ React.createElement("div", { className: "n" }, fmt(cH), /* @__PURE__ */ React.createElement("small", null, "h")), /* @__PURE__ */ React.createElement("div", { className: "l" }, "horas que recuperas", /* @__PURE__ */ React.createElement("br", null), "al mes")), /* @__PURE__ */ React.createElement("div", { className: "roi2-stat" }, /* @__PURE__ */ React.createElement("div", { className: "n" }, fmt(cD), /* @__PURE__ */ React.createElement("small", null, "d\xEDas")), /* @__PURE__ */ React.createElement("div", { className: "l" }, "jornadas libres", /* @__PURE__ */ React.createElement("br", null), "al a\xF1o"))), /* @__PURE__ */ React.createElement("div", { className: "roi2-barwrap" }, /* @__PURE__ */ React.createElement("div", { className: "roi2-barlbl" }, /* @__PURE__ */ React.createElement("span", null, "De ese trabajo repetitivo"), /* @__PURE__ */ React.createElement("span", null, "automatizable")), /* @__PURE__ */ React.createElement("div", { className: "roi2-bar" }, /* @__PURE__ */ React.createElement("div", { className: "roi2-bar-fill", style: { width: (inView ? recPct : 0) + "%" } })), /* @__PURE__ */ React.createElement("div", { className: "roi2-barnote" }, "Nos encargamos de ~", recPct, "% de esas tareas, sin que t\xFA toques nada.")), /* @__PURE__ */ React.createElement("div", { className: "roi2-cta" }, /* @__PURE__ */ React.createElement("a", { className: "v2-btn v2-btn-ghost", href: "#como" }, "Ver c\xF3mo funciona")), /* @__PURE__ */ React.createElement("p", { className: "roi2-note" }, "// estimaci\xF3n orientativa \u2014 los n\xFAmeros exactos los afinamos contigo, gratis"))))));
   };
 })();
 })();
@@ -1072,27 +1216,27 @@ window.MazeLogo = function MazeLogo() {
   const Reveal = window.Reveal;
   const HeadReveal = window.HeadReveal;
   const CARDS = [
-    "Cada semana repites tareas que podr\xEDas delegar: correos, facturas, recordatorios...",
-    "Le dedicas m\xE1s de 5 horas a la semana a trabajo que no es estrat\xE9gico.",
-    "Se te escapan mensajes o citas porque no das abasto a responder a tiempo.",
-    "Si recuperases ese tiempo, lo usar\xEDas para conseguir m\xE1s clientes o cuidar mejor a los que ya tienes.",
-    'Llevas meses pensando "esto lo deber\xEDa automatizar" y nunca encuentras el momento.'
+    "\xBFHas contestado otra vez la pregunta de siempre \u2014 horarios, precios, disponibilidad?",
+    "\xBFHas pasado datos a mano de un sitio a otro: del WhatsApp al calendario, del correo al Excel?",
+    "\xBFSe te ha quedado alg\xFAn mensaje de un cliente sin responder hasta el d\xEDa siguiente?",
+    "\xBFHas hecho papeleo de noche o en fin de semana, fuera de tu horario?",
+    '\xBFHas pensado al menos una vez "esto deber\xEDa hacerse solo"?'
   ];
   function verdict(n) {
     if (n <= 1) return {
       tag: "resultado \xB7 quiz\xE1 no es el momento",
-      title: /* @__PURE__ */ React.createElement(React.Fragment, null, "Tu d\xEDa a d\xEDa ya va bastante ", /* @__PURE__ */ React.createElement("em", null, "fluido.")),
+      title: /* @__PURE__ */ React.createElement(React.Fragment, null, "Tu semana ya va bastante ", /* @__PURE__ */ React.createElement("em", null, "fluida.")),
       body: "No detectamos una fuga de tiempo clara ahora mismo. Si esto cambia, nos cuentas y lo miramos sin compromiso."
     };
     if (n <= 3) return {
       tag: "resultado \xB7 vale la pena mirarlo",
       title: /* @__PURE__ */ React.createElement(React.Fragment, null, "Hay una fuga de tiempo ", /* @__PURE__ */ React.createElement("em", null, "ah\xED.")),
-      body: "Con lo que has marcado ya hay margen real para recuperar horas. Una conversaci\xF3n de 20 minutos lo aclara."
+      body: "Lo que has marcado se repite semana tras semana. Una conversaci\xF3n de 20 minutos aclara cu\xE1ntas horas puedes recuperar."
     };
     return {
       tag: "resultado \xB7 encajamos",
       title: /* @__PURE__ */ React.createElement(React.Fragment, null, "S\xED. Podemos ", /* @__PURE__ */ React.createElement("em", null, "ayudarte.")),
-      body: "Todo esto se puede automatizar sobre las herramientas que ya usas. Hablemos y te ense\xF1amos por d\xF3nde empezar."
+      body: "Todo lo que has marcado pasa cada semana \u2014 y se puede automatizar sobre las herramientas que ya usas. Hablemos y te ense\xF1amos por d\xF3nde empezar."
     };
   }
   function ResultBox({ res, onRestart }) {
@@ -1166,7 +1310,7 @@ window.MazeLogo = function MazeLogo() {
       setYes(0);
     }
     const res = done ? verdict(yes) : null;
-    return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("span", { className: "v2-diag-tag" }, /* @__PURE__ */ React.createElement("span", { className: "dot" }), "5 cartas \xB7 30 segundos"), /* @__PURE__ */ React.createElement("p", { className: "v2-kicker" }, "// \xBFlo necesitas?"), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2" }, "\xBFNos ", /* @__PURE__ */ React.createElement("em", null, "necesitas?")), /* @__PURE__ */ React.createElement("p", { className: "v2-note" }, "Una frase, una decisi\xF3n. Desliza o pulsa \u2014 al final te decimos si encajamos.")), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.05 }, /* @__PURE__ */ React.createElement("div", { className: "cd-dots", "aria-hidden": "true" }, CARDS.map((_, i) => /* @__PURE__ */ React.createElement("span", { key: i, className: "cd-dot" + (i < idx ? " done" : "") + (i === idx && !done ? " cur" : "") }))), !done && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "cd-stage" }, [0, 1, 2].map((k) => {
+    return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("span", { className: "v2-diag-tag" }, /* @__PURE__ */ React.createElement("span", { className: "dot" }), "5 cartas \xB7 30 segundos"), /* @__PURE__ */ React.createElement("p", { className: "v2-kicker" }, "// \xBFlo necesitas?"), /* @__PURE__ */ React.createElement("div", { className: "hr-olh" }, /* @__PURE__ */ React.createElement("h2", { className: "v2-h2 hr-olbase", "aria-hidden": "true" }, "\xBFNos ", /* @__PURE__ */ React.createElement("em", null, "necesitas?")), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2 hr-olfill" }, "\xBFNos ", /* @__PURE__ */ React.createElement("em", null, "necesitas?")), /* @__PURE__ */ React.createElement("span", { className: "hr-olbeam", "aria-hidden": "true" })), /* @__PURE__ */ React.createElement("p", { className: "v2-note" }, "Piensa solo en tus \xFAltimos 7 d\xEDas. Desliza o pulsa \u2014 al final te decimos si encajamos.")), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.05 }, /* @__PURE__ */ React.createElement("div", { className: "cd-dots", "aria-hidden": "true" }, CARDS.map((_, i) => /* @__PURE__ */ React.createElement("span", { key: i, className: "cd-dot" + (i < idx ? " done" : "") + (i === idx && !done ? " cur" : "") }))), !done && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "cd-stage" }, [0, 1, 2].map((k) => {
       const i = idx + k;
       if (i >= CARDS.length) return null;
       const front = k === 0;
