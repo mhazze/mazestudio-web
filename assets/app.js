@@ -513,8 +513,9 @@ window.MazeLogo = function MazeLogo() {
 (function(){
 (function() {
   const motion = window.Motion.motion;
-  const HERO_VIDEO = "assets/referencias/referencia-cubo-cristal-01-4k60-loop.mp4";
-  const HERO_POSTER = "assets/referencias/poster-cubo-carga.jpg";
+  const MOVIL = window.matchMedia("(max-width:860px)").matches;
+  const HERO_VIDEO = MOVIL ? "assets/referencias/referencia-cubo-cristal-01-movil-loop.mp4" : "assets/referencias/referencia-cubo-cristal-01-4k60-loop.mp4";
+  const HERO_POSTER = MOVIL ? "assets/referencias/poster-cubo-carga-movil.jpg" : "assets/referencias/poster-cubo-carga.jpg";
   function fu(delay) {
     return {
       initial: { filter: "blur(10px)", opacity: 0, y: 20 },
@@ -703,8 +704,9 @@ window.MazeLogo = function MazeLogo() {
             // las frases acaban de revelarse también antes del centro
             scrollTrigger: { trigger: flank, start: "top 84%", end: "center 66%", scrub: 1.5 }
           });
-          const wordIn = { opacity: 0.06, filter: "blur(8px)" };
-          const wordOut = () => ({ opacity: 1, filter: "blur(0px)", ease: "sine.out", duration: 1.6, stagger: { each: 0.35, ease: "sine.inOut" } });
+          const lite = window.matchMedia("(max-width:860px)").matches;
+          const wordIn = lite ? { opacity: 0.06 } : { opacity: 0.06, filter: "blur(8px)" };
+          const wordOut = () => ({ opacity: 1, ...lite ? {} : { filter: "blur(0px)" }, ease: "sine.out", duration: 1.6, stagger: { each: 0.35, ease: "sine.inOut" } });
           if (leftW.length) tlw.fromTo(leftW, wordIn, wordOut(), 0);
           if (rightW.length) tlw.fromTo(rightW, wordIn, wordOut(), ">-0.8");
         }
@@ -1388,8 +1390,9 @@ window.MazeLogo = function MazeLogo() {
 (function() {
   const { useState, useEffect, useRef } = React;
   const motion = window.Motion.motion;
-  const PRE_VIDEO = "assets/referencias/referencia-cubo-cristal-01-4k60-loop.mp4";
-  const PRE_POSTER = "assets/referencias/poster-cubo-carga.jpg";
+  const PRE_MOVIL = window.matchMedia("(max-width:860px)").matches;
+  const PRE_VIDEO = PRE_MOVIL ? "assets/referencias/referencia-cubo-cristal-01-movil-loop.mp4" : "assets/referencias/referencia-cubo-cristal-01-4k60-loop.mp4";
+  const PRE_POSTER = PRE_MOVIL ? "assets/referencias/poster-cubo-carga-movil.jpg" : "assets/referencias/poster-cubo-carga.jpg";
   window.__preloaderActive = true;
   function MazeSolve() {
     return /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 240 240", width: "100%", height: "100%", style: { display: "block", overflow: "visible" } }, /* @__PURE__ */ React.createElement("g", { stroke: "rgba(255,255,255,.16)", strokeWidth: "2", fill: "none", strokeLinecap: "round" }, /* @__PURE__ */ React.createElement("rect", { x: "2", y: "2", width: "236", height: "236", rx: "8" }), /* @__PURE__ */ React.createElement("line", { x1: "0", y1: "42", x2: "198", y2: "42" }), /* @__PURE__ */ React.createElement("line", { x1: "42", y1: "82", x2: "240", y2: "82" }), /* @__PURE__ */ React.createElement("line", { x1: "0", y1: "122", x2: "198", y2: "122" }), /* @__PURE__ */ React.createElement("line", { x1: "42", y1: "162", x2: "240", y2: "162" }), /* @__PURE__ */ React.createElement("line", { x1: "0", y1: "202", x2: "198", y2: "202" })), /* @__PURE__ */ React.createElement(
