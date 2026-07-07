@@ -132,6 +132,12 @@ body.demo-open nav{opacity:0!important;pointer-events:none!important;transition:
 @keyframes heroVideoIn{from{opacity:0;}to{opacity:1;}}
 .hero-fade{animation:heroVideoIn 1100ms ease forwards;}
 
+/* oculta el botón de play que Chrome/Android superpone a cualquier <video>
+   mientras aún no ha arrancado a reproducirse (aparece incluso sin el
+   atributo controls, durante el buffering del autoplay muted en móvil) */
+video::-webkit-media-controls-start-playback-button{display:none!important;-webkit-appearance:none;pointer-events:none;}
+video::-webkit-media-controls{display:none!important;}
+
 /* barra de progreso de scroll */
 .scroll-progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:120;
   background:linear-gradient(90deg,var(--pulso-hondo),var(--pulso) 55%,var(--accent-soft));
