@@ -76,6 +76,239 @@
 </script>
 
 <!-- ══════════════════════════════════════════════════════════════
+     IDIOMA · toggle ES⇄EN (recarga la página; ver window.t() abajo)
+     Misma clave de localStorage que hablemos.html (mz_lang) para que
+     la preferencia se comparta entre páginas.
+     ══════════════════════════════════════════════════════════════ -->
+<script>
+(function(){
+  var LANG_KEY = 'mz_lang';
+  var saved = 'es';
+  try { saved = localStorage.getItem(LANG_KEY) || 'es'; } catch(e){}
+  var lang = (saved === 'en') ? 'en' : 'es';
+  window.MS_LANG = lang;
+  document.documentElement.lang = lang;
+
+  window.I18N_EN = {
+    /* meta */
+    "Mazestudio · Automatización con IA en Tenerife": "Mazestudio · AI Automation in Tenerife",
+    "Estudio de automatización en Tenerife. Conectamos tus aplicaciones y montamos asistentes con IA para que correos, reservas y documentos se hagan solos — sobre las herramientas que ya usas.": "Automation studio in Tenerife. We connect your apps and build AI assistants so emails, bookings and documents handle themselves — on the tools you already use.",
+
+    /* preloader */
+    "Trazando la línea recta": "Drawing the straight line",
+
+    /* navbar */
+    "Cómo funciona": "How it works",
+    "Ahorro": "Savings",
+    "Servicios": "Services",
+    "Soluciones": "Solutions",
+    "¿Nos necesitas?": "Need us?",
+    "Hablemos →": "Let's talk →",
+    "Abrir menú": "Open menu",
+    "Switch to English": "Switch to English",
+    "Cambiar a español": "Switch to Spanish",
+
+    /* hero */
+    "Del laberinto, una línea recta": "From the maze, a straight line",
+    "Conectamos tus aplicaciones y montamos asistentes con IA para que correos, reservas y documentos se hagan solos. Sin cambiar de software. Sin tecnicismos.":
+      "We connect your apps and build AI assistants so emails, bookings and documents take care of themselves. No software changes. No tech jargon.",
+    "Ver cómo funciona": "See how it works",
+    "Gratis": "Free",
+    "Auditoría de tu negocio": "Business audit",
+    "sin compromiso": "no strings attached",
+
+    /* línea recta */
+    "// la idea, en una imagen": "// the idea, in one image",
+    "De lo enredado a lo simple. ": "From tangled to simple. ",
+    "Una línea recta.": "One straight line.",
+    "Tu operativa hoy es un laberinto de tareas que se repiten.": "Right now your workflow is a maze of tasks repeating themselves.",
+    "Nuestro trabajo es trazar el camino directo — y dejar que se recorra solo.": "Our job is to draw the direct path — and let it run on its own.",
+    "ENREDADO": "TANGLED",
+    "RESUELTO": "SOLVED",
+
+    /* marquee */
+    "nos conectamos a lo que ya usas ": "we plug into what you already use ",
+    "— sin migrar de software": "— no software migration",
+
+    /* servicios (antes/después) */
+    "// lo que cambia": "// what changes",
+    "Antes. Y después.": "Before. And after.",
+    "Cambiar entre a mano y en automático": "Switch between manual and automatic",
+    "A mano": "Manual",
+    "En automático": "Automatic",
+    "pulsa el interruptor — o espera, cambia solo": "tap the switch — or wait, it flips on its own",
+    "// antes · a mano": "// before · by hand",
+    "// después · solo": "// after · on its own",
+    "Correos que se acumulan sin responder": "Emails piling up unanswered",
+    "Cada mensaje clasificado y respondido solo": "Every message classified and answered automatically",
+    "Facturas y albaranes que se traspapelan": "Invoices and delivery notes getting lost in the shuffle",
+    "Facturas generadas y archivadas sin tocar nada": "Invoices generated and filed without lifting a finger",
+    "Citas y reservas apuntadas a mano": "Appointments and bookings jotted down by hand",
+    "Reservas con disponibilidad real y recordatorios": "Bookings with real-time availability and reminders",
+    "Datos copiados de una app a otra": "Data copied from one app to another",
+    "Tus herramientas sincronizadas entre ellas": "Your tools synced with each other",
+    "Tareas que dependen de que te acuerdes": "Tasks that depend on you remembering",
+    "Funciona 24/7, aunque tú no estés": "Runs 24/7, even when you're not there",
+
+    /* cómo funciona */
+    "// cómo funciona": "// how it works",
+    "Demo de ": "Process ",
+    "procesos": "demos",
+    "Estas automatizaciones están funcionando ahora mismo. Ábrelas y juega con ellas.": "These automations are running right now. Open them up and play with them.",
+    "Biblioteca de demos": "Demo library",
+    "Gestión documental": "Document management",
+    "Facturas y nóminas que llegan por email se clasifican con IA y se archivan solas en Drive por proveedor.": "Invoices and payslips arriving by email get classified by AI and filed automatically in Drive, sorted by supplier.",
+    "Llega un email con una factura o nómina": "An email arrives with an invoice or payslip",
+    "La IA la lee y la clasifica sola": "AI reads it and classifies it on its own",
+    "Se archiva en su carpeta de Drive": "It's filed in its Drive folder",
+    "Agendado de citas": "Appointment booking",
+    "Un cliente rellena un formulario, el sistema comprueba disponibilidad real y reserva el hueco con aviso automático.": "A customer fills in a form, the system checks real availability and books the slot with an automatic notice.",
+    "Tu cliente pide cita en un formulario": "Your customer requests an appointment via a form",
+    "El sistema busca el hueco libre y lo reserva": "The system finds the open slot and books it",
+    "Le llega el aviso por WhatsApp": "They get notified over WhatsApp",
+    "Atención al cliente": "Customer support",
+    "Responde los emails de clientes con IA usando la información real de tu negocio.": "Replies to customer emails with AI, using your business's real information.",
+    "Entra el email de un cliente": "A customer email comes in",
+    "La IA responde con la info de tu negocio": "AI replies using your business info",
+    "Respuesta enviada — tú no tocas nada": "Reply sent — you don't touch a thing",
+    "en vivo": "live",
+    "próximamente": "coming soon",
+    "En vivo": "Live",
+    "Próximamente": "Coming soon",
+    "Ver demo": "View demo",
+    "Disponible pronto": "Available soon",
+    "listo en ": "ready in ",
+    "Cerrar demo": "Close demo",
+
+    /* soluciones */
+    "// soluciones": "// solutions",
+    "Lo que ya hemos ": "What we've already ",
+    "resuelto.": "solved.",
+    "Casos concretos, con resultado medible. Si el tuyo no está aquí, te lo diseñamos.": "Real cases with measurable results. If yours isn't listed here, we'll design it.",
+    "facturacion()": "invoicing()",
+    "agenda()": "scheduling()",
+    "documental()": "documents()",
+    "informes()": "reports()",
+    "Facturas y cobros automáticos": "Automatic invoicing and payments",
+    "Genera, envía y archiva facturas sin tocar nada. Avisa por WhatsApp si una lleva +15 días sin pagar.": "Generates, sends and files invoices without you touching a thing. Sends a WhatsApp alert if one goes unpaid for 15+ days.",
+    "3–6 h/mes recuperadas": "3–6 hrs/month reclaimed",
+    "Reservas y citas sin fricción": "Frictionless bookings and appointments",
+    "El cliente elige hueco con disponibilidad real, confirma solo y recibe recordatorios automáticos. Sobre tu sistema de siempre.": "The customer picks a slot with real availability, it confirms itself and sends automatic reminders — on top of the system you already use.",
+    "2–4 h/mes recuperadas": "2–4 hrs/month reclaimed",
+    "Bandejas sin colapso": "Inboxes that never overflow",
+    "Clasificación, respuestas automáticas y rutas según el tipo de mensaje. Alertas si un VIP escribe urgente.": "Classification, automatic replies and routing based on message type. Alerts you if a VIP writes something urgent.",
+    "5–10 h/mes recuperadas": "5–10 hrs/month reclaimed",
+    "Documentos en orden solos": "Documents that organize themselves",
+    "Facturas y nóminas de proveedores clasificadas, archivadas en Drive y enviadas a la asesoría.": "Supplier invoices and payslips classified, filed in Drive and sent straight to your accountant.",
+    "Cero documentos perdidos": "Zero documents lost",
+    "Primer contacto al instante": "Instant first contact",
+    "El lead entra, recibe bienvenida, se cualifica y aterriza en el CRM. Respuesta en minutos, no días.": "The lead comes in, gets a welcome message, is qualified and lands in your CRM. A reply in minutes, not days.",
+    "0 leads enfriados": "0 leads gone cold",
+    "Informes automáticos": "Automatic reports",
+    "Cada lunes, un resumen de ventas y tareas en tu bandeja o Slack. Dashboard en tiempo real.": "Every Monday, a sales and task summary lands in your inbox or Slack. Real-time dashboard included.",
+    "4–8 h/mes recuperadas": "4–8 hrs/month reclaimed",
+
+    /* por qué mazestudio */
+    "// quiénes somos": "// who we are",
+    "Un estudio de automatización ": "An ",
+    "con IA": "AI",
+    " en Tenerife.": " automation studio in Tenerife.",
+    "Ayudamos a excursiones, comercios y pequeñas empresas a quitarse de encima el trabajo repetitivo — para que dediquen su tiempo a lo que de verdad mueve el negocio.": "We help tour operators, shops and small businesses get repetitive work off their plate — so they can spend their time on what actually moves the business forward.",
+    "Tenerife, de cerca": "Tenerife, up close",
+    "Estudio local en el sur de la isla. Hablamos tu idioma, conocemos tu mercado y estamos a una llamada.": "A local studio in the south of the island. We speak your language, know your market, and we're one call away.",
+    "Sobre tus herramientas": "Built on your tools",
+    "No te vendemos un sistema nuevo. Automatizamos sobre lo que ya usas: CRM, correo, calendario, hojas.": "We don't sell you a new system. We automate on top of what you already use: CRM, email, calendar, spreadsheets.",
+    "Sin tecnicismos": "No tech jargon",
+    "Te lo explicamos en cristiano y te enseñamos una demo de tu propio caso antes de que decidas nada.": "We explain it in plain language and show you a demo of your own case before you decide anything.",
+    "Te acompañamos": "We stick with you",
+    "No desaparecemos al entregar. Lo vigilamos, lo mantenemos y lo mejoramos mes a mes contigo.": "We don't disappear once it's delivered. We monitor it, maintain it and improve it with you, month after month.",
+    "// el laberinto, bajo control": "// the maze, under control",
+
+    /* roi */
+    "// tu ahorro estimado": "// your estimated savings",
+    "¿Cuánto te ahorras ": "How much do you save ",
+    "al mes?": "a month?",
+    "Horas/semana en tareas repetitivas": "Hours/week on repetitive tasks",
+    "Horas por semana en tareas repetitivas": "Hours per week on repetitive tasks",
+    "Coste por hora de ese trabajo": "Cost per hour of that work",
+    "Coste por hora": "Cost per hour",
+    "Nivel de repetición de esas tareas": "How repetitive are those tasks",
+    "Alta": "High",
+    "Media": "Medium",
+    "Baja": "Low",
+    "tu ahorro cada mes": "your savings every month",
+    " €/mes": " €/mo",
+    " € al año · sobre las herramientas que ya usas": " € a year · on top of the tools you already use",
+    "horas que recuperas": "hours reclaimed",
+    "al mes": "per month",
+    "jornadas libres": "free workdays",
+    "al año": "per year",
+    "días": "days",
+    "De ese trabajo repetitivo": "Of that repetitive work",
+    "automatizable": "automatable",
+    ", sin que tú toques nada.": ", without you lifting a finger.",
+    "Nos encargamos de ~": "We handle ~",
+    "% de esas tareas": "% of those tasks",
+    "// estimación orientativa — los números exactos los afinamos contigo, gratis": "// ballpark estimate — we fine-tune the exact numbers with you, for free",
+
+    /* diagnóstico */
+    "5 cartas · 30 segundos": "5 cards · 30 seconds",
+    "// ¿lo necesitas?": "// do you need us?",
+    "¿Nos ": "Do you ",
+    "necesitas?": "need us?",
+    "Piensa solo en tus últimos 7 días. Desliza o pulsa — al final te decimos si encajamos.": "Just think about your last 7 days. Swipe or tap — at the end we'll tell you if we're a match.",
+    "¿Has contestado otra vez la pregunta de siempre — horarios, precios, disponibilidad?": "Have you answered the same question again — hours, prices, availability?",
+    "¿Has pasado datos a mano de un sitio a otro: del WhatsApp al calendario, del correo al Excel?": "Have you copied data by hand from one place to another: from WhatsApp to the calendar, from email to Excel?",
+    "¿Se te ha quedado algún mensaje de un cliente sin responder hasta el día siguiente?": "Has a customer message ever gone unanswered until the next day?",
+    "¿Has hecho papeleo de noche o en fin de semana, fuera de tu horario?": "Have you done paperwork at night or on a weekend, outside your hours?",
+    "¿Has pensado al menos una vez \"esto debería hacerse solo\"?": "Have you thought at least once, \"this should just happen on its own\"?",
+    "Desliza o usa los botones ↓": "Swipe or use the buttons ↓",
+    "No": "No",
+    "Sí": "Yes",
+    "No me pasa": "Not for me",
+    "Sí, me suena": "Yes, sounds familiar",
+    "resultado · quizá no es el momento": "result · maybe not the moment",
+    "Tu semana ya va bastante ": "Your week is running pretty ",
+    "fluida.": "smoothly.",
+    "No detectamos una fuga de tiempo clara ahora mismo. Si esto cambia, nos cuentas y lo miramos sin compromiso.": "We don't see a clear time drain right now. If that changes, let us know and we'll take a look, no strings attached.",
+    "resultado · vale la pena mirarlo": "result · worth a look",
+    "Hay una fuga de tiempo ": "There's a time drain ",
+    "ahí.": "right there.",
+    "Lo que has marcado se repite semana tras semana. Una conversación de 20 minutos aclara cuántas horas puedes recuperar.": "What you've flagged repeats week after week. A 20-minute conversation makes clear how many hours you can win back.",
+    "resultado · encajamos": "result · we're a match",
+    "Sí. Podemos ": "Yes. We can ",
+    "ayudarte.": "help.",
+    "Todo lo que has marcado pasa cada semana — y se puede automatizar sobre las herramientas que ya usas. Hablemos y te enseñamos por dónde empezar.": "Everything you've flagged happens every week — and it can be automated on top of the tools you already use. Let's talk, and we'll show you where to start.",
+    "→ Empezar conversación": "→ Start the conversation",
+    "Volver a intentarlo": "Try again",
+
+    /* cta + footer */
+    "Empieza a trazar tu línea recta": "Start drawing your straight line",
+    "Empezar conversación": "Start the conversation",
+    "info@mazestudio.site · respondemos en 24 h": "info@mazestudio.site · we reply within 24 h",
+    "© 2026 Mazestudio · estudio de automatización con IA · Tenerife": "© 2026 Mazestudio · AI automation studio · Tenerife",
+    "Aviso legal": "Legal notice",
+    "Privacidad": "Privacy",
+  };
+
+  window.t = function(es){
+    if (window.MS_LANG !== 'en') return es;
+    var en = window.I18N_EN[es];
+    return (en === undefined) ? es : en;
+  };
+  window.fmtNum = function(n){
+    return Math.round(n).toLocaleString(window.MS_LANG === 'en' ? 'en-US' : 'es-ES');
+  };
+
+  if (lang === 'en') {
+    document.title = window.t("Mazestudio · Automatización con IA en Tenerife");
+    var metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.setAttribute('content', window.t(metaDesc.getAttribute('content')));
+  }
+})();
+</script>
+
+<!-- ══════════════════════════════════════════════════════════════
      DESIGN SYSTEM · paleta "midnight violet" (web_06.jpg)
      base violeta-noche · acento azul luminoso del cubo-laberinto
      ══════════════════════════════════════════════════════════════ -->
@@ -763,12 +996,23 @@ video::-webkit-media-controls{display:none!important;}
 }
 
 /* ── NAV responsive ── */
-.v2nav-spacer{display:block;}
 .v2nav-burger{display:none;}
 @media(max-width:920px){
   .v2nav-links{display:none!important;}
-  .v2nav-spacer{display:none!important;}
   .v2nav-burger{display:flex!important;}
+}
+
+/* ── botón de idioma (muy visible, arriba a la derecha) ── */
+.lang-toggle{display:inline-flex;align-items:center;gap:6px;cursor:pointer;flex-shrink:0;
+  font-family:'JetBrains Mono',monospace;font-size:11.6px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink);background:rgba(255,255,255,.03);border:1px solid var(--accent);border-radius:9999px;
+  padding:8px 13px;line-height:1;box-shadow:0 0 0 3px var(--accent-wash);
+  transition:background .2s ease,border-color .2s ease,color .2s ease,box-shadow .2s ease,transform .15s ease;}
+.lang-toggle:hover{background:var(--accent);border-color:var(--accent);color:#fff;transform:translateY(-1px);box-shadow:0 9px 24px -8px var(--accent);}
+.lang-toggle svg{flex:0 0 auto;width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.7;}
+@media(max-width:920px){
+  .lang-toggle{width:46px;height:46px;padding:0;justify-content:center;gap:0;}
+  .lang-toggle-txt{display:none;}
 }
 
 /* hero responsive padding */
