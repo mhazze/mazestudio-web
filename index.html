@@ -322,13 +322,16 @@
   --line:rgba(234,232,242,.07); --line-2:rgba(234,232,242,.14);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-/* overflow-x:clip en html (además del hidden de body): en móvil, el hidden de
-   body solo bloquea el scroll — los decorativos que sobresalen (fx-glow, ba-halo)
-   seguían expandiendo el viewport de layout y la nav fija quedaba más ancha que
-   la pantalla, con el burger fuera. clip no crea contenedor de scroll. */
-html{scroll-behavior:auto;overflow-x:clip;}
+/* Recorte horizontal con CLIP en html y body — nunca hidden. Los decorativos
+   que sobresalen (fx-glow, ba-halo) expandían el viewport de layout en móvil
+   y la nav fija dejaba el burger fuera de pantalla: lo contiene el clip de
+   body (recorta el contenido sin crear contenedor de scroll). Con hidden,
+   body se volvía scroller propio (html≠visible corta la propagación al
+   viewport) y su overscroll-behavior BLOQUEABA la rueda y el táctil — el
+   overscroll va por eso en html, que es quien gobierna el viewport. */
+html{scroll-behavior:auto;overflow-x:clip;overscroll-behavior:none;}
 body{background:var(--bg);color:var(--ink);font-family:'Bricolage Grotesque',sans-serif;
-  -webkit-font-smoothing:antialiased;overflow-x:hidden;overscroll-behavior:none;}
+  -webkit-font-smoothing:antialiased;overflow-x:clip;}
 a{text-decoration:none;color:inherit;}
 ::selection{background:rgba(75,140,247,.32);color:#fff;}
 

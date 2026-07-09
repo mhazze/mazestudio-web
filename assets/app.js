@@ -918,10 +918,10 @@ window.MazeLogo = function MazeLogo() {
     const [vw, setVw] = useState(typeof window !== "undefined" ? window.innerWidth : 1280);
     const iframeRef = useRef(null);
     useEffect(() => {
-      document.body.style.overflow = modal ? "hidden" : "";
+      document.documentElement.style.overflowY = modal ? "hidden" : "";
       document.body.classList.toggle("demo-open", modal);
       return () => {
-        document.body.style.overflow = "";
+        document.documentElement.style.overflowY = "";
         document.body.classList.remove("demo-open");
       };
     }, [modal]);
@@ -1462,7 +1462,7 @@ window.MazeLogo = function MazeLogo() {
       };
     }, []);
     useEffect(() => {
-      document.body.style.overflow = gone ? "" : "hidden";
+      document.documentElement.style.overflowY = gone ? "" : "hidden";
     }, [gone]);
     if (gone) return null;
     return /* @__PURE__ */ React.createElement(
