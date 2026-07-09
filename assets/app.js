@@ -40,41 +40,8 @@
 })();
 
 (function(){
-(function() {
-  const { useEffect, useRef, useState } = React;
-  const motion = window.Motion.motion;
-  function BlurText({ text, style }) {
-    const [inView, setInView] = useState(false);
-    const ref = useRef(null);
-    useEffect(() => {
-      const io = new IntersectionObserver(([e]) => {
-        if (e.isIntersecting) setInView(true);
-      }, { threshold: 0.1 });
-      if (ref.current) io.observe(ref.current);
-      return () => io.disconnect();
-    }, []);
-    return /* @__PURE__ */ React.createElement("p", { ref, style: { display: "flex", flexWrap: "wrap", justifyContent: "flex-start", rowGap: "0.1em", ...style } }, text.split(" ").map((w, i) => /* @__PURE__ */ React.createElement(
-      motion.span,
-      {
-        key: i,
-        initial: { filter: "blur(10px)", opacity: 0, y: 50 },
-        animate: inView ? { filter: "blur(0px)", opacity: 1, y: 0 } : {},
-        transition: { duration: 0.7, delay: i * 100 / 1e3, ease: "easeOut" },
-        style: { display: "inline-block", marginRight: "0.28em" }
-      },
-      w
-    )));
-  }
-  window.BlurText = BlurText;
-})();
-})();
-
-(function(){
 window.IconArrow = function IconArrow() {
   return /* @__PURE__ */ React.createElement("svg", { width: "20", height: "20", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }, /* @__PURE__ */ React.createElement("line", { x1: "7", y1: "17", x2: "17", y2: "7" }), /* @__PURE__ */ React.createElement("polyline", { points: "7 7 17 7 17 17" }));
-};
-window.IconPlay = function IconPlay() {
-  return /* @__PURE__ */ React.createElement("svg", { width: "16", height: "16", viewBox: "0 0 24 24", fill: "currentColor" }, /* @__PURE__ */ React.createElement("polygon", { points: "6 4 20 12 6 20 6 4" }));
 };
 window.MazeLogo = function MazeLogo() {
   return /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 132 52", width: "72", height: "29", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement(
@@ -406,7 +373,7 @@ window.MazeLogo = function MazeLogo() {
       { label: t("Soluciones"), href: "#soluciones" },
       { label: t("\xBFNos necesitas?"), href: "#diagnostico" }
     ];
-    return /* @__PURE__ */ React.createElement("nav", { style: {
+    return /* @__PURE__ */ React.createElement("nav", { className: "v2nav", style: {
       position: "fixed",
       top: 16,
       left: 0,
@@ -420,18 +387,18 @@ window.MazeLogo = function MazeLogo() {
       "a",
       {
         href: "#top",
-        className: "lg",
+        className: "lg v2nav-brand",
         style: { display: "flex", alignItems: "center", gap: 10, borderRadius: 9999, padding: "8px 14px" }
       },
       /* @__PURE__ */ React.createElement(window.MazeLogo, null),
-      /* @__PURE__ */ React.createElement("span", { style: {
+      /* @__PURE__ */ React.createElement("span", { className: "v2nav-brand-txt", style: {
         fontFamily: "Bricolage Grotesque",
         fontWeight: 600,
         fontSize: 17.8,
         color: "#EAE8F2",
         letterSpacing: "-.02em",
         whiteSpace: "nowrap"
-      } }, "Mazestudio", /* @__PURE__ */ React.createElement("span", { style: { color: "#4B8CF7" } }, "."))
+      } }, "Maze studio", /* @__PURE__ */ React.createElement("span", { style: { color: "#4B8CF7" } }, "."))
     ), /* @__PURE__ */ React.createElement("div", { className: "lg v2nav-links", style: { display: "flex", alignItems: "center", borderRadius: 9999, padding: "6px 6px", gap: 2 } }, links.map((l) => /* @__PURE__ */ React.createElement(
       "a",
       {
@@ -467,7 +434,7 @@ window.MazeLogo = function MazeLogo() {
         }
       },
       t("Hablemos \u2192")
-    )), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10 } }, /* @__PURE__ */ React.createElement(LangToggle, null), /* @__PURE__ */ React.createElement(
+    )), /* @__PURE__ */ React.createElement("div", { className: "v2nav-right", style: { display: "flex", alignItems: "center", gap: 10 } }, /* @__PURE__ */ React.createElement(LangToggle, null), /* @__PURE__ */ React.createElement(
       "button",
       {
         className: "lg v2nav-burger",
@@ -533,98 +500,97 @@ window.MazeLogo = function MazeLogo() {
 
 (function(){
 (function() {
-  const motion = window.Motion.motion;
+  const { useRef, useState, useEffect } = React;
   const MOVIL = window.matchMedia("(max-width:860px)").matches;
   const HERO_VIDEO = MOVIL ? "assets/referencias/referencia-cubo-cristal-01-movil-loop.mp4" : "assets/referencias/referencia-cubo-cristal-01-4k60-loop.mp4";
   const HERO_POSTER = MOVIL ? "assets/referencias/poster-cubo-carga-movil.jpg" : "assets/referencias/poster-cubo-carga.jpg";
-  function fu(delay) {
-    return {
-      initial: { filter: "blur(10px)", opacity: 0, y: 20 },
-      animate: { filter: "blur(0px)", opacity: 1, y: 0 },
-      transition: { duration: 0.7, delay, ease: "easeOut" }
-    };
-  }
+  const HERO_WORD = "Mazestudio";
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
+  const enableMagnet = !reducedMotion && !coarsePointer;
   window.HeroSection = function HeroSection() {
+    const ctaRef = useRef(null);
+    const faceRef = useRef(null);
+    const [ready, setReady] = useState(!window.__preloaderActive);
+    useEffect(() => {
+      if (ready) return;
+      if (!window.__preloaderActive) {
+        setReady(true);
+        return;
+      }
+      const onDone = () => setReady(true);
+      window.addEventListener("preloader-done", onDone, { once: true });
+      return () => window.removeEventListener("preloader-done", onDone);
+    }, []);
+    const onCtaMove = (e) => {
+      const el = ctaRef.current;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      const mx = e.clientX - (r.left + r.width / 2);
+      const my = e.clientY - (r.top + r.height / 2);
+      el.style.transform = `translate(${mx * 0.22}px, ${my * 0.3}px)`;
+      if (faceRef.current) {
+        faceRef.current.style.setProperty("--mx", (e.clientX - r.left) / r.width * 100 + "%");
+        faceRef.current.style.setProperty("--my", (e.clientY - r.top) / r.height * 100 + "%");
+      }
+    };
+    const onCtaLeave = () => {
+      if (ctaRef.current) ctaRef.current.style.transform = "translate(0,0)";
+    };
     return /* @__PURE__ */ React.createElement("section", { id: "top", style: { position: "relative", width: "100%", height: "100svh", minHeight: 640, background: "#08070C", overflow: "hidden" } }, /* @__PURE__ */ React.createElement(window.FadingVideo, { src: HERO_VIDEO, poster: HERO_POSTER, style: { zIndex: 0 } }), /* @__PURE__ */ React.createElement("div", { style: {
       position: "absolute",
       inset: 0,
       zIndex: 1,
       pointerEvents: "none",
-      background: "linear-gradient(90deg, rgba(8,7,12,.92) 0%, rgba(8,7,12,.66) 32%, rgba(8,7,12,.14) 58%, rgba(8,7,12,0) 78%), linear-gradient(180deg, rgba(8,7,12,.5) 0%, rgba(8,7,12,0) 26%, rgba(8,7,12,.42) 76%, rgba(8,7,12,.72) 100%)"
-    } }), /* @__PURE__ */ React.createElement("div", { style: { position: "relative", zIndex: 10, display: "flex", flexDirection: "column", height: "100%" } }, /* @__PURE__ */ React.createElement(window.Navbar, null), /* @__PURE__ */ React.createElement("div", { className: "hero-body", "data-parallax": "-0.16", "data-parallax-start": "top top", "data-parallax-end": "bottom top", style: { flex: 1, display: "flex", flexDirection: "column", alignItems: "flex-start", justifyContent: "center", willChange: "transform" } }, /* @__PURE__ */ React.createElement(
-      window.BlurText,
-      {
-        text: window.t("Del laberinto, una l\xEDnea recta"),
-        style: {
-          fontFamily: "Bricolage Grotesque",
-          letterSpacing: "-3px",
-          lineHeight: 0.85,
-          fontSize: "clamp(48.3px,7.5vw,92.4px)",
-          color: "white",
-          maxWidth: 672,
-          justifyContent: "flex-start",
-          textAlign: "left",
-          textShadow: "0 2px 30px rgba(0,0,0,.6), 0 1px 4px rgba(0,0,0,.4)"
-        }
-      }
-    ), /* @__PURE__ */ React.createElement(
-      motion.p,
-      {
-        ...fu(0.8),
-        style: {
-          marginTop: 16,
-          fontSize: "clamp(14.7px,1.4vw,16.8px)",
-          color: "rgba(255,255,255,.86)",
-          maxWidth: 600,
-          textAlign: "left",
-          fontFamily: "Bricolage Grotesque",
-          fontWeight: 300,
-          lineHeight: 1.45,
-          textShadow: "0 1px 16px rgba(0,0,0,.55)"
-        }
-      },
-      window.t("Conectamos tus aplicaciones y montamos asistentes con IA para que correos, reservas y documentos se hagan solos. Sin cambiar de software. Sin tecnicismos.")
-    ), /* @__PURE__ */ React.createElement(motion.div, { ...fu(1.1), style: { display: "flex", alignItems: "center", gap: 20, marginTop: 26, flexWrap: "wrap" } }, /* @__PURE__ */ React.createElement(
-      "a",
-      {
-        href: "#como",
-        className: "lg-s magnetic",
-        style: {
-          display: "inline-flex",
-          alignItems: "center",
-          gap: 13,
-          borderRadius: 9999,
-          padding: "9px 26px 9px 9px",
-          fontSize: 15.8,
-          fontWeight: 500,
-          fontFamily: "Bricolage Grotesque",
-          color: "white"
-        }
-      },
-      /* @__PURE__ */ React.createElement("span", { style: {
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        width: 38,
-        height: 38,
-        borderRadius: 9999,
-        background: "var(--accent)",
-        color: "#fff",
-        flexShrink: 0,
-        boxShadow: "0 6px 18px -6px var(--accent)"
-      } }, /* @__PURE__ */ React.createElement("span", { style: { marginLeft: 2, display: "inline-flex" } }, /* @__PURE__ */ React.createElement(window.IconPlay, null))),
-      window.t("Ver c\xF3mo funciona")
-    ))), /* @__PURE__ */ React.createElement("div", { className: "hero-free-wrap", style: {
+      background: "radial-gradient(60% 50% at 50% 46%, rgba(8,7,12,.2), rgba(8,7,12,.72) 72%), linear-gradient(180deg, rgba(8,7,12,.72) 0%, rgba(8,7,12,.22) 22%, rgba(8,7,12,.3) 62%, rgba(8,7,12,.86) 100%)"
+    } }), /* @__PURE__ */ React.createElement("div", { style: {
       position: "absolute",
-      left: 0,
-      right: 0,
-      bottom: "clamp(26px,5.5vh,60px)",
-      display: "flex",
-      justifyContent: "center",
-      zIndex: 12,
+      zIndex: 2,
+      borderRadius: "50%",
       pointerEvents: "none",
-      padding: "0 16px"
-    } }, /* @__PURE__ */ React.createElement(motion.a, { ...fu(1.2), href: "hablemos.html", className: "hero-free", style: { pointerEvents: "auto", textDecoration: "none", cursor: "pointer" } }, /* @__PURE__ */ React.createElement("span", { className: "hero-free-chip" }, /* @__PURE__ */ React.createElement("span", { className: "hero-free-dot" }), window.t("Gratis")), /* @__PURE__ */ React.createElement("span", { className: "hero-free-txt" }, /* @__PURE__ */ React.createElement("b", null, window.t("Auditor\xEDa de tu negocio")), " ", window.t("sin compromiso")), /* @__PURE__ */ React.createElement("span", { className: "hero-free-arrow", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement(window.IconArrow, null))))));
+      filter: "blur(90px)",
+      width: "min(64vw,900px)",
+      height: "min(40vw,560px)",
+      left: "50%",
+      top: "44%",
+      transform: "translate(-50%,-50%)",
+      background: "radial-gradient(ellipse at center,rgba(75,140,247,.34),transparent 70%)",
+      opacity: 0.85
+    } }), /* @__PURE__ */ React.createElement("div", { style: {
+      position: "absolute",
+      zIndex: 2,
+      borderRadius: "50%",
+      pointerEvents: "none",
+      filter: "blur(90px)",
+      width: "min(46vw,620px)",
+      height: "min(46vw,620px)",
+      left: "50%",
+      top: "40%",
+      transform: "translate(-50%,-50%)",
+      background: "radial-gradient(circle at center,rgba(99,80,170,.28),transparent 68%)",
+      opacity: 0.7
+    } }), /* @__PURE__ */ React.createElement("div", { style: { position: "relative", zIndex: 10, display: "flex", flexDirection: "column", height: "100%" } }, /* @__PURE__ */ React.createElement(window.Navbar, null), /* @__PURE__ */ React.createElement(
+      "div",
+      {
+        className: "hero-body" + (ready ? " hero-ready" : ""),
+        "data-parallax": "-0.16",
+        "data-parallax-start": "top top",
+        "data-parallax-end": "bottom top",
+        style: { flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", willChange: "transform" }
+      },
+      /* @__PURE__ */ React.createElement("h1", { className: "hero-title", "aria-label": HERO_WORD + "." }, HERO_WORD.split("").map((ch, i) => /* @__PURE__ */ React.createElement("span", { key: i, className: "hw", style: { "--i": i, ...i === 4 ? { marginLeft: ".16em" } : {} } }, ch)), /* @__PURE__ */ React.createElement("span", { className: "hero-marble", style: { "--i": HERO_WORD.length }, "aria-hidden": "true" })),
+      /* @__PURE__ */ React.createElement("p", { className: "hero-sub" }, window.t("Convertimos procesos manuales en "), /* @__PURE__ */ React.createElement("span", { className: "hero-sub-accent" }, window.t("sistemas autom\xE1ticos"))),
+      /* @__PURE__ */ React.createElement("div", { className: "hero-cta-row" }, /* @__PURE__ */ React.createElement(
+        "a",
+        {
+          ref: ctaRef,
+          href: "hablemos.html",
+          className: "btn-glow",
+          ...enableMagnet ? { onPointerMove: onCtaMove, onPointerLeave: onCtaLeave } : {}
+        },
+        /* @__PURE__ */ React.createElement("span", { ref: faceRef, className: "btn-glow-face" }, window.t("Empezar conversaci\xF3n"), /* @__PURE__ */ React.createElement("span", { className: "btn-glow-arrow", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement(window.IconArrow, null)))
+      ))
+    )));
   };
 })();
 })();
@@ -1409,7 +1375,7 @@ window.MazeLogo = function MazeLogo() {
       { label: window.t("Soluciones"), href: "#soluciones" },
       { label: window.t("\xBFNos necesitas?"), href: "#diagnostico" }
     ];
-    return /* @__PURE__ */ React.createElement("footer", { className: "v2-footer" }, /* @__PURE__ */ React.createElement("div", { className: "inner" }, /* @__PURE__ */ React.createElement("div", { className: "top" }, /* @__PURE__ */ React.createElement("a", { href: "#top", style: { display: "flex", alignItems: "center", gap: 10 }, "aria-label": "Mazestudio" }, /* @__PURE__ */ React.createElement(window.MazeLogo, null), /* @__PURE__ */ React.createElement("span", { style: { fontFamily: "Bricolage Grotesque", fontWeight: 600, fontSize: 18.9, color: "#EAE8F2", letterSpacing: "-.02em" } }, "Mazestudio", /* @__PURE__ */ React.createElement("span", { style: { color: "#4B8CF7" } }, "."))), /* @__PURE__ */ React.createElement("nav", null, links.map((l) => /* @__PURE__ */ React.createElement("a", { key: l.href, href: l.href }, l.label)))), /* @__PURE__ */ React.createElement("div", { className: "bot" }, /* @__PURE__ */ React.createElement("span", null, window.t("\xA9 2026 Mazestudio \xB7 estudio de automatizaci\xF3n con IA \xB7 Tenerife")), /* @__PURE__ */ React.createElement("span", { className: "legal" }, /* @__PURE__ */ React.createElement("a", { href: "aviso-legal.html" }, window.t("Aviso legal")), /* @__PURE__ */ React.createElement("a", { href: "privacidad.html" }, window.t("Privacidad")), /* @__PURE__ */ React.createElement("a", { href: "cookies.html" }, "Cookies")))));
+    return /* @__PURE__ */ React.createElement("footer", { className: "v2-footer" }, /* @__PURE__ */ React.createElement("div", { className: "inner" }, /* @__PURE__ */ React.createElement("div", { className: "top" }, /* @__PURE__ */ React.createElement("a", { href: "#top", style: { display: "flex", alignItems: "center", gap: 10 }, "aria-label": "Mazestudio" }, /* @__PURE__ */ React.createElement(window.MazeLogo, null), /* @__PURE__ */ React.createElement("span", { style: { fontFamily: "Bricolage Grotesque", fontWeight: 600, fontSize: 18.9, color: "#EAE8F2", letterSpacing: "-.02em" } }, "Maze studio", /* @__PURE__ */ React.createElement("span", { style: { color: "#4B8CF7" } }, "."))), /* @__PURE__ */ React.createElement("nav", null, links.map((l) => /* @__PURE__ */ React.createElement("a", { key: l.href, href: l.href }, l.label)))), /* @__PURE__ */ React.createElement("div", { className: "bot" }, /* @__PURE__ */ React.createElement("span", null, window.t("\xA9 2026 Mazestudio \xB7 estudio de automatizaci\xF3n con IA \xB7 Tenerife")), /* @__PURE__ */ React.createElement("span", { className: "legal" }, /* @__PURE__ */ React.createElement("a", { href: "aviso-legal.html" }, window.t("Aviso legal")), /* @__PURE__ */ React.createElement("a", { href: "privacidad.html" }, window.t("Privacidad")), /* @__PURE__ */ React.createElement("a", { href: "cookies.html" }, "Cookies")))));
   };
 })();
 })();

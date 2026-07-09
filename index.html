@@ -109,13 +109,9 @@
     "Cambiar a español": "Switch to Spanish",
 
     /* hero */
-    "Del laberinto, una línea recta": "From the maze, a straight line",
-    "Conectamos tus aplicaciones y montamos asistentes con IA para que correos, reservas y documentos se hagan solos. Sin cambiar de software. Sin tecnicismos.":
-      "We connect your apps and build AI assistants so emails, bookings and documents take care of themselves. No software changes. No tech jargon.",
+    "Convertimos procesos manuales en ": "We turn manual processes into ",
+    "sistemas automáticos": "automatic systems",
     "Ver cómo funciona": "See how it works",
-    "Gratis": "Free",
-    "Auditoría de tu negocio": "Business audit",
-    "sin compromiso": "no strings attached",
 
     /* línea recta */
     "// la idea, en una imagen": "// the idea, in one image",
@@ -326,7 +322,11 @@
   --line:rgba(234,232,242,.07); --line-2:rgba(234,232,242,.14);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:auto;}
+/* overflow-x:clip en html (además del hidden de body): en móvil, el hidden de
+   body solo bloquea el scroll — los decorativos que sobresalen (fx-glow, ba-halo)
+   seguían expandiendo el viewport de layout y la nav fija quedaba más ancha que
+   la pantalla, con el burger fuera. clip no crea contenedor de scroll. */
+html{scroll-behavior:auto;overflow-x:clip;}
 body{background:var(--bg);color:var(--ink);font-family:'Bricolage Grotesque',sans-serif;
   -webkit-font-smoothing:antialiased;overflow-x:hidden;overscroll-behavior:none;}
 a{text-decoration:none;color:inherit;}
@@ -881,6 +881,11 @@ video::-webkit-media-controls{display:none!important;}
   transition:transform .5s cubic-bezier(.16,1,.3,1),opacity .4s;}
 .cd-card:active{cursor:grabbing;}
 .cd-card.dragging{transition:none;}
+/* las cartas de atrás asoman solo por el borde inferior: su texto no debe
+   leerse a través del cristal de la frontal (sin backdrop-filter se
+   transparentaba) ni duplicarse en lectores de pantalla — visibility:hidden
+   cubre las dos cosas manteniendo el lomo de la carta visible */
+.cd-stage .cd-card ~ .cd-card > *{visibility:hidden;}
 .cd-num{font-family:'JetBrains Mono',monospace;font-size:12.6px;letter-spacing:.1em;color:var(--accent-soft);}
 .cd-txt{font-family:'Bricolage Grotesque',sans-serif;font-weight:500;font-size:clamp(21px,3.4vw,29.4px);
   line-height:1.2;letter-spacing:-.5px;color:#fff;margin-top:14px;}
@@ -1014,49 +1019,132 @@ video::-webkit-media-controls{display:none!important;}
   .lang-toggle{width:46px;height:46px;padding:0;justify-content:center;gap:0;}
   .lang-toggle-txt{display:none;}
 }
+/* pantallas muy estrechas (≤374px): la fila logo + idioma + burger mide ~349px
+   con los tamaños normales — se compacta todo para que quepa hasta en 320px.
+   !important porque los tamaños base van en estilos inline del JSX */
+@media(max-width:374px){
+  .v2nav{padding:0 12px!important;}
+  .v2nav-brand{padding:8px 10px!important;gap:8px!important;}
+  .v2nav-brand svg{width:58px;height:23px;}
+  .v2nav-brand-txt{font-size:16px!important;}
+  .v2nav-right{gap:8px!important;}
+  .lang-toggle{width:40px;height:40px;}
+  .v2nav-burger{width:40px!important;height:40px!important;}
+}
 
 /* hero responsive padding */
-.hero-body{padding:96px clamp(21px,6vw,84px) 0;}
+.hero-body{padding:110px clamp(21px,6vw,84px) 60px;}
 
-/* ═══ HERO · badge "Gratis / Auditoría" ═══ */
-.hero-free{position:relative;display:inline-flex;align-self:center;align-items:center;gap:16px;
-  padding:9px 22px 9px 9px;border-radius:9999px;overflow:hidden;
-  background:linear-gradient(100deg,rgba(75,140,247,.24),rgba(75,140,247,.08) 58%,rgba(255,255,255,.03));
-  border:1.5px solid rgba(143,182,255,.42);
-  box-shadow:0 0 0 1px rgba(75,140,247,.10) inset,0 14px 46px -16px rgba(75,140,247,.85),0 0 60px -22px rgba(75,140,247,.7);
-  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-  animation:heroFreeBreathe 3.6s ease-in-out infinite;
-  transition:transform .25s ease,border-color .25s ease;}
-.hero-free:hover{transform:translateY(-3px);border-color:rgba(143,182,255,.7);}
-.hero-free:focus-visible{outline:2px solid var(--accent-soft);outline-offset:4px;}
-.hero-free-arrow{display:inline-flex;align-items:center;color:rgba(255,255,255,.85);flex:none;
-  transition:transform .25s ease;}
-.hero-free:hover .hero-free-arrow{transform:translateX(4px);color:#fff;}
-@keyframes heroFreeBreathe{0%,100%{box-shadow:0 0 0 1px rgba(75,140,247,.10) inset,0 14px 46px -16px rgba(75,140,247,.85),0 0 60px -22px rgba(75,140,247,.7);}50%{box-shadow:0 0 0 1px rgba(75,140,247,.16) inset,0 16px 52px -14px rgba(75,140,247,.95),0 0 88px -18px rgba(75,140,247,.9);}}
-/* barrido de luz que cruza el badge */
-.hero-free::after{content:'';position:absolute;top:0;left:-60%;width:45%;height:100%;pointer-events:none;
-  background:linear-gradient(105deg,transparent,rgba(255,255,255,.30),transparent);
-  transform:skewX(-18deg);animation:heroFreeSheen 5s ease-in-out 1.4s infinite;}
-@keyframes heroFreeSheen{0%,16%{left:-60%;}36%,100%{left:135%;}}
-.hero-free-chip{display:inline-flex;align-items:center;gap:9px;flex:none;
-  padding:8px 20px 8px 17px;border-radius:9999px;
-  font-family:'Bricolage Grotesque',sans-serif;font-size:17px;font-weight:700;letter-spacing:.01em;color:#0B0A12;
-  background:linear-gradient(180deg,#fff,#dfe9ff);box-shadow:0 1px 0 rgba(255,255,255,.7) inset,0 6px 18px -5px rgba(75,140,247,.85);}
-.hero-free-dot{width:9px;height:9px;border-radius:50%;background:var(--accent);
-  box-shadow:0 0 0 0 rgba(75,140,247,.6);animation:heroFreePulse 2s ease-out infinite;}
-@keyframes heroFreePulse{0%{box-shadow:0 0 0 0 rgba(75,140,247,.6);}70%{box-shadow:0 0 0 10px rgba(75,140,247,0);}100%{box-shadow:0 0 0 0 rgba(75,140,247,0);}}
-.hero-free-txt{font-family:'Bricolage Grotesque',sans-serif;font-size:18.5px;font-weight:400;color:rgba(255,255,255,.95);line-height:1.05;}
-.hero-free-txt b{font-weight:700;color:#fff;}
-@media(max-width:560px){
-  .hero-free{gap:11px;padding:7px 18px 7px 7px;}
-  .hero-free-chip{font-size:14px;padding:6px 14px 6px 12px;}
-  .hero-free-txt{font-size:14px;}
-  .hero-stats{flex-wrap:wrap;}
-  .hero-stat-card{width:calc(50% - 8px)!important;min-width:150px;}
+/* ═══ HERO · titular de marca centrado ("Mazestudio" + canica) ═══ */
+.hero-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:600;line-height:.94;
+  letter-spacing:-.035em;font-size:clamp(58px,13vw,192px);color:#fff;white-space:nowrap;
+  text-shadow:0 2px 40px rgba(0,0,0,.55),0 1px 4px rgba(0,0,0,.4);}
+/* <430px el mínimo de 58px ya no cabe (la palabra mide ~313px a 58px):
+   escala fina para que "Mazestudio." entre completa hasta en 320px */
+@media(max-width:430px){
+  .hero-title{font-size:clamp(46px,14.8vw,58px);}
 }
-@media(max-width:400px){
-  .hero-free{gap:9px;padding:6px 14px 6px 6px;}
-  .hero-free-txt{font-size:13px;}
+.hero-title .hw{display:inline-block;line-height:1;opacity:0;}
+/* la entrada arranca cuando el preloader termina (.hero-ready), no al montar
+   el componente — si no, la coreografía entera se resuelve oculta detrás
+   del preloader y el usuario nunca la ve */
+.hero-ready .hero-title .hw{animation:heroLetterIn .9s cubic-bezier(.16,1,.3,1) both;
+  animation-delay:calc(.2s + var(--i) * .045s);}
+@keyframes heroLetterIn{from{opacity:0;filter:blur(16px);transform:translateY(.28em);}to{opacity:1;filter:blur(0);transform:translateY(0);}}
+
+/* canica de cristal — sustituye el punto final de "Mazestudio."
+   esfera de VIDRIO translúcida (no plástico opaco): brillo especular
+   móvil + anillo fresnel brillante en el borde + tinte azul concentrado
+   solo en el borde inferior + backdrop-filter que dejа entrever el
+   vídeo de fondo a través del centro, como un cristal real. Tamaño de
+   punto final auténtico y entrada rodando (2 vueltas completas) desde
+   el borde derecho de la pantalla hasta su posición final, lenta y sin
+   caída ni rebote. */
+.hero-marble{display:inline-block;width:.23em;height:.23em;margin-left:.05em;
+  border-radius:50%;vertical-align:baseline;line-height:1;position:relative;
+  background:
+    radial-gradient(circle at 30% 23%,rgba(255,255,255,1) 0%,rgba(255,255,255,.95) 4%,rgba(255,255,255,0) 9%) no-repeat,
+    radial-gradient(circle at 32% 26%,rgba(255,255,255,.98) 0%,rgba(255,255,255,.65) 9%,rgba(255,255,255,0) 28%) no-repeat,
+    radial-gradient(circle at 42% 36%,rgba(255,255,255,.32) 0%,rgba(255,255,255,0) 42%) no-repeat,
+    radial-gradient(circle at 50% 50%,transparent 74%,rgba(255,255,255,.86) 82%,rgba(226,236,255,.65) 88%,rgba(168,198,255,.24) 94%,transparent 100%),
+    radial-gradient(circle at 68% 76%,rgba(75,140,247,.26) 0%,rgba(75,140,247,.09) 34%,rgba(75,140,247,.02) 58%,transparent 74%),
+    radial-gradient(circle at 50% 50%,rgba(238,245,255,.26) 0%,rgba(210,224,250,.08) 60%,rgba(130,160,215,.1) 100%);
+  background-size:32% 32%,50% 50%,64% 64%,100% 100%,100% 100%,100% 100%;
+  background-position:30% 23%,32% 26%,42% 36%,0 0,0 0,0 0;
+  background-repeat:no-repeat;
+  backdrop-filter:blur(1px) brightness(1.22) saturate(1.35) contrast(1.1);
+  -webkit-backdrop-filter:blur(1px) brightness(1.22) saturate(1.35) contrast(1.1);
+  box-shadow:
+    inset -.045em -.055em .07em rgba(8,16,40,.5),
+    inset .03em .04em .045em rgba(255,255,255,.6),
+    inset 0 0 0 .012em rgba(255,255,255,.4),
+    0 .018em .07em rgba(75,140,247,.4);
+  filter:drop-shadow(0 0 3px rgba(75,140,247,.55)) drop-shadow(0 0 7px rgba(75,140,247,.2));
+  opacity:0;
+}
+.hero-ready .hero-marble{
+  animation:
+    heroMarbleIn 2.1s cubic-bezier(.16,1,.3,1) calc(.2s + var(--i) * .045s) both,
+    heroMarbleSheen 6.5s ease-in-out infinite calc(2.3s + var(--i) * .045s);
+}
+@keyframes heroMarbleIn{
+  0%{opacity:0;transform:translateX(50vw) scale(.6) rotate(0deg);filter:blur(5px) drop-shadow(0 0 0 rgba(75,140,247,0));}
+  60%{opacity:1;filter:blur(0) drop-shadow(0 0 3px rgba(75,140,247,.5)) drop-shadow(0 0 7px rgba(75,140,247,.18));}
+  100%{opacity:1;transform:translateX(0) scale(1) rotate(-720deg);filter:blur(0) drop-shadow(0 0 3px rgba(75,140,247,.55)) drop-shadow(0 0 7px rgba(75,140,247,.2));}
+}
+@keyframes heroMarbleSheen{
+  0%,100%{background-position:30% 23%,32% 26%,42% 36%,0 0,0 0,0 0;}
+  50%{background-position:38% 29%,40% 32%,48% 42%,0 0,0 0,0 0;}
+}
+
+.hero-sub{margin-top:22px;max-width:640px;font-family:'Bricolage Grotesque',sans-serif;font-weight:300;
+  font-size:clamp(16.5px,1.9vw,22px);line-height:1.5;color:rgba(255,255,255,.86);
+  text-shadow:0 1px 16px rgba(0,0,0,.55);
+  opacity:0;}
+.hero-sub-accent{font-size:1.16em;font-weight:500;
+  background:linear-gradient(90deg,#8FB6FF,#4B8CF7 45%,#86E6FF);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;
+  text-shadow:none;filter:drop-shadow(0 0 18px rgba(75,140,247,.45));}
+@keyframes heroRise{from{opacity:0;filter:blur(8px);transform:translateY(18px);}to{opacity:1;filter:blur(0);transform:translateY(0);}}
+
+.hero-cta-row{display:flex;align-items:center;justify-content:center;margin-top:38px;
+  opacity:0;}
+.hero-ready .hero-sub{animation:heroRise .8s cubic-bezier(.16,1,.3,1) .95s both;}
+.hero-ready .hero-cta-row{animation:heroRise .8s cubic-bezier(.16,1,.3,1) 1.15s both;}
+
+/* CTA único "Empezar conversación" — anillo de degradado giratorio (misma
+   técnica de máscara que .lg, animada) + cristal con spot que sigue al
+   cursor + botón magnético (misma fórmula que .magnetic: translate * .22/.3) */
+@property --ring-angle{ syntax:'<angle>'; inherits:false; initial-value:0deg; }
+
+.btn-glow{pointer-events:auto;position:relative;display:inline-block;border-radius:9999px;
+  isolation:isolate;transition:transform .5s cubic-bezier(.16,1,.3,1);will-change:transform;}
+
+.btn-glow::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1.6px;pointer-events:none;
+  background:conic-gradient(from var(--ring-angle),
+    rgba(75,140,247,0) 0deg, rgba(143,182,255,.95) 45deg, rgba(75,140,247,.12) 120deg,
+    rgba(75,140,247,0) 190deg, rgba(75,140,247,0) 258deg, rgba(134,230,255,.9) 315deg, rgba(75,140,247,0) 360deg);
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  animation:btnRingSpin 6s linear infinite;}
+@keyframes btnRingSpin{to{--ring-angle:360deg;}}
+
+.btn-glow-face{position:relative;z-index:1;display:inline-flex;align-items:center;gap:10px;
+  font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:17px;color:#fff;
+  padding:17px 34px 17px 38px;border-radius:9999px;overflow:hidden;
+  background:
+    radial-gradient(150px circle at var(--mx,50%) var(--my,28%),rgba(255,255,255,.2),transparent 62%),
+    linear-gradient(100deg,rgba(75,140,247,.3),rgba(75,140,247,.1) 55%,rgba(20,19,32,.6));
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.14),0 16px 44px -18px rgba(75,140,247,.85);
+  transition:box-shadow .35s ease;}
+.btn-glow:hover .btn-glow-face{box-shadow:inset 0 1px 1px rgba(255,255,255,.2),0 22px 58px -16px rgba(75,140,247,1);}
+
+.btn-glow-arrow{display:inline-flex;color:var(--accent-soft);transition:transform .45s cubic-bezier(.16,1,.3,1),color .3s ease;}
+.btn-glow:hover .btn-glow-arrow{transform:translate(3px,-3px);color:#fff;}
+
+@media(max-width:560px){
+  .btn-glow-face{font-size:15px;padding:14px 26px 14px 30px;gap:8px;}
 }
 
 /* ── móvil: misma coreografía, menos coste de pintura ──
@@ -1072,6 +1160,11 @@ video::-webkit-media-controls{display:none!important;}
 /* ── reduced-motion ── */
 @media (prefers-reduced-motion:reduce){
   .hero-fade{animation:none;opacity:1!important;}
+  .hero-title .hw,.hero-sub,.hero-cta-row{animation:none!important;opacity:1!important;filter:none!important;transform:none!important;}
+  .hero-marble{animation:none!important;opacity:1!important;transform:none!important;}
+  .btn-glow{transition:none!important;}
+  .btn-glow::before{animation:none;}
+  .btn-glow-arrow{transition:none;}
   .mq-track{animation:none;}
   .maze-node{animation:none;}
   .lr-blob{animation:none;}
@@ -1101,11 +1194,6 @@ video::-webkit-media-controls{display:none!important;}
 
 <!-- ══════════════════════════════════════════
      1 · FADING VIDEO (autoplay loop · NO scroll-scrub)
-════════════════════════════════════════════ -->
-
-
-<!-- ══════════════════════════════════════════
-     2 · BLUR TEXT (word-by-word)
 ════════════════════════════════════════════ -->
 
 
