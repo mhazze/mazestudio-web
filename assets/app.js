@@ -312,15 +312,6 @@ window.MazeLogo = function MazeLogo() {
       const desktop = window.matchMedia("(min-width:881px)").matches;
       if (reduced || !desktop || !window.gsap || !window.ScrollTrigger) return;
       const ctx = window.gsap.context(() => {
-        window.gsap.utils.toArray("#soluciones .v2-sol").forEach((card) => {
-          window.gsap.to(card, {
-            y: -36,
-            scale: 0.965,
-            opacity: 0.5,
-            ease: "none",
-            scrollTrigger: { trigger: "#soluciones", start: "bottom 85%", end: "bottom 35%", scrub: 0.8, invalidateOnRefresh: true }
-          });
-        });
         const cta = document.querySelector("#contacto .cta-converge");
         if (cta) window.gsap.from(cta, {
           opacity: 0,
@@ -370,7 +361,6 @@ window.MazeLogo = function MazeLogo() {
       { label: t("C\xF3mo funciona"), href: "#como" },
       { label: t("Ahorro"), href: "#roi" },
       { label: t("Servicios"), href: "#servicios" },
-      { label: t("Soluciones"), href: "#soluciones" },
       { label: t("\xBFNos necesitas?"), href: "#diagnostico" }
     ];
     return /* @__PURE__ */ React.createElement("nav", { className: "v2nav", style: {
@@ -872,7 +862,9 @@ window.MazeLogo = function MazeLogo() {
     phone: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="7" y="2" width="10" height="21" rx="2" fill="#2D4ECC"/><rect x="6" y="1" width="10" height="21" rx="2" fill="#4361F0"/><rect x="8" y="4" width="6" height="12" rx="1" fill="#0B0C10" opacity=".5"/><rect x="9" y="18" width="4" height="2" rx="1" fill="#8295F2" opacity=".7"/></svg>`,
     lightning: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="14,1 5,13 12,13 10,23 19,11 12,11" fill="#2D4ECC"/><polygon points="13,1 4,13 11,13 9,23 18,11 11,11" fill="#4361F0"/><polygon points="13,1 4,13 11,13 9,23 18,11 11,11" fill="#8295F2" opacity=".25"/></svg>`,
     check: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="19" height="19" rx="2" fill="#1a4a38"/><rect x="2" y="2" width="19" height="19" rx="2" fill="#065f46"/><rect x="2" y="2" width="19" height="5" rx="2" fill="#34D399" opacity=".2"/><path d="M6 12l4.5 4.5L18 8" stroke="#34D399" stroke-width="2.5" stroke-linecap="square" fill="none"/></svg>`,
-    grid: `<svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="4" width="21" height="21" rx="1" fill="#2D4ECC"/><rect x="3" y="3" width="21" height="21" rx="1" fill="#4361F0"/><rect x="6" y="6" width="7" height="7" rx="1" fill="#ECEDF2" opacity=".85"/><rect x="15" y="6" width="6" height="7" rx="1" fill="#8295F2"/><rect x="6" y="15" width="7" height="6" rx="1" fill="#8295F2" opacity=".55"/><rect x="15" y="15" width="6" height="6" rx="1" fill="#ECEDF2" opacity=".5"/></svg>`
+    grid: `<svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="4" width="21" height="21" rx="1" fill="#2D4ECC"/><rect x="3" y="3" width="21" height="21" rx="1" fill="#4361F0"/><rect x="6" y="6" width="7" height="7" rx="1" fill="#ECEDF2" opacity=".85"/><rect x="15" y="6" width="6" height="7" rx="1" fill="#8295F2"/><rect x="6" y="15" width="7" height="6" rx="1" fill="#8295F2" opacity=".55"/><rect x="15" y="15" width="6" height="6" rx="1" fill="#ECEDF2" opacity=".5"/></svg>`,
+    globe: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" fill="#2D4ECC"/><circle cx="11" cy="11" r="10" fill="#4361F0"/><ellipse cx="11" cy="11" rx="4.2" ry="10" fill="none" stroke="#8295F2" stroke-width="1.1"/><path d="M1 11h20M2.5 6.5h17M2.5 15.5h17" stroke="#8295F2" stroke-width="1.1"/><circle cx="11" cy="11" r="10" fill="none" stroke="#ECEDF2" stroke-width="1" opacity=".3"/></svg>`,
+    radar: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" fill="#2D4ECC"/><circle cx="11" cy="11" r="10" fill="#4361F0"/><circle cx="11" cy="11" r="6.5" fill="none" stroke="#8295F2" stroke-width="1" opacity=".55"/><circle cx="11" cy="11" r="3" fill="none" stroke="#8295F2" stroke-width="1" opacity=".55"/><path d="M11 11 L18.5 6" stroke="#ECEDF2" stroke-width="1.6" stroke-linecap="round"/><path d="M11 11 L20 11 A9 9 0 0 0 15.5 3.2 Z" fill="#86E6FF" opacity=".28"/><circle cx="16" cy="7.5" r="1.6" fill="#86E6FF"/></svg>`
   };
   const DEMOS = [
     {
@@ -912,8 +904,20 @@ window.MazeLogo = function MazeLogo() {
       steps: [{ ic: "chat", t: "Entra un WhatsApp, un correo o una llamada" }, { ic: "robot", t: "Se convierte en ficha y se ordena solo" }, { ic: "grid", t: "Todo en un panel: bandeja, clientes y agenda" }]
     },
     {
-      id: "atencion",
+      id: "radar",
       num: "04",
+      name: "Radar de mercado",
+      icon: "radar",
+      desc: "Tu CRM tambi\xE9n mira hacia fuera: lee webs p\xFAblicas \u2014precios de la competencia, negocios nuevos, rese\xF1as\u2014 y te avisa en cristiano cuando algo cambia.",
+      time: "~1 min",
+      url: "https://radar.demos.mazestudio.site/",
+      live: true,
+      mw: 1200,
+      steps: [{ ic: "globe", t: "Lee webs p\xFAblicas: competencia, directorios, rese\xF1as" }, { ic: "robot", t: "Compara con ayer y decide si algo importa" }, { ic: "radar", t: "Te avisa en cristiano: \xABbajaron el catamar\xE1n a 39 \u20AC\xBB" }]
+    },
+    {
+      id: "atencion",
+      num: "05",
       name: "Atenci\xF3n al cliente",
       icon: "chat",
       desc: "Responde los emails de clientes con IA usando la informaci\xF3n real de tu negocio.",
@@ -923,12 +927,28 @@ window.MazeLogo = function MazeLogo() {
       steps: [{ ic: "envelope", t: "Entra el email de un cliente" }, { ic: "robot", t: "La IA responde con la info de tu negocio" }, { ic: "check", t: "Respuesta enviada \u2014 t\xFA no tocas nada" }]
     }
   ].map((d) => ({ ...d, name: window.t(d.name), desc: window.t(d.desc), steps: d.steps.map((s) => ({ ...s, t: window.t(s.t) })) }));
+  const SERVICES = DEMOS.filter((d) => d.id !== "crm");
+  const HUB = DEMOS.find((d) => d.id === "crm") || DEMOS[0];
+  const SOURCES = [
+    { c: "#34D399", t: "WhatsApp" },
+    { c: "#4B8CF7", t: window.t("Correo") },
+    { c: "#8B7FF0", t: "Web" },
+    { c: "#F0A24B", t: window.t("Llamada") }
+  ];
+  const ROWS = [
+    { c: "#34D399", st: window.t("Nuevo"), hot: true },
+    { c: "#4B8CF7", st: "48 min", hot: false },
+    { c: "#8B7FF0", st: window.t("Hoy"), hot: false }
+  ];
   window.ComoFuncionaSection = function ComoFuncionaSection() {
-    const [cur, setCur] = useState(DEMOS.find((d) => d.live) || DEMOS[0]);
-    const [vis, setVis] = useState(true);
+    const [cur, setCur] = useState(HUB);
     const [modal, setModal] = useState(false);
     const [frameH, setFrameH] = useState(null);
     const [vw, setVw] = useState(typeof window !== "undefined" ? window.innerWidth : 1280);
+    const [openId, setOpenId] = useState(() => {
+      const f = SERVICES.find((s) => s.live);
+      return f ? f.id : null;
+    });
     const iframeRef = useRef(null);
     useEffect(() => {
       document.documentElement.style.overflowY = modal ? "hidden" : "";
@@ -994,46 +1014,28 @@ window.MazeLogo = function MazeLogo() {
         clearTimeout(tEnd);
       };
     }, [modal, cur, vw]);
-    const switchingRef = useRef(false);
-    function switchDemo(demo) {
-      if (demo === cur || switchingRef.current) return;
-      switchingRef.current = true;
-      setVis(false);
-      setTimeout(() => {
-        setCur(demo);
-        setVis(true);
-        switchingRef.current = false;
-      }, 200);
+    function openDemo(d) {
+      if (!d || !d.live) return;
+      setCur(d);
+      setModal(true);
     }
-    const itemRefs = useRef([]);
-    const threadRef = useRef(null);
-    function moveThread() {
-      const idx = DEMOS.findIndex((d) => d.id === cur.id);
-      const item = itemRefs.current[idx];
-      const thread = threadRef.current;
-      if (!item || !thread) return;
-      const name = item.querySelector(".dpl-mname");
-      const top = item.offsetTop + (name ? name.offsetTop : 0);
-      thread.style.top = top + "px";
-      thread.style.height = (name ? name.offsetHeight : item.offsetHeight) + "px";
-    }
-    useEffect(moveThread, [cur, vw]);
-    useEffect(() => {
-      document.fonts && document.fonts.ready.then(moveThread);
-    }, []);
-    return /* @__PURE__ */ React.createElement("section", { id: "como", className: "v2-sec" }, /* @__PURE__ */ React.createElement("div", { className: "fx-glow", "data-depth": "0.2", style: { width: 420, height: 420, right: "-8%", top: "4%", background: "rgba(75,140,247,.3)" } }), /* @__PURE__ */ React.createElement("div", { className: "fx-glow", "data-depth": "0.12", style: { width: 480, height: 480, left: "-60px", bottom: "-190px", background: "rgba(75,140,247,.16)", filter: "blur(90px)", opacity: 1 } }), /* @__PURE__ */ React.createElement("div", { className: "fx-glow", "data-depth": "0.12", style: { width: 420, height: 420, right: "-50px", bottom: "-160px", background: "rgba(99,80,170,.15)", filter: "blur(90px)", opacity: 1 } }), /* @__PURE__ */ React.createElement("div", { className: "v2-inner" }, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("p", { className: "v2-kicker" }, window.t("// c\xF3mo funciona")), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2" }, window.t("Demo de "), /* @__PURE__ */ React.createElement("em", null, window.t("procesos"))), /* @__PURE__ */ React.createElement("p", { className: "v2-note" }, window.t("Estas automatizaciones est\xE1n funcionando ahora mismo. \xC1brelas y juega con ellas."))), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.05, style: { marginTop: 48 } }, /* @__PURE__ */ React.createElement("div", { className: "dpl-stage" }, /* @__PURE__ */ React.createElement("nav", { className: "dpl-menu", "aria-label": window.t("Biblioteca de demos") }, /* @__PURE__ */ React.createElement("span", { className: "dpl-thread", ref: threadRef, "aria-hidden": "true" }), DEMOS.map((d, i) => /* @__PURE__ */ React.createElement(
-      "button",
-      {
-        key: d.id,
-        type: "button",
-        ref: (el) => itemRefs.current[i] = el,
-        className: "dpl-mitem" + (d === cur ? " act" : "") + (!d.live ? " soon" : ""),
-        onClick: () => switchDemo(d)
-      },
-      /* @__PURE__ */ React.createElement("span", { className: "dpl-mnum" }, "/", d.num),
-      /* @__PURE__ */ React.createElement("span", { className: "dpl-mname" }, d.name),
-      /* @__PURE__ */ React.createElement("span", { className: "dpl-mstatus" }, d.live ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("i", { "aria-hidden": "true" }), " ", window.t("en vivo")) : window.t("pr\xF3ximamente"))
-    ))), /* @__PURE__ */ React.createElement("div", { className: "dpl-panel" }, /* @__PURE__ */ React.createElement("span", { className: "dpl-ghost", "aria-hidden": "true" }, cur.num), /* @__PURE__ */ React.createElement("div", { className: "dpl-body" + (vis ? " vis" : "") }, cur.live ? /* @__PURE__ */ React.createElement("span", { className: "dp-badge-live" }, /* @__PURE__ */ React.createElement("span", { className: "bdot" }), " ", window.t("En vivo")) : /* @__PURE__ */ React.createElement("span", { className: "dp-badge-soon" }, window.t("Pr\xF3ximamente")), /* @__PURE__ */ React.createElement("p", { className: "dpl-desc" }, cur.desc), /* @__PURE__ */ React.createElement("div", { className: "dpl-steps" }, cur.steps.map((s, i) => /* @__PURE__ */ React.createElement("div", { className: "dpl-step", key: i }, /* @__PURE__ */ React.createElement("div", { className: "dp-step-ic" }, /* @__PURE__ */ React.createElement("span", { className: "dp-step-svg", dangerouslySetInnerHTML: { __html: IC[s.ic] } }), /* @__PURE__ */ React.createElement("span", { className: "dp-step-n" }, i + 1)), /* @__PURE__ */ React.createElement("p", { className: "dp-step-t" }, s.t))), /* @__PURE__ */ React.createElement("span", { className: "dpl-signal", "aria-hidden": "true" })), /* @__PURE__ */ React.createElement("div", { className: "dpl-cta" }, cur.live ? /* @__PURE__ */ React.createElement("button", { className: "dp-btn", onClick: () => setModal(true) }, window.t("Ver demo"), " ", /* @__PURE__ */ React.createElement("span", null, "\u2192")) : /* @__PURE__ */ React.createElement("span", { className: "dp-btn-dis" }, window.t("Disponible pronto")), cur.live && /* @__PURE__ */ React.createElement("p", { className: "dp-time" }, window.t("listo en "), /* @__PURE__ */ React.createElement("span", null, cur.time)))))))), modal && ReactDOM.createPortal(
+    return /* @__PURE__ */ React.createElement("section", { id: "como", className: "v2-sec" }, /* @__PURE__ */ React.createElement("div", { className: "fx-glow", "data-depth": "0.2", style: { width: 420, height: 420, right: "-8%", top: "4%", background: "rgba(75,140,247,.3)" } }), /* @__PURE__ */ React.createElement("div", { className: "fx-glow", "data-depth": "0.12", style: { width: 480, height: 480, left: "-60px", bottom: "-190px", background: "rgba(75,140,247,.16)", filter: "blur(90px)", opacity: 1 } }), /* @__PURE__ */ React.createElement("div", { className: "fx-glow", "data-depth": "0.12", style: { width: 420, height: 420, right: "-50px", bottom: "-160px", background: "rgba(99,80,170,.15)", filter: "blur(90px)", opacity: 1 } }), /* @__PURE__ */ React.createElement("div", { className: "v2-inner" }, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("p", { className: "v2-kicker" }, window.t("// c\xF3mo funciona")), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2" }, window.t("Demo de "), /* @__PURE__ */ React.createElement("em", null, window.t("procesos"))), /* @__PURE__ */ React.createElement("p", { className: "v2-note" }, window.t("Estas automatizaciones est\xE1n funcionando ahora mismo. \xC1brelas y juega con ellas."))), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.05, style: { marginTop: 48 } }, /* @__PURE__ */ React.createElement("p", { className: "dgr-glabel" }, window.t("automatizaciones que contratas")), /* @__PURE__ */ React.createElement("p", { className: "dgr-gsub" }, window.t("Cada proceso es una "), /* @__PURE__ */ React.createElement("em", null, window.t("pieza que puedes contratar por separado")), window.t(". Empieza por la que m\xE1s te aprieta.")), /* @__PURE__ */ React.createElement("div", { className: "dgr-acc" }, SERVICES.map((d) => {
+      const isOpen = d.live && openId === d.id;
+      return /* @__PURE__ */ React.createElement("div", { key: d.id, className: "dgr-acc-item " + (d.live ? "live" : "soon") + (isOpen ? " open" : "") }, /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          className: "dgr-acc-head",
+          type: "button",
+          disabled: !d.live,
+          "aria-expanded": isOpen,
+          "aria-controls": "acc-" + d.id,
+          onClick: d.live ? () => setOpenId(isOpen ? null : d.id) : void 0
+        },
+        /* @__PURE__ */ React.createElement("span", { className: "dgr-acc-ic", dangerouslySetInnerHTML: { __html: IC[d.icon] } }),
+        /* @__PURE__ */ React.createElement("span", { className: "dgr-acc-name" }, d.live && /* @__PURE__ */ React.createElement("span", { className: "dgr-acc-dot" }), d.name),
+        !d.live && /* @__PURE__ */ React.createElement("span", { className: "dgr-acc-soon" }, window.t("Pr\xF3ximamente"))
+      ), d.live && /* @__PURE__ */ React.createElement("div", { className: "dgr-acc-body", id: "acc-" + d.id }, /* @__PURE__ */ React.createElement("div", { className: "dgr-acc-bodyin" }, /* @__PURE__ */ React.createElement("div", { className: "dgr-acc-pad" }, /* @__PURE__ */ React.createElement("p", { className: "dgr-acc-desc" }, d.desc), /* @__PURE__ */ React.createElement("button", { className: "dgr-acc-cta", onClick: () => openDemo(d) }, window.t("Ver demo"), " ", /* @__PURE__ */ React.createElement("em", null, "\u2192"))))));
+    }))), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.05 }, /* @__PURE__ */ React.createElement("div", { className: "dgr-flow", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 660 64", preserveAspectRatio: "none" }, /* @__PURE__ */ React.createElement("path", { className: "base", d: "M110 2 C110 44 330 24 330 62" }), /* @__PURE__ */ React.createElement("path", { className: "base", d: "M330 2 L330 62" }), /* @__PURE__ */ React.createElement("path", { className: "base", d: "M550 2 C550 44 330 24 330 62" }), /* @__PURE__ */ React.createElement("path", { className: "pulse p1", d: "M110 2 C110 44 330 24 330 62" }), /* @__PURE__ */ React.createElement("path", { className: "pulse p2", d: "M330 2 L330 62" }), /* @__PURE__ */ React.createElement("path", { className: "pulse p3", d: "M550 2 C550 44 330 24 330 62" })))), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.05, style: { marginTop: 22 } }, /* @__PURE__ */ React.createElement("p", { className: "dgr-glabel hub" }, window.t("y todo se ve en un panel")), /* @__PURE__ */ React.createElement("div", { className: "dgr-hub", style: { marginTop: 16 } }, /* @__PURE__ */ React.createElement("div", { className: "dgr-hub-l" }, /* @__PURE__ */ React.createElement("span", { className: "dgr-hub-badge" }, /* @__PURE__ */ React.createElement("span", { className: "bdot" }), " ", window.t("El visualizador \xB7 en vivo")), /* @__PURE__ */ React.createElement("h3", { className: "dgr-hub-title" }, HUB.name), /* @__PURE__ */ React.createElement("p", { className: "dgr-hub-desc" }, window.t("Todo lo que automatizas termina aqu\xED. Un \xFAnico panel donde ver la bandeja, los clientes y la agenda sin abrir seis apps.")), /* @__PURE__ */ React.createElement("div", { className: "dgr-hub-cta" }, /* @__PURE__ */ React.createElement("button", { className: "dp-btn", onClick: () => openDemo(HUB) }, window.t("Ver el panel"), " ", /* @__PURE__ */ React.createElement("span", null, "\u2192")))), /* @__PURE__ */ React.createElement("div", { className: "dgr-hub-r" }, /* @__PURE__ */ React.createElement("div", { className: "dgr-mock" }, /* @__PURE__ */ React.createElement("div", { className: "dgr-mbar" }, /* @__PURE__ */ React.createElement("i", null), /* @__PURE__ */ React.createElement("i", null), /* @__PURE__ */ React.createElement("i", null), /* @__PURE__ */ React.createElement("span", { className: "dgr-mtabs" }, /* @__PURE__ */ React.createElement("span", { className: "dgr-mtab on" }, window.t("Bandeja")), /* @__PURE__ */ React.createElement("span", { className: "dgr-mtab" }, window.t("Clientes")), /* @__PURE__ */ React.createElement("span", { className: "dgr-mtab" }, window.t("Agenda")))), /* @__PURE__ */ React.createElement("div", { className: "dgr-msrc" }, SOURCES.map((s) => /* @__PURE__ */ React.createElement("span", { key: s.t, className: "dgr-schip" }, /* @__PURE__ */ React.createElement("i", { style: { background: s.c } }), s.t))), /* @__PURE__ */ React.createElement("div", { className: "dgr-mbody" }, ROWS.map((r, i) => /* @__PURE__ */ React.createElement("div", { key: i, className: "dgr-mrow" + (r.hot ? " hot" : "") }, /* @__PURE__ */ React.createElement("i", { style: { background: r.c } }), /* @__PURE__ */ React.createElement("span", { className: "ln" }, /* @__PURE__ */ React.createElement("span", { className: "l1", style: { width: 64 - i * 10 + "%" } }), /* @__PURE__ */ React.createElement("span", { className: "l2", style: { width: 44 - i * 6 + "%" } })), /* @__PURE__ */ React.createElement("span", { className: "st" }, r.st))))))))), modal && ReactDOM.createPortal(
       /* @__PURE__ */ React.createElement("div", { className: "dp-modal", onClick: () => setModal(false) }, /* @__PURE__ */ React.createElement(
         "div",
         {
@@ -1054,48 +1056,6 @@ window.MazeLogo = function MazeLogo() {
 (function() {
   const Reveal = window.Reveal;
   const HeadReveal = window.HeadReveal;
-  const SOLS = [
-    { fn: "facturacion()", title: "Facturas y cobros autom\xE1ticos", body: "Genera, env\xEDa y archiva facturas sin tocar nada. Avisa por WhatsApp si una lleva +15 d\xEDas sin pagar.", metric: "3\u20136 h/mes recuperadas" },
-    {
-      fn: "agenda()",
-      title: "Reservas y citas sin fricci\xF3n",
-      body: "El cliente elige hueco con disponibilidad real, confirma solo y recibe recordatorios autom\xE1ticos. Sobre tu sistema de siempre.",
-      metric: "2\u20134 h/mes recuperadas",
-      demos: [{ label: "Ver demo", url: "https://inmobiliaria-demo.demos.mazestudio.site/" }]
-    },
-    { fn: "email()", title: "Bandejas sin colapso", body: "Clasificaci\xF3n, respuestas autom\xE1ticas y rutas seg\xFAn el tipo de mensaje. Alertas si un VIP escribe urgente.", metric: "5\u201310 h/mes recuperadas" },
-    {
-      fn: "documental()",
-      title: "Documentos en orden solos",
-      body: "Facturas y n\xF3minas de proveedores clasificadas, archivadas en Drive y enviadas a la asesor\xEDa.",
-      metric: "Cero documentos perdidos",
-      demos: [{ label: "Ver demo", url: "https://gestion.demos.mazestudio.site/" }]
-    },
-    { fn: "leads()", title: "Primer contacto al instante", body: "El lead entra, recibe bienvenida, se cualifica y aterriza en el CRM. Respuesta en minutos, no d\xEDas.", metric: "0 leads enfriados" },
-    { fn: "informes()", title: "Informes autom\xE1ticos", body: "Cada lunes, un resumen de ventas y tareas en tu bandeja o Slack. Dashboard en tiempo real.", metric: "4\u20138 h/mes recuperadas" }
-  ].map((s) => ({
-    ...s,
-    fn: window.t(s.fn),
-    title: window.t(s.title),
-    body: window.t(s.body),
-    metric: window.t(s.metric),
-    demos: s.demos && s.demos.map((d) => ({ ...d, label: window.t(d.label) }))
-  }));
-  function spotlight(e) {
-    const c = e.currentTarget, r = c.getBoundingClientRect();
-    c.style.setProperty("--mx", ((e.clientX - r.left) / r.width * 100).toFixed(1) + "%");
-    c.style.setProperty("--my", ((e.clientY - r.top) / r.height * 100).toFixed(1) + "%");
-  }
-  window.SolucionesSection = function SolucionesSection() {
-    return /* @__PURE__ */ React.createElement("section", { id: "soluciones", className: "v2-sec" }, /* @__PURE__ */ React.createElement("div", { className: "fx-glow", "data-depth": "-0.16", style: { width: 460, height: 460, left: "-10%", top: "18%", background: "rgba(99,80,170,.34)" } }), /* @__PURE__ */ React.createElement("div", { className: "v2-inner" }, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("p", { className: "v2-kicker" }, window.t("// soluciones")), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2" }, window.t("Lo que ya hemos "), /* @__PURE__ */ React.createElement("em", null, window.t("resuelto."))), /* @__PURE__ */ React.createElement("p", { className: "v2-note" }, window.t("Casos concretos, con resultado medible. Si el tuyo no est\xE1 aqu\xED, te lo dise\xF1amos."))), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.05, style: { marginTop: 48 } }, /* @__PURE__ */ React.createElement("div", { className: "v2-grid-3" }, SOLS.map((s) => /* @__PURE__ */ React.createElement("article", { key: s.fn, className: "v2-sol", onPointerMove: spotlight }, /* @__PURE__ */ React.createElement("span", { className: "v2-sol-fn" }, s.fn), /* @__PURE__ */ React.createElement("h3", null, s.title), /* @__PURE__ */ React.createElement("p", null, s.body), /* @__PURE__ */ React.createElement("div", { className: "v2-sol-foot" }, /* @__PURE__ */ React.createElement("span", { className: "v2-metric" }, s.metric), s.demos && s.demos.map((d) => /* @__PURE__ */ React.createElement("a", { key: d.url, className: "v2-demolink", href: d.url, target: "_blank", rel: "noopener" }, d.label, " ", /* @__PURE__ */ React.createElement(window.IconExternal, null))))))))));
-  };
-})();
-})();
-
-(function(){
-(function() {
-  const Reveal = window.Reveal;
-  const HeadReveal = window.HeadReveal;
   function spotlight(e) {
     const c = e.currentTarget, r = c.getBoundingClientRect();
     c.style.setProperty("--mx", ((e.clientX - r.left) / r.width * 100).toFixed(1) + "%");
@@ -1105,29 +1065,29 @@ window.MazeLogo = function MazeLogo() {
     {
       ic: /* @__PURE__ */ React.createElement("svg", { width: "22", height: "22", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.7", strokeLinecap: "round", strokeLinejoin: "round" }, /* @__PURE__ */ React.createElement("path", { d: "M12 21s-7-4.35-7-10a7 7 0 0 1 14 0c0 5.65-7 10-7 10z" }), /* @__PURE__ */ React.createElement("circle", { cx: "12", cy: "11", r: "2.5" })),
       h: window.t("Tenerife, de cerca"),
-      p: window.t("Estudio local en el sur de la isla. Hablamos tu idioma, conocemos tu mercado y estamos a una llamada.")
+      p: window.t("Conocemos tu mercado. Estamos cerca.")
     },
     {
       ic: /* @__PURE__ */ React.createElement("svg", { width: "22", height: "22", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.7", strokeLinecap: "round", strokeLinejoin: "round" }, /* @__PURE__ */ React.createElement("rect", { x: "3", y: "3", width: "7", height: "7", rx: "1.5" }), /* @__PURE__ */ React.createElement("rect", { x: "14", y: "3", width: "7", height: "7", rx: "1.5" }), /* @__PURE__ */ React.createElement("rect", { x: "3", y: "14", width: "7", height: "7", rx: "1.5" }), /* @__PURE__ */ React.createElement("path", { d: "M14 17.5h7M17.5 14v7" })),
       h: window.t("Sobre tus herramientas"),
-      p: window.t("No te vendemos un sistema nuevo. Automatizamos sobre lo que ya usas: CRM, correo, calendario, hojas.")
+      p: window.t("Cero migraciones. Automatizamos lo que ya tienes.")
     },
     {
       ic: /* @__PURE__ */ React.createElement("svg", { width: "22", height: "22", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.7", strokeLinecap: "round", strokeLinejoin: "round" }, /* @__PURE__ */ React.createElement("path", { d: "M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" })),
       h: window.t("Sin tecnicismos"),
-      p: window.t("Te lo explicamos en cristiano y te ense\xF1amos una demo de tu propio caso antes de que decidas nada.")
+      p: window.t("Demo de tu caso, antes de decidir nada.")
     },
     {
       ic: /* @__PURE__ */ React.createElement("svg", { width: "22", height: "22", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.7", strokeLinecap: "round", strokeLinejoin: "round" }, /* @__PURE__ */ React.createElement("path", { d: "M22 11.08V12a10 10 0 1 1-5.93-9.14" }), /* @__PURE__ */ React.createElement("polyline", { points: "22 4 12 14.01 9 11.01" })),
       h: window.t("Te acompa\xF1amos"),
-      p: window.t("No desaparecemos al entregar. Lo vigilamos, lo mantenemos y lo mejoramos mes a mes contigo.")
+      p: window.t("Seguimos mejor\xE1ndolo contigo, mes a mes.")
     }
   ];
   function CuboMarca() {
     return /* @__PURE__ */ React.createElement("div", { className: "qd-cell qd-tr qd-anim", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("div", { className: "cubo-halo" }), /* @__PURE__ */ React.createElement("div", { className: "cubo-scene" }, /* @__PURE__ */ React.createElement("img", { className: "cubo-img", src: "assets/referencias/cubo-laberinto-3d.webp", alt: "", loading: "lazy", decoding: "async" })), /* @__PURE__ */ React.createElement("p", { className: "qd-cap" }, window.t("// el laberinto, bajo control")));
   }
   window.PorQueSection = function PorQueSection() {
-    return /* @__PURE__ */ React.createElement("section", { id: "empresa", className: "qd-sec" }, /* @__PURE__ */ React.createElement("div", { className: "qd-grid" }, /* @__PURE__ */ React.createElement("div", { className: "qd-cell qd-tl" }, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("p", { className: "v2-kicker" }, window.t("// qui\xE9nes somos")), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2" }, window.t("Un estudio de automatizaci\xF3n "), /* @__PURE__ */ React.createElement("em", null, window.t("con IA")), window.t(" en Tenerife.")), /* @__PURE__ */ React.createElement("p", { className: "v2-note" }, window.t("Ayudamos a excursiones, comercios y peque\xF1as empresas a quitarse de encima el trabajo repetitivo \u2014 para que dediquen su tiempo a lo que de verdad mueve el negocio."))), /* @__PURE__ */ React.createElement("div", { className: "pq-grid" }, VALUES.map((v, i) => /* @__PURE__ */ React.createElement(Reveal, { key: v.h, delay: i * 0.06 }, /* @__PURE__ */ React.createElement("div", { className: "pq-card", onPointerMove: spotlight }, /* @__PURE__ */ React.createElement("div", { className: "pq-ic" }, v.ic), /* @__PURE__ */ React.createElement("h4", null, v.h), /* @__PURE__ */ React.createElement("p", null, v.p)))))), /* @__PURE__ */ React.createElement(CuboMarca, null), /* @__PURE__ */ React.createElement("div", { id: "diagnostico", className: "qd-cell qd-br cd-center" }, /* @__PURE__ */ React.createElement(window.DiagnosticoInner, null))));
+    return /* @__PURE__ */ React.createElement("section", { id: "empresa", className: "qd-sec" }, /* @__PURE__ */ React.createElement("div", { className: "qd-grid" }, /* @__PURE__ */ React.createElement("div", { className: "qd-cell qd-tl" }, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("p", { className: "v2-kicker" }, window.t("// qui\xE9nes somos")), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2" }, window.t("El laberinto, resuelto "), /* @__PURE__ */ React.createElement("em", null, window.t("con IA")), window.t(". En Tenerife.")), /* @__PURE__ */ React.createElement("p", { className: "v2-note" }, window.t("Excursiones, comercios y pymes recuperan horas que hoy pierden en tareas repetitivas."))), /* @__PURE__ */ React.createElement("div", { className: "pq-grid" }, VALUES.map((v, i) => /* @__PURE__ */ React.createElement(Reveal, { key: v.h, delay: i * 0.06 }, /* @__PURE__ */ React.createElement("div", { className: "pq-card", onPointerMove: spotlight }, /* @__PURE__ */ React.createElement("div", { className: "pq-ic" }, v.ic), /* @__PURE__ */ React.createElement("h4", null, v.h), /* @__PURE__ */ React.createElement("p", null, v.p)))))), /* @__PURE__ */ React.createElement(CuboMarca, null), /* @__PURE__ */ React.createElement("div", { id: "diagnostico", className: "qd-cell qd-br cd-center" }, /* @__PURE__ */ React.createElement(window.DiagnosticoInner, null))));
   };
 })();
 })();
@@ -1319,7 +1279,7 @@ window.MazeLogo = function MazeLogo() {
       setYes(0);
     }
     const res = done ? verdict(yes) : null;
-    return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("span", { className: "v2-diag-tag" }, /* @__PURE__ */ React.createElement("span", { className: "dot" }), window.t("5 cartas \xB7 30 segundos")), /* @__PURE__ */ React.createElement("p", { className: "v2-kicker" }, window.t("// \xBFlo necesitas?")), /* @__PURE__ */ React.createElement("div", { className: "hr-olh" }, /* @__PURE__ */ React.createElement("h2", { className: "v2-h2 hr-olbase", "aria-hidden": "true" }, window.t("\xBFNos "), /* @__PURE__ */ React.createElement("em", null, window.t("necesitas?"))), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2 hr-olfill" }, window.t("\xBFNos "), /* @__PURE__ */ React.createElement("em", null, window.t("necesitas?"))), /* @__PURE__ */ React.createElement("span", { className: "hr-olbeam", "aria-hidden": "true" })), /* @__PURE__ */ React.createElement("p", { className: "v2-note" }, window.t("Piensa solo en tus \xFAltimos 7 d\xEDas. Desliza o pulsa \u2014 al final te decimos si encajamos."))), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.05 }, /* @__PURE__ */ React.createElement("div", { className: "cd-dots", "aria-hidden": "true" }, CARDS.map((_, i) => /* @__PURE__ */ React.createElement("span", { key: i, className: "cd-dot" + (i < idx ? " done" : "") + (i === idx && !done ? " cur" : "") }))), !done && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "cd-stage" }, [0, 1, 2].map((k) => {
+    return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("p", { className: "v2-kicker" }, window.t("// \xBFlo necesitas?")), /* @__PURE__ */ React.createElement("div", { className: "hr-olh" }, /* @__PURE__ */ React.createElement("h2", { className: "v2-h2 hr-olbase", "aria-hidden": "true" }, window.t("\xBFNos "), /* @__PURE__ */ React.createElement("em", null, window.t("necesitas?"))), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2 hr-olfill" }, window.t("\xBFNos "), /* @__PURE__ */ React.createElement("em", null, window.t("necesitas?"))), /* @__PURE__ */ React.createElement("span", { className: "hr-olbeam", "aria-hidden": "true" })), /* @__PURE__ */ React.createElement("p", { className: "v2-note" }, window.t("Piensa solo en tus \xFAltimos 7 d\xEDas. Desliza o pulsa \u2014 al final te decimos si encajamos."))), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.05 }, /* @__PURE__ */ React.createElement("div", { className: "cd-dots", "aria-hidden": "true" }, CARDS.map((_, i) => /* @__PURE__ */ React.createElement("span", { key: i, className: "cd-dot" + (i < idx ? " done" : "") + (i === idx && !done ? " cur" : "") }))), !done && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "cd-stage" }, [0, 1, 2].map((k) => {
       const i = idx + k;
       if (i >= CARDS.length) return null;
       const front = k === 0;
@@ -1335,8 +1295,7 @@ window.MazeLogo = function MazeLogo() {
           onPointerUp: front ? onUp : void 0,
           onPointerCancel: front ? onUp : void 0
         },
-        /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", { className: "cd-badge no" }, window.t("No")), /* @__PURE__ */ React.createElement("span", { className: "cd-badge si" }, window.t("S\xED")), /* @__PURE__ */ React.createElement("span", { className: "cd-num" }, "0" + (i + 1) + " / 0" + CARDS.length), /* @__PURE__ */ React.createElement("p", { className: "cd-txt" }, CARDS[i])),
-        /* @__PURE__ */ React.createElement("span", { className: "cd-hint" }, window.t("Desliza o usa los botones \u2193"))
+        /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", { className: "cd-badge no" }, window.t("No")), /* @__PURE__ */ React.createElement("span", { className: "cd-badge si" }, window.t("S\xED")), /* @__PURE__ */ React.createElement("span", { className: "cd-num" }, "0" + (i + 1) + " / 0" + CARDS.length), /* @__PURE__ */ React.createElement("p", { className: "cd-txt" }, CARDS[i]))
       );
     })), /* @__PURE__ */ React.createElement("div", { className: "cd-actions" }, /* @__PURE__ */ React.createElement("button", { className: "cd-abtn no", onClick: () => resolve(false) }, /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2.4", strokeLinecap: "round" }, /* @__PURE__ */ React.createElement("path", { d: "M6 6l12 12M18 6L6 18" })), window.t("No me pasa")), /* @__PURE__ */ React.createElement("button", { className: "cd-abtn si", onClick: () => resolve(true) }, /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2.6", strokeLinecap: "round", strokeLinejoin: "round" }, /* @__PURE__ */ React.createElement("path", { d: "M4 12l5 5L20 6" })), window.t("S\xED, me suena")))), done && res && /* @__PURE__ */ React.createElement(ResultBox, { res, onRestart: restart })));
   };
@@ -1385,7 +1344,6 @@ window.MazeLogo = function MazeLogo() {
       { label: window.t("C\xF3mo funciona"), href: "#como" },
       { label: window.t("Ahorro"), href: "#roi" },
       { label: window.t("Servicios"), href: "#servicios" },
-      { label: window.t("Soluciones"), href: "#soluciones" },
       { label: window.t("\xBFNos necesitas?"), href: "#diagnostico" }
     ];
     return /* @__PURE__ */ React.createElement("footer", { className: "v2-footer" }, /* @__PURE__ */ React.createElement("div", { className: "inner" }, /* @__PURE__ */ React.createElement("div", { className: "top" }, /* @__PURE__ */ React.createElement("a", { href: "#top", style: { display: "flex", alignItems: "center", gap: 10 }, "aria-label": "Mazestudio" }, /* @__PURE__ */ React.createElement(window.MazeLogo, null), /* @__PURE__ */ React.createElement("span", { style: { fontFamily: "Bricolage Grotesque", fontWeight: 600, fontSize: 18.9, color: "#EAE8F2", letterSpacing: "-.02em" } }, "Maze studio", /* @__PURE__ */ React.createElement("span", { style: { color: "#4B8CF7" } }, "."))), /* @__PURE__ */ React.createElement("nav", null, links.map((l) => /* @__PURE__ */ React.createElement("a", { key: l.href, href: l.href }, l.label)))), /* @__PURE__ */ React.createElement("div", { className: "bot" }, /* @__PURE__ */ React.createElement("span", null, window.t("\xA9 2026 Mazestudio \xB7 estudio de automatizaci\xF3n con IA \xB7 Tenerife")), /* @__PURE__ */ React.createElement("span", { className: "legal" }, /* @__PURE__ */ React.createElement("a", { href: "aviso-legal.html" }, window.t("Aviso legal")), /* @__PURE__ */ React.createElement("a", { href: "privacidad.html" }, window.t("Privacidad")), /* @__PURE__ */ React.createElement("a", { href: "cookies.html" }, "Cookies")))));
@@ -1558,7 +1516,7 @@ window.MazeLogo = function MazeLogo() {
     return null;
   }
   function App() {
-    return /* @__PURE__ */ React.createElement(MotionConfig, { reducedMotion: "user" }, /* @__PURE__ */ React.createElement(SmoothScroll, null), /* @__PURE__ */ React.createElement(window.Preloader, null), /* @__PURE__ */ React.createElement("div", { id: "smooth-wrapper" }, /* @__PURE__ */ React.createElement("div", { id: "smooth-content" }, /* @__PURE__ */ React.createElement(window.ScrollFX, null), /* @__PURE__ */ React.createElement(window.CinematicTransitions, null), /* @__PURE__ */ React.createElement(window.HeroSection, null), /* @__PURE__ */ React.createElement(window.LineaRectaSection, null), /* @__PURE__ */ React.createElement(window.MarqueeSection, null), /* @__PURE__ */ React.createElement(window.ComoFuncionaSection, null), /* @__PURE__ */ React.createElement(window.RoiSection, null), /* @__PURE__ */ React.createElement(window.ServiciosSection, null), /* @__PURE__ */ React.createElement(window.SolucionesSection, null), /* @__PURE__ */ React.createElement(window.PorQueSection, null), /* @__PURE__ */ React.createElement(window.CtaSection, null), /* @__PURE__ */ React.createElement(window.Footer, null))));
+    return /* @__PURE__ */ React.createElement(MotionConfig, { reducedMotion: "user" }, /* @__PURE__ */ React.createElement(SmoothScroll, null), /* @__PURE__ */ React.createElement(window.Preloader, null), /* @__PURE__ */ React.createElement("div", { id: "smooth-wrapper" }, /* @__PURE__ */ React.createElement("div", { id: "smooth-content" }, /* @__PURE__ */ React.createElement(window.ScrollFX, null), /* @__PURE__ */ React.createElement(window.CinematicTransitions, null), /* @__PURE__ */ React.createElement(window.HeroSection, null), /* @__PURE__ */ React.createElement(window.LineaRectaSection, null), /* @__PURE__ */ React.createElement(window.MarqueeSection, null), /* @__PURE__ */ React.createElement(window.ComoFuncionaSection, null), /* @__PURE__ */ React.createElement(window.RoiSection, null), /* @__PURE__ */ React.createElement(window.ServiciosSection, null), /* @__PURE__ */ React.createElement(window.PorQueSection, null), /* @__PURE__ */ React.createElement(window.CtaSection, null), /* @__PURE__ */ React.createElement(window.Footer, null))));
   }
   ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App, null));
 })();
