@@ -871,7 +871,8 @@ window.MazeLogo = function MazeLogo() {
     clipboard: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="7" y="1" width="10" height="5" rx="1" fill="#8295F2"/><rect x="3" y="5" width="18" height="19" rx="1" fill="#2D4ECC"/><rect x="2" y="4" width="18" height="19" rx="1" fill="#4361F0"/><rect x="6" y="10" width="10" height="2" rx="1" fill="#ECEDF2" opacity=".6"/><rect x="6" y="14" width="8" height="2" rx="1" fill="#ECEDF2" opacity=".5"/><rect x="6" y="18" width="6" height="2" rx="1" fill="#ECEDF2" opacity=".35"/></svg>`,
     phone: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="7" y="2" width="10" height="21" rx="2" fill="#2D4ECC"/><rect x="6" y="1" width="10" height="21" rx="2" fill="#4361F0"/><rect x="8" y="4" width="6" height="12" rx="1" fill="#0B0C10" opacity=".5"/><rect x="9" y="18" width="4" height="2" rx="1" fill="#8295F2" opacity=".7"/></svg>`,
     lightning: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="14,1 5,13 12,13 10,23 19,11 12,11" fill="#2D4ECC"/><polygon points="13,1 4,13 11,13 9,23 18,11 11,11" fill="#4361F0"/><polygon points="13,1 4,13 11,13 9,23 18,11 11,11" fill="#8295F2" opacity=".25"/></svg>`,
-    check: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="19" height="19" rx="2" fill="#1a4a38"/><rect x="2" y="2" width="19" height="19" rx="2" fill="#065f46"/><rect x="2" y="2" width="19" height="5" rx="2" fill="#34D399" opacity=".2"/><path d="M6 12l4.5 4.5L18 8" stroke="#34D399" stroke-width="2.5" stroke-linecap="square" fill="none"/></svg>`
+    check: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="19" height="19" rx="2" fill="#1a4a38"/><rect x="2" y="2" width="19" height="19" rx="2" fill="#065f46"/><rect x="2" y="2" width="19" height="5" rx="2" fill="#34D399" opacity=".2"/><path d="M6 12l4.5 4.5L18 8" stroke="#34D399" stroke-width="2.5" stroke-linecap="square" fill="none"/></svg>`,
+    grid: `<svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="4" width="21" height="21" rx="1" fill="#2D4ECC"/><rect x="3" y="3" width="21" height="21" rx="1" fill="#4361F0"/><rect x="6" y="6" width="7" height="7" rx="1" fill="#ECEDF2" opacity=".85"/><rect x="15" y="6" width="6" height="7" rx="1" fill="#8295F2"/><rect x="6" y="15" width="7" height="6" rx="1" fill="#8295F2" opacity=".55"/><rect x="15" y="15" width="6" height="6" rx="1" fill="#ECEDF2" opacity=".5"/></svg>`
   };
   const DEMOS = [
     {
@@ -899,8 +900,20 @@ window.MazeLogo = function MazeLogo() {
       steps: [{ ic: "clipboard", t: "Tu cliente pide cita en un formulario" }, { ic: "calendar", t: "El sistema busca el hueco libre y lo reserva" }, { ic: "phone", t: "Le llega el aviso por WhatsApp" }]
     },
     {
-      id: "atencion",
+      id: "crm",
       num: "03",
+      name: "CRM centralizado",
+      icon: "grid",
+      desc: "WhatsApp, correo, la web y las llamadas entran, se convierten en ficha solas y aparecen ordenadas en un \xFAnico panel. Abres una app en vez de seis.",
+      time: "~1 min",
+      url: "https://crm.demos.mazestudio.site/",
+      live: true,
+      mw: 1200,
+      steps: [{ ic: "chat", t: "Entra un WhatsApp, un correo o una llamada" }, { ic: "robot", t: "Se convierte en ficha y se ordena solo" }, { ic: "grid", t: "Todo en un panel: bandeja, clientes y agenda" }]
+    },
+    {
+      id: "atencion",
+      num: "04",
       name: "Atenci\xF3n al cliente",
       icon: "chat",
       desc: "Responde los emails de clientes con IA usando la informaci\xF3n real de tu negocio.",
