@@ -695,9 +695,9 @@ window.MazeLogo = function MazeLogo() {
       {
         ref: pathRef,
         className: "maze-path",
-        d: "M150 96 H50 V164 H250 V120 H80 V230 H264 V184 H44 V296 H210 V250 H120 V360 H150 V840"
+        d: "M150 96 H60 V170 H240 V126 H96 V236 H210 V296 H130 V360 H150 V840"
       }
-    ), /* @__PURE__ */ React.createElement("circle", { className: "lr-wp", cx: "250", cy: "164", r: "5.5", "data-frac": "0.169" }), /* @__PURE__ */ React.createElement("circle", { className: "lr-wp", cx: "80", cy: "230", r: "5.5", "data-frac": "0.318" }), /* @__PURE__ */ React.createElement("circle", { className: "lr-wp", cx: "264", cy: "184", r: "5.5", "data-frac": "0.424" }), /* @__PURE__ */ React.createElement("circle", { className: "lr-wp", cx: "44", cy: "296", r: "5.5", "data-frac": "0.576" }), /* @__PURE__ */ React.createElement("circle", { className: "lr-wp", cx: "210", cy: "250", r: "5.5", "data-frac": "0.674" }), /* @__PURE__ */ React.createElement("circle", { ref: ringRef, cx: "150", cy: "840", r: "26", fill: "none", stroke: "rgba(134,230,255,.4)", strokeWidth: "1.5", style: { opacity: 0 } }), /* @__PURE__ */ React.createElement("circle", { ref: nodeRef, className: "maze-node", cx: "150", cy: "840", r: "13", fill: "#86E6FF", style: { opacity: 0 } }), /* @__PURE__ */ React.createElement("circle", { ref: dotRef, className: "lr-traveldot", cx: "150", cy: "96", r: "7", style: { opacity: 0 } }), /* @__PURE__ */ React.createElement("text", { ref: botRef, className: "lr-axis-bot", x: "150", y: "878", textAnchor: "middle", style: { opacity: 0 } }, window.t("RESUELTO")))), /* @__PURE__ */ React.createElement("p", { ref: rightRef, className: "lr-side lr-side-r" }, /* @__PURE__ */ React.createElement(Words, { list: RIGHT_WORDS })))));
+    ), /* @__PURE__ */ React.createElement("circle", { className: "lr-wp", cx: "240", cy: "170", r: "5.5", "data-frac": "0.236" }), /* @__PURE__ */ React.createElement("circle", { className: "lr-wp", cx: "96", cy: "126", r: "5.5", "data-frac": "0.364" }), /* @__PURE__ */ React.createElement("circle", { className: "lr-wp", cx: "210", cy: "236", r: "5.5", "data-frac": "0.518" }), /* @__PURE__ */ React.createElement("circle", { className: "lr-wp", cx: "130", cy: "296", r: "5.5", "data-frac": "0.614" }), /* @__PURE__ */ React.createElement("circle", { ref: ringRef, cx: "150", cy: "840", r: "26", fill: "none", stroke: "rgba(134,230,255,.4)", strokeWidth: "1.5", style: { opacity: 0 } }), /* @__PURE__ */ React.createElement("circle", { ref: nodeRef, className: "maze-node", cx: "150", cy: "840", r: "13", fill: "#86E6FF", style: { opacity: 0 } }), /* @__PURE__ */ React.createElement("circle", { ref: dotRef, className: "lr-traveldot", cx: "150", cy: "96", r: "7", style: { opacity: 0 } }), /* @__PURE__ */ React.createElement("text", { ref: botRef, className: "lr-axis-bot", x: "150", y: "878", textAnchor: "middle", style: { opacity: 0 } }, window.t("RESUELTO")))), /* @__PURE__ */ React.createElement("p", { ref: rightRef, className: "lr-side lr-side-r" }, /* @__PURE__ */ React.createElement(Words, { list: RIGHT_WORDS })))));
   };
 })();
 })();
@@ -929,17 +929,6 @@ window.MazeLogo = function MazeLogo() {
   ].map((d) => ({ ...d, name: window.t(d.name), desc: window.t(d.desc), steps: d.steps.map((s) => ({ ...s, t: window.t(s.t) })) }));
   const SERVICES = DEMOS.filter((d) => d.id !== "crm");
   const HUB = DEMOS.find((d) => d.id === "crm") || DEMOS[0];
-  const SOURCES = [
-    { c: "#34D399", t: "WhatsApp" },
-    { c: "#4B8CF7", t: window.t("Correo") },
-    { c: "#8B7FF0", t: "Web" },
-    { c: "#F0A24B", t: window.t("Llamada") }
-  ];
-  const ROWS = [
-    { c: "#34D399", st: window.t("Nuevo"), hot: true },
-    { c: "#4B8CF7", st: "48 min", hot: false },
-    { c: "#8B7FF0", st: window.t("Hoy"), hot: false }
-  ];
   window.ComoFuncionaSection = function ComoFuncionaSection() {
     const [cur, setCur] = useState(HUB);
     const [modal, setModal] = useState(false);
@@ -950,6 +939,70 @@ window.MazeLogo = function MazeLogo() {
       return f ? f.id : null;
     });
     const iframeRef = useRef(null);
+    const crmRef = useRef(null);
+    const busRef = useRef(null);
+    useEffect(() => {
+      const el = crmRef.current;
+      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (!el || reduced || !window.gsap || window.innerWidth <= 900) return;
+      const qx = window.gsap.quickTo(el, "rotationY", { duration: 0.6, ease: "power3" });
+      const qy = window.gsap.quickTo(el, "rotationX", { duration: 0.6, ease: "power3" });
+      el.style.transformStyle = "preserve-3d";
+      el.style.perspective = "1400px";
+      const onMove = (e) => {
+        const r = el.getBoundingClientRect();
+        qx(((e.clientX - r.left) / r.width - 0.5) * 3.5);
+        qy(((e.clientY - r.top) / r.height - 0.5) * -3.5);
+      };
+      const onLeave = () => {
+        qx(0);
+        qy(0);
+      };
+      el.addEventListener("mousemove", onMove);
+      el.addEventListener("mouseleave", onLeave);
+      return () => {
+        el.removeEventListener("mousemove", onMove);
+        el.removeEventListener("mouseleave", onLeave);
+      };
+    }, []);
+    useEffect(() => {
+      const bus = busRef.current;
+      if (!bus) return;
+      const svg = bus.querySelector("svg");
+      const update = () => {
+        const hub = crmRef.current;
+        if (!hub || !svg) return;
+        const br = bus.getBoundingClientRect();
+        if (br.width < 10 || br.height < 10) return;
+        svg.setAttribute("viewBox", "0 0 " + br.width.toFixed(1) + " " + br.height.toFixed(1));
+        const hr = hub.getBoundingClientRect();
+        const endY = hr.top + hr.height / 2 - br.top;
+        const bases = svg.querySelectorAll("path.base");
+        const pulses = svg.querySelectorAll("path.pulse");
+        bus.parentElement.querySelectorAll(".dgr-acc-head").forEach((head, i) => {
+          const r = head.getBoundingClientRect();
+          const y = r.top + r.height / 2 - br.top;
+          const d = "M" + br.width.toFixed(1) + " " + y.toFixed(1) + " C " + (br.width * 0.42).toFixed(1) + " " + y.toFixed(1) + ", 16 " + endY.toFixed(1) + ", 0 " + endY.toFixed(1);
+          if (bases[i]) bases[i].setAttribute("d", d);
+          if (pulses[i]) pulses[i].setAttribute("d", d);
+        });
+        const dot = svg.querySelector(".bus-dot");
+        if (dot) dot.setAttribute("cy", endY.toFixed(1));
+      };
+      update();
+      let raf;
+      const t0 = performance.now();
+      const step = (t) => {
+        update();
+        if (t - t0 < 620) raf = requestAnimationFrame(step);
+      };
+      raf = requestAnimationFrame(step);
+      window.addEventListener("resize", update);
+      return () => {
+        cancelAnimationFrame(raf);
+        window.removeEventListener("resize", update);
+      };
+    }, [openId, vw]);
     useEffect(() => {
       document.documentElement.style.overflowY = modal ? "hidden" : "";
       document.body.classList.toggle("demo-open", modal);
@@ -1019,7 +1072,7 @@ window.MazeLogo = function MazeLogo() {
       setCur(d);
       setModal(true);
     }
-    return /* @__PURE__ */ React.createElement("section", { id: "como", className: "v2-sec" }, /* @__PURE__ */ React.createElement("div", { className: "fx-glow", "data-depth": "0.2", style: { width: 420, height: 420, right: "-8%", top: "4%", background: "rgba(75,140,247,.3)" } }), /* @__PURE__ */ React.createElement("div", { className: "fx-glow", "data-depth": "0.12", style: { width: 480, height: 480, left: "-60px", bottom: "-190px", background: "rgba(75,140,247,.16)", filter: "blur(90px)", opacity: 1 } }), /* @__PURE__ */ React.createElement("div", { className: "fx-glow", "data-depth": "0.12", style: { width: 420, height: 420, right: "-50px", bottom: "-160px", background: "rgba(99,80,170,.15)", filter: "blur(90px)", opacity: 1 } }), /* @__PURE__ */ React.createElement("div", { className: "v2-inner" }, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("p", { className: "v2-kicker" }, window.t("// c\xF3mo funciona")), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2" }, window.t("Demo de "), /* @__PURE__ */ React.createElement("em", null, window.t("procesos"))), /* @__PURE__ */ React.createElement("p", { className: "v2-note" }, window.t("Estas automatizaciones est\xE1n funcionando ahora mismo. \xC1brelas y juega con ellas."))), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.05, style: { marginTop: 48 } }, /* @__PURE__ */ React.createElement("p", { className: "dgr-glabel" }, window.t("automatizaciones que contratas")), /* @__PURE__ */ React.createElement("p", { className: "dgr-gsub" }, window.t("Cada proceso es una "), /* @__PURE__ */ React.createElement("em", null, window.t("pieza que puedes contratar por separado")), window.t(". Empieza por la que m\xE1s te aprieta.")), /* @__PURE__ */ React.createElement("div", { className: "dgr-acc" }, SERVICES.map((d) => {
+    return /* @__PURE__ */ React.createElement("section", { id: "como", className: "v2-sec" }, /* @__PURE__ */ React.createElement("div", { className: "fx-glow", "data-depth": "0.2", style: { width: 420, height: 420, right: "-8%", top: "4%", background: "rgba(75,140,247,.3)" } }), /* @__PURE__ */ React.createElement("div", { className: "fx-glow", "data-depth": "0.12", style: { width: 480, height: 480, left: "-60px", bottom: "-190px", background: "rgba(75,140,247,.16)", filter: "blur(90px)", opacity: 1 } }), /* @__PURE__ */ React.createElement("div", { className: "fx-glow", "data-depth": "0.12", style: { width: 420, height: 420, right: "-50px", bottom: "-160px", background: "rgba(99,80,170,.15)", filter: "blur(90px)", opacity: 1 } }), /* @__PURE__ */ React.createElement("div", { className: "v2-inner" }, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("p", { className: "v2-kicker" }, window.t("// c\xF3mo funciona")), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2" }, window.t("Demo de "), /* @__PURE__ */ React.createElement("em", null, window.t("procesos"))), /* @__PURE__ */ React.createElement("p", { className: "v2-note" }, window.t("Estas automatizaciones est\xE1n funcionando ahora mismo. \xC1brelas y juega con ellas."))), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.05, style: { marginTop: 44 } }, /* @__PURE__ */ React.createElement("div", { className: "pm-bento" }, /* @__PURE__ */ React.createElement("div", { className: "dgr-hub", ref: crmRef }, /* @__PURE__ */ React.createElement("div", { className: "dgr-hub-l" }, /* @__PURE__ */ React.createElement("span", { className: "dgr-hub-badge" }, /* @__PURE__ */ React.createElement("span", { className: "bdot" }), " ", window.t("El visualizador \xB7 en vivo")), /* @__PURE__ */ React.createElement("h3", { className: "dgr-hub-title" }, HUB.name), /* @__PURE__ */ React.createElement("p", { className: "dgr-hub-desc" }, window.t("Todo lo que automatizas termina aqu\xED. Un \xFAnico panel donde ver la bandeja, los clientes y la agenda sin abrir seis apps.")), /* @__PURE__ */ React.createElement("div", { className: "dgr-hub-cta" }, /* @__PURE__ */ React.createElement("button", { className: "dp-btn", onClick: () => openDemo(HUB) }, window.t("Ver el panel"), " ", /* @__PURE__ */ React.createElement("span", null, "\u2192"))))), /* @__PURE__ */ React.createElement("div", { className: "pm-bus", "aria-hidden": "true", ref: busRef }, /* @__PURE__ */ React.createElement("svg", null, SERVICES.map((d) => /* @__PURE__ */ React.createElement("path", { key: "b" + d.id, className: "base" + (openId === d.id ? " active" : "") })), SERVICES.map((d) => /* @__PURE__ */ React.createElement("path", { key: "p" + d.id, className: "pulse" + (openId === d.id ? " active" : "") })), /* @__PURE__ */ React.createElement("circle", { className: "bus-dot", cx: "0", cy: "0", r: "5" }))), /* @__PURE__ */ React.createElement("div", { className: "pm-rail" }, /* @__PURE__ */ React.createElement("p", { className: "dgr-glabel" }, window.t("automatizaciones que contratas")), /* @__PURE__ */ React.createElement("p", { className: "dgr-gsub" }, window.t("Cada proceso es una "), /* @__PURE__ */ React.createElement("em", null, window.t("pieza que puedes contratar por separado")), window.t(". Empieza por la que m\xE1s te aprieta.")), /* @__PURE__ */ React.createElement("div", { className: "dgr-acc" }, SERVICES.map((d) => {
       const isOpen = d.live && openId === d.id;
       return /* @__PURE__ */ React.createElement("div", { key: d.id, className: "dgr-acc-item " + (d.live ? "live" : "soon") + (isOpen ? " open" : "") }, /* @__PURE__ */ React.createElement(
         "button",
@@ -1035,7 +1088,7 @@ window.MazeLogo = function MazeLogo() {
         /* @__PURE__ */ React.createElement("span", { className: "dgr-acc-name" }, d.live && /* @__PURE__ */ React.createElement("span", { className: "dgr-acc-dot" }), d.name),
         !d.live && /* @__PURE__ */ React.createElement("span", { className: "dgr-acc-soon" }, window.t("Pr\xF3ximamente"))
       ), d.live && /* @__PURE__ */ React.createElement("div", { className: "dgr-acc-body", id: "acc-" + d.id }, /* @__PURE__ */ React.createElement("div", { className: "dgr-acc-bodyin" }, /* @__PURE__ */ React.createElement("div", { className: "dgr-acc-pad" }, /* @__PURE__ */ React.createElement("p", { className: "dgr-acc-desc" }, d.desc), /* @__PURE__ */ React.createElement("button", { className: "dgr-acc-cta", onClick: () => openDemo(d) }, window.t("Ver demo"), " ", /* @__PURE__ */ React.createElement("em", null, "\u2192"))))));
-    }))), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.05 }, /* @__PURE__ */ React.createElement("div", { className: "dgr-flow", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 660 64", preserveAspectRatio: "none" }, /* @__PURE__ */ React.createElement("path", { className: "base", d: "M110 2 C110 44 330 24 330 62" }), /* @__PURE__ */ React.createElement("path", { className: "base", d: "M330 2 L330 62" }), /* @__PURE__ */ React.createElement("path", { className: "base", d: "M550 2 C550 44 330 24 330 62" }), /* @__PURE__ */ React.createElement("path", { className: "pulse p1", d: "M110 2 C110 44 330 24 330 62" }), /* @__PURE__ */ React.createElement("path", { className: "pulse p2", d: "M330 2 L330 62" }), /* @__PURE__ */ React.createElement("path", { className: "pulse p3", d: "M550 2 C550 44 330 24 330 62" })))), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.05, style: { marginTop: 22 } }, /* @__PURE__ */ React.createElement("p", { className: "dgr-glabel hub" }, window.t("y todo se ve en un panel")), /* @__PURE__ */ React.createElement("div", { className: "dgr-hub", style: { marginTop: 16 } }, /* @__PURE__ */ React.createElement("div", { className: "dgr-hub-l" }, /* @__PURE__ */ React.createElement("span", { className: "dgr-hub-badge" }, /* @__PURE__ */ React.createElement("span", { className: "bdot" }), " ", window.t("El visualizador \xB7 en vivo")), /* @__PURE__ */ React.createElement("h3", { className: "dgr-hub-title" }, HUB.name), /* @__PURE__ */ React.createElement("p", { className: "dgr-hub-desc" }, window.t("Todo lo que automatizas termina aqu\xED. Un \xFAnico panel donde ver la bandeja, los clientes y la agenda sin abrir seis apps.")), /* @__PURE__ */ React.createElement("div", { className: "dgr-hub-cta" }, /* @__PURE__ */ React.createElement("button", { className: "dp-btn", onClick: () => openDemo(HUB) }, window.t("Ver el panel"), " ", /* @__PURE__ */ React.createElement("span", null, "\u2192")))), /* @__PURE__ */ React.createElement("div", { className: "dgr-hub-r" }, /* @__PURE__ */ React.createElement("div", { className: "dgr-mock" }, /* @__PURE__ */ React.createElement("div", { className: "dgr-mbar" }, /* @__PURE__ */ React.createElement("i", null), /* @__PURE__ */ React.createElement("i", null), /* @__PURE__ */ React.createElement("i", null), /* @__PURE__ */ React.createElement("span", { className: "dgr-mtabs" }, /* @__PURE__ */ React.createElement("span", { className: "dgr-mtab on" }, window.t("Bandeja")), /* @__PURE__ */ React.createElement("span", { className: "dgr-mtab" }, window.t("Clientes")), /* @__PURE__ */ React.createElement("span", { className: "dgr-mtab" }, window.t("Agenda")))), /* @__PURE__ */ React.createElement("div", { className: "dgr-msrc" }, SOURCES.map((s) => /* @__PURE__ */ React.createElement("span", { key: s.t, className: "dgr-schip" }, /* @__PURE__ */ React.createElement("i", { style: { background: s.c } }), s.t))), /* @__PURE__ */ React.createElement("div", { className: "dgr-mbody" }, ROWS.map((r, i) => /* @__PURE__ */ React.createElement("div", { key: i, className: "dgr-mrow" + (r.hot ? " hot" : "") }, /* @__PURE__ */ React.createElement("i", { style: { background: r.c } }), /* @__PURE__ */ React.createElement("span", { className: "ln" }, /* @__PURE__ */ React.createElement("span", { className: "l1", style: { width: 64 - i * 10 + "%" } }), /* @__PURE__ */ React.createElement("span", { className: "l2", style: { width: 44 - i * 6 + "%" } })), /* @__PURE__ */ React.createElement("span", { className: "st" }, r.st))))))))), modal && ReactDOM.createPortal(
+    })))))), modal && ReactDOM.createPortal(
       /* @__PURE__ */ React.createElement("div", { className: "dp-modal", onClick: () => setModal(false) }, /* @__PURE__ */ React.createElement(
         "div",
         {
