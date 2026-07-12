@@ -216,6 +216,7 @@ window.MazeLogo = function MazeLogo() {
   const coarse = window.matchMedia("(pointer: coarse)").matches;
   window.ScrollFX = function ScrollFX() {
     useEffect(() => {
+      if (window.ScrollTrigger) window.ScrollTrigger.config({ ignoreMobileResize: true });
       const bar = document.getElementById("scrollProgress");
       let raf = null;
       const onScroll = () => {
@@ -224,13 +225,13 @@ window.MazeLogo = function MazeLogo() {
           const h = document.documentElement;
           const max = h.scrollHeight - h.clientHeight;
           const p = max > 0 ? (h.scrollTop || window.scrollY) / max : 0;
-          if (bar) bar.style.width = (p * 100).toFixed(2) + "%";
+          if (bar) bar.style.transform = "scaleX(" + p.toFixed(4) + ")";
           raf = null;
         });
       };
       window.addEventListener("scroll", onScroll, { passive: true });
       onScroll();
-      const ctx = window.gsap && window.ScrollTrigger && !reduced ? window.gsap.context(() => {
+      const ctx = window.gsap && window.ScrollTrigger && !reduced && !coarse ? window.gsap.context(() => {
         document.querySelectorAll(".fx-glow").forEach((el) => {
           const depth = parseFloat(el.dataset.depth || "0.18");
           window.gsap.to(el, {
@@ -648,10 +649,11 @@ window.MazeLogo = function MazeLogo() {
         setFinal();
         return;
       }
+      const lite = window.matchMedia("(max-width:860px)").matches;
       const ctx = window.gsap.context(() => {
         const tl = window.gsap.timeline({
           // termina ANTES de que la columna quede centrada, para poder leerlo todo ya completo
-          scrollTrigger: { trigger: stage, start: "top 88%", end: "center 65%", scrub: 1 }
+          scrollTrigger: lite ? { trigger: stage, start: "top 78%", once: true } : { trigger: stage, start: "top 88%", end: "center 65%", scrub: 1 }
         });
         tl.fromTo(path, { strokeDashoffset: len }, { strokeDashoffset: 0, duration: 1, ease: "none" }, 0);
         const proxy = { p: 0 };
@@ -673,19 +675,20 @@ window.MazeLogo = function MazeLogo() {
         tl.fromTo(node, { opacity: 0, attr: { r: 0 } }, { opacity: 1, attr: { r: 13 }, duration: 0.2, ease: "back.out(2.4)" }, 0.82);
         if (ring) tl.fromTo(ring, { opacity: 0, attr: { r: 8 } }, { opacity: 1, attr: { r: 26 }, duration: 0.2, ease: "power2.out" }, 0.82);
         if (bot) tl.fromTo(bot, { opacity: 0, attr: { y: 886 } }, { opacity: 1, attr: { y: 878 }, duration: 0.16, ease: "power2.out" }, 0.84);
+        if (lite) tl.duration(2.8);
         const flank = flankRef.current;
         const leftW = leftRef.current ? leftRef.current.querySelectorAll(".w") : [];
         const rightW = rightRef.current ? rightRef.current.querySelectorAll(".w") : [];
         if (flank && (leftW.length || rightW.length)) {
           const tlw = window.gsap.timeline({
             // las frases acaban de revelarse también antes del centro
-            scrollTrigger: { trigger: flank, start: "top 84%", end: "center 66%", scrub: 1.5 }
+            scrollTrigger: lite ? { trigger: flank, start: "top 82%", once: true } : { trigger: flank, start: "top 84%", end: "center 66%", scrub: 1.5 }
           });
-          const lite = window.matchMedia("(max-width:860px)").matches;
           const wordIn = lite ? { opacity: 0.06 } : { opacity: 0.06, filter: "blur(8px)" };
           const wordOut = () => ({ opacity: 1, ...lite ? {} : { filter: "blur(0px)" }, ease: "sine.out", duration: 1.6, stagger: { each: 0.35, ease: "sine.inOut" } });
           if (leftW.length) tlw.fromTo(leftW, wordIn, wordOut(), 0);
           if (rightW.length) tlw.fromTo(rightW, wordIn, wordOut(), ">-0.8");
+          if (lite) tlw.duration(2.6);
         }
       }, stage);
       return () => ctx.revert();
@@ -1559,17 +1562,16 @@ window.MazeLogo = function MazeLogo() {
   function SmoothScroll() {
     useEffect(() => {
       const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      if (reduced || !window.gsap || !window.ScrollTrigger || !window.ScrollSmoother) return;
+      const coarse = window.matchMedia("(pointer: coarse)").matches;
+      if (reduced || coarse || !window.gsap || !window.ScrollTrigger || !window.ScrollSmoother) return;
       window.gsap.registerPlugin(window.ScrollTrigger, window.ScrollSmoother);
       const smoother = window.ScrollSmoother.create({
         wrapper: "#smooth-wrapper",
         content: "#smooth-content",
         smooth: 1.2,
         // segundos de "catch-up" del contenido
-        effects: true,
+        effects: true
         // habilita data-speed / data-lag
-        smoothTouch: 0.1
-        // suavizado ligero en táctil
       });
       const refresh = () => window.ScrollTrigger.refresh();
       window.addEventListener("load", refresh);

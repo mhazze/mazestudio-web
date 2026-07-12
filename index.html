@@ -401,10 +401,12 @@ body.demo-open nav{opacity:0!important;pointer-events:none!important;transition:
 video::-webkit-media-controls-start-playback-button{display:none!important;-webkit-appearance:none;pointer-events:none;}
 video::-webkit-media-controls{display:none!important;}
 
-/* barra de progreso de scroll */
-.scroll-progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:120;
+/* barra de progreso de scroll — escala por transform (composited), no por
+   width: animar width relayouta la página en cada frame y en móvil da tirones */
+.scroll-progress{position:fixed;top:0;left:0;height:3px;width:100%;z-index:120;
   background:linear-gradient(90deg,var(--pulso-hondo),var(--pulso) 55%,var(--accent-soft));
-  box-shadow:0 0 14px rgba(75,140,247,.7);transition:width .08s linear;}
+  box-shadow:0 0 14px rgba(75,140,247,.7);
+  transform:scaleX(0);transform-origin:0 50%;will-change:transform;transition:transform .08s linear;}
 
 /* ── layout base de sección ── */
 .v2-sec{position:relative;z-index:1;padding:clamp(81.9px,12vh,140.7px) clamp(21px,6vw,84px);}
@@ -1202,6 +1204,9 @@ video::-webkit-media-controls{display:none!important;}
   .lr-traveldot{filter:drop-shadow(0 0 7px rgba(134,230,255,.95));}
   .lr-wp{filter:drop-shadow(0 0 4px rgba(134,230,255,.9));}
   .lr-side .w{filter:none;will-change:opacity;}
+  /* los blobs de fondo (blur 80-90px) animados en bucle cargan la GPU del
+     móvil mientras se scrollea; quietos son indistinguibles (deriva de 40px/15s) */
+  .lr-blob,.roi2-blob{animation:none!important;}
 }
 
 /* ── reduced-motion ── */
