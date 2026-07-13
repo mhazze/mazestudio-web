@@ -1098,7 +1098,7 @@ video::-webkit-media-controls{display:none!important;}
 /* <430px el mínimo de 58px ya no cabe (la palabra mide ~313px a 58px):
    escala fina para que "Mazestudio." entre completa hasta en 320px */
 @media(max-width:430px){
-  .hero-title{font-size:clamp(46px,14.8vw,58px);}
+  .hero-title{font-size:clamp(40px,12.8vw,50px);}
 }
 .hero-title .hw{display:inline-block;line-height:1;opacity:0;}
 /* la entrada arranca cuando el preloader termina (.hero-ready), no al montar
@@ -1214,6 +1214,17 @@ video::-webkit-media-controls{display:none!important;}
   /* los blobs de fondo (blur 80-90px) animados en bucle cargan la GPU del
      móvil mientras se scrollea; quietos son indistinguibles (deriva de 40px/15s) */
   .lr-blob,.roi2-blob{animation:none!important;}
+}
+
+/* ── móvil: titulares y números más comedidos ──
+   los floors de los clamp() se pensaron para no quedarse minúsculos, pero en
+   pantallas pequeñas ese floor domina toda la pantalla; aquí se bajan solo
+   los más grandes (título de sección, cifra del ROI) sin tocar desktop */
+@media(max-width:640px){
+  .lr-title{font-size:clamp(26px,7.5vw,34px)!important;}
+  #servicios h2{font-size:clamp(32px,8vw,44px)!important;}
+  .v2-h2{font-size:clamp(28px,7vw,38px)!important;}
+  .roi2-big{font-size:clamp(38px,10vw,54px)!important;}
 }
 
 /* ── reduced-motion ── */
