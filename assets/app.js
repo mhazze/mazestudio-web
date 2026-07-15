@@ -2,38 +2,54 @@
    Fuente: WEB/src/mazestudio-web.html · regenerar: npm run build */
 (function(){
 (function() {
-  const { useRef, useEffect } = React;
+  const { useRef, useState, useEffect } = React;
   function FadingVideo({ src, poster, preload, style }) {
     const ref = useRef(null);
+    const [playing, setPlaying] = useState(false);
     const defer = !!window.__preloaderActive;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     useEffect(() => {
+      if (reduced) return;
       const v = ref.current;
       if (!v) return;
+      const onPlaying = () => setPlaying(true);
+      v.addEventListener("playing", onPlaying);
+      const start = () => {
+        v.load();
+        v.play().catch(() => {
+        });
+      };
       if (defer) {
-        const onDone = () => {
-          v.load();
-          v.play().catch(() => {
-          });
+        window.addEventListener("preloader-done", start, { once: true });
+        return () => {
+          window.removeEventListener("preloader-done", start);
+          v.removeEventListener("playing", onPlaying);
         };
-        window.addEventListener("preloader-done", onDone, { once: true });
-        return () => window.removeEventListener("preloader-done", onDone);
       }
       v.play().catch(() => {
       });
+      return () => v.removeEventListener("playing", onPlaying);
     }, [src]);
     const vp = {
       ref,
       src,
-      poster,
       muted: true,
       playsInline: true,
       preload: preload ?? (defer ? "none" : "auto"),
       loop: true,
-      className: "hero-fade",
+      className: "hero-fade" + (playing ? " is-playing" : ""),
       style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0 }
     };
     if (!defer) vp.autoPlay = true;
-    return /* @__PURE__ */ React.createElement("div", { style: { position: "absolute", inset: 0, overflow: "hidden", ...style } }, /* @__PURE__ */ React.createElement("video", { ...vp }));
+    return /* @__PURE__ */ React.createElement("div", { style: { position: "absolute", inset: 0, overflow: "hidden", ...style } }, /* @__PURE__ */ React.createElement(
+      "img",
+      {
+        src: poster,
+        alt: "",
+        "aria-hidden": "true",
+        style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }
+      }
+    ), !reduced && /* @__PURE__ */ React.createElement("video", { ...vp }));
   }
   window.FadingVideo = FadingVideo;
 })();
@@ -721,9 +737,54 @@ window.MazeLogo = function MazeLogo() {
     { name: "Telegram", icon: "https://cdn.simpleicons.org/telegram" },
     { name: "Make", icon: "https://cdn.simpleicons.org/make" }
   ];
+  const { useEffect, useRef } = React;
   window.MarqueeSection = function MarqueeSection() {
     const row = [...TOOLS, ...TOOLS];
-    return /* @__PURE__ */ React.createElement("div", { className: "mq-sec" }, /* @__PURE__ */ React.createElement("p", { className: "mq-head" }, /* @__PURE__ */ React.createElement("span", { className: "mk" }, "//"), " ", window.t("nos conectamos a lo que ya usas "), /* @__PURE__ */ React.createElement("em", null, window.t("\u2014 sin migrar de software"))), /* @__PURE__ */ React.createElement("div", { className: "mq-mask" }, /* @__PURE__ */ React.createElement("div", { className: "mq-track" }, row.map((t, i) => /* @__PURE__ */ React.createElement("span", { className: "mq-chip", key: i }, /* @__PURE__ */ React.createElement("img", { className: "mq-icon", src: t.icon, alt: "", loading: "lazy" }), t.name)))));
+    const maskRef = useRef(null);
+    useEffect(() => {
+      const el = maskRef.current;
+      if (!el) return;
+      const isTouch = window.matchMedia("(hover:none) and (pointer:coarse)").matches;
+      if (!isTouch) return;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      let raf, paused = false, resumeTimer, lastT = null;
+      let pos = el.scrollLeft;
+      const PX_S = 48;
+      const tick = (t) => {
+        if (lastT === null) lastT = t;
+        const dt = (t - lastT) / 1e3;
+        lastT = t;
+        if (!paused) {
+          const half = el.scrollWidth / 2;
+          if (half > 0) {
+            pos = (pos + PX_S * dt) % half;
+            el.scrollLeft = pos;
+          }
+        } else {
+          pos = el.scrollLeft;
+        }
+        raf = requestAnimationFrame(tick);
+      };
+      raf = requestAnimationFrame(tick);
+      const onStart = () => {
+        paused = true;
+        clearTimeout(resumeTimer);
+      };
+      const onEnd = () => {
+        resumeTimer = setTimeout(() => {
+          paused = false;
+        }, 2600);
+      };
+      el.addEventListener("touchstart", onStart, { passive: true });
+      el.addEventListener("touchend", onEnd, { passive: true });
+      return () => {
+        cancelAnimationFrame(raf);
+        clearTimeout(resumeTimer);
+        el.removeEventListener("touchstart", onStart);
+        el.removeEventListener("touchend", onEnd);
+      };
+    }, []);
+    return /* @__PURE__ */ React.createElement("div", { className: "mq-sec" }, /* @__PURE__ */ React.createElement("p", { className: "mq-head" }, /* @__PURE__ */ React.createElement("span", { className: "mk" }, "//"), " ", window.t("nos conectamos a lo que ya usas "), /* @__PURE__ */ React.createElement("em", null, window.t("\u2014 sin migrar de software"))), /* @__PURE__ */ React.createElement("div", { className: "mq-mask", ref: maskRef }, /* @__PURE__ */ React.createElement("div", { className: "mq-track" }, row.map((t, i) => /* @__PURE__ */ React.createElement("span", { className: "mq-chip", key: i }, /* @__PURE__ */ React.createElement("img", { className: "mq-icon", src: t.icon, alt: "", loading: "lazy" }), t.name)))));
   };
 })();
 })();
@@ -1461,11 +1522,18 @@ window.MazeLogo = function MazeLogo() {
     const [pct, setPct] = useState(0);
     const [hide, setHide] = useState(false);
     const [gone, setGone] = useState(false);
+    const [playing, setPlaying] = useState(false);
     const vref = useRef(null);
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     useEffect(() => {
+      if (reduced) return;
       const v = vref.current;
-      if (v) v.play().catch(() => {
+      if (!v) return;
+      const onPlaying = () => setPlaying(true);
+      v.addEventListener("playing", onPlaying);
+      v.play().catch(() => {
       });
+      return () => v.removeEventListener("playing", onPlaying);
     }, []);
     useEffect(() => {
       const DUR = 3400, start = performance.now();
@@ -1524,17 +1592,33 @@ window.MazeLogo = function MazeLogo() {
         }
       },
       /* @__PURE__ */ React.createElement(
+        "img",
+        {
+          src: PRE_POSTER,
+          alt: "",
+          "aria-hidden": "true",
+          style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }
+        }
+      ),
+      !reduced && /* @__PURE__ */ React.createElement(
         "video",
         {
           ref: vref,
           src: PRE_VIDEO,
-          poster: PRE_POSTER,
           muted: true,
           playsInline: true,
           loop: true,
           autoPlay: true,
           preload: "auto",
-          style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }
+          style: {
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            opacity: playing ? 1 : 0,
+            transition: "opacity .5s ease"
+          }
         }
       ),
       /* @__PURE__ */ React.createElement("div", { style: {

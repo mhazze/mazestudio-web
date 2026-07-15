@@ -391,9 +391,13 @@ section[id]{scroll-margin-top:96px;}
 .nav-link:hover{background:rgba(255,255,255,.08)!important;}
 body.demo-open nav{opacity:0!important;pointer-events:none!important;transition:opacity .2s;}
 
-/* fade-in del vídeo del hero */
+/* fade-in del vídeo del hero: solo entra cuando ha arrancado a reproducirse
+   de verdad (clase .is-playing, puesta por JS en el evento 'playing'). Si el
+   autoplay no arranca —Low Power Mode, Data Saver, reduced-motion— el vídeo
+   se queda invisible y debajo asoma el póster estático: limpio, sin vídeo
+   pausado ni botón de play nativo encima */
 @keyframes heroVideoIn{from{opacity:0;}to{opacity:1;}}
-.hero-fade{animation:heroVideoIn 1100ms ease forwards;}
+.hero-fade.is-playing{animation:heroVideoIn 1100ms ease forwards;}
 
 /* oculta el botón de play que Chrome/Android superpone a cualquier <video>
    mientras aún no ha arrancado a reproducirse (aparece incluso sin el
@@ -536,6 +540,14 @@ video::-webkit-media-controls{display:none!important;}
 @media(max-width:600px){
   .ba-face{padding:15px 2px;gap:11px;}
   .ba-247{display:none;}
+  /* en móvil (varios navegadores/webviews) backface-visibility falla y las dos
+     frases del flip 3D quedan superpuestas; en vez de girar, cross-fade plano */
+  .is-after .ba-flip{transform:none;}
+  .ba-face{transition:opacity .4s ease,visibility 0s linear;}
+  .ba-face.f-after{transform:none;opacity:0;visibility:hidden;}
+  .ba-face.f-before{opacity:1;visibility:visible;}
+  .is-after .ba-face.f-before{opacity:0;visibility:hidden;}
+  .is-after .ba-face.f-after{opacity:1;visibility:visible;}
 }
 @media(prefers-reduced-motion:reduce){
   .ba-flip,.ba-thumb,.ba-panel,.ba-switch,.ba-tags span,.ba-halo{transition:none;}
@@ -1227,9 +1239,21 @@ video::-webkit-media-controls{display:none!important;}
   .roi2-big{font-size:clamp(38px,10vw,54px)!important;}
 }
 
+/* ── táctil: marquee de apps con scroll real ──
+   el track anima con transform bajo un contenedor con mask; en varios
+   móviles esa combinación se congela, y como el contenedor tenía
+   overflow:hidden el visitante se quedaba sin forma de ver el resto de
+   apps (justo lo que reportó: se corta en Gmail/Calendar y ya no avanza).
+   en táctil se cambia a scroll nativo -siempre deslizable- y el avance
+   automático lo lleva el JS del componente (ver MarqueeSection). */
+@media (hover:none) and (pointer:coarse){
+  .mq-mask{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;-ms-overflow-style:none;}
+  .mq-mask::-webkit-scrollbar{display:none;}
+  .mq-track{animation:none;}
+}
+
 /* ── reduced-motion ── */
 @media (prefers-reduced-motion:reduce){
-  .hero-fade{animation:none;opacity:1!important;}
   .hero-title .hw,.hero-sub,.hero-cta-row{animation:none!important;opacity:1!important;filter:none!important;transform:none!important;}
   .hero-marble{animation:none!important;opacity:1!important;transform:none!important;}
   .btn-glow{transition:none!important;}
