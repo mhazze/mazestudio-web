@@ -398,6 +398,9 @@ body.demo-open nav{opacity:0!important;pointer-events:none!important;transition:
    pausado ni botón de play nativo encima */
 @keyframes heroVideoIn{from{opacity:0;}to{opacity:1;}}
 .hero-fade.is-playing{animation:heroVideoIn 1100ms ease forwards;}
+/* fade-in genérico para imágenes de fondo sueltas (no ligadas al estado de
+   reproducción de un vídeo): mismo keyframe, siempre se dispara al montar */
+.img-fade-in{animation:heroVideoIn 1100ms ease forwards;}
 
 /* oculta el botón de play que Chrome/Android superpone a cualquier <video>
    mientras aún no ha arrancado a reproducirse (aparece incluso sin el
@@ -1262,6 +1265,7 @@ video::-webkit-media-controls{display:none!important;}
   .mq-track{animation:none;}
   .maze-node{animation:none;}
   .lr-blob{animation:none;}
+  .img-fade-in{animation:none;opacity:1!important;}
   html{scroll-behavior:auto;}
 }
 </style>

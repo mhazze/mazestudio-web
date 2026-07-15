@@ -870,7 +870,7 @@ window.MazeLogo = function MazeLogo() {
         {
           src: "assets/referencias/imagen-cubo-cristal.webp",
           alt: "",
-          className: "hero-fade",
+          className: "img-fade-in",
           style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0 }
         }
       )),
@@ -1452,7 +1452,7 @@ window.MazeLogo = function MazeLogo() {
         alt: "",
         "aria-hidden": "true",
         decoding: "async",
-        className: "hero-fade",
+        className: "img-fade-in",
         style: {
           position: "absolute",
           inset: 0,
