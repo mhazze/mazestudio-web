@@ -586,7 +586,7 @@ window.MazeLogo = function MazeLogo() {
         style: { flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", willChange: "transform" }
       },
       /* @__PURE__ */ React.createElement("h1", { className: "hero-title", "aria-label": HERO_WORD + "." }, HERO_WORD.split("").map((ch, i) => /* @__PURE__ */ React.createElement("span", { key: i, className: "hw", style: { "--i": i, ...i === 4 ? { marginLeft: ".16em" } : {} } }, ch)), /* @__PURE__ */ React.createElement("span", { className: "hero-marble", style: { "--i": HERO_WORD.length }, "aria-hidden": "true" })),
-      /* @__PURE__ */ React.createElement("p", { className: "hero-sub" }, window.t("Convertimos procesos manuales en "), /* @__PURE__ */ React.createElement("span", { className: "hero-sub-accent" }, window.t("sistemas autom\xE1ticos"))),
+      /* @__PURE__ */ React.createElement("p", { className: "hero-sub" }, window.t("Convertimos procesos manuales en "), /* @__PURE__ */ React.createElement("span", { className: "hero-sub-accent" }, window.t("sistemas autom\xE1ticos con IA"))),
       /* @__PURE__ */ React.createElement("div", { className: "hero-cta-row" }, /* @__PURE__ */ React.createElement(
         "a",
         {
