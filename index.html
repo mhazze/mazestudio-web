@@ -109,8 +109,8 @@
     "Cambiar a español": "Switch to Spanish",
 
     /* hero */
-    "Convertimos procesos manuales en ": "We turn manual processes into ",
-    "sistemas automáticos con IA": "automatic systems with AI",
+    "Consultoría e integración de IA ": "AI consulting and integration ",
+    "para pymes en Tenerife": "for small businesses in Tenerife",
     "Ver cómo funciona": "See how it works",
 
     /* línea recta */
@@ -312,7 +312,17 @@
     "© 2026 Mazestudio · estudio de automatización con IA · Tenerife": "© 2026 Mazestudio · AI automation studio · Tenerife",
     "Aviso legal": "Legal notice",
     "Privacidad": "Privacy",
+
+    /* catálogo de servicios (PDF) */
+    "Descargar catálogo de servicios (PDF)": "Download services catalogue (PDF)",
+    "Catálogo de servicios": "Services catalogue",
+    "Qué automatizamos, cómo trabajamos y qué recibes. PDF, sin dejar tus datos.": "What we automate, how we work and what you get. PDF, no form to fill in.",
   };
+
+  /* PDF del catálogo según idioma (los dos ficheros viven en publicado/docs/) */
+  window.CATALOGO_PDF = (lang === 'en')
+    ? 'docs/mazestudio-services-catalogue.pdf'
+    : 'docs/mazestudio-catalogo-servicios.pdf';
 
   window.t = function(es){
     if (window.MS_LANG !== 'en') return es;
@@ -1066,9 +1076,22 @@ video::-webkit-media-controls{display:none!important;}
 .v2-footer .legal{display:flex;gap:18px;flex-wrap:wrap;}
 .v2-footer .legal a{color:rgba(234,232,242,.4);transition:color .2s;}
 .v2-footer .legal a:hover{color:var(--accent-soft);}
+/* enlace al catálogo en PDF */
+.v2-footer nav a.f-pdf{display:inline-flex;align-items:center;gap:8px;color:rgba(234,232,242,.82);}
+.v2-footer nav a.f-pdf:hover{color:#fff;}
+.v2-footer nav a.f-pdf span{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.1em;
+  color:var(--accent-soft);border:1px solid var(--line-2);border-radius:4px;padding:2px 6px;}
 @media(max-width:768px){
   .v2-footer nav{gap:6px 22px;}
   .v2-footer nav a,.v2-footer .legal a{display:inline-block;padding:10px 2px;}
+  .v2-footer nav a.f-pdf{display:inline-flex;}
+}
+
+/* ═══ CTA final · botón principal + descarga del catálogo ═══ */
+.cta-acciones{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;}
+@media(max-width:560px){
+  .cta-acciones{flex-direction:column;width:100%;max-width:380px;}
+  .cta-acciones .v2-btn{width:100%;justify-content:center;text-align:center;}
 }
 
 /* ── NAV responsive ── */

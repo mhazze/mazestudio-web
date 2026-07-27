@@ -136,6 +136,11 @@
   .opt.mail .ic svg{stroke:var(--accent-soft);fill:none;stroke-width:1.8;}
 
   .note{margin-top:34px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--ink-dim);}
+  .pdfline{margin-top:26px;display:inline-flex;align-items:center;gap:9px;padding:11px 18px;
+    border:1px solid var(--line-2,rgba(255,255,255,.16));border-radius:999px;
+    font-size:14px;color:var(--ink-mut,rgba(234,232,242,.75));transition:color .2s,border-color .2s,background .2s;}
+  .pdfline:hover{color:#fff;border-color:#4B8CF7;background:rgba(255,255,255,.05);}
+  .pdfline svg{width:16px;height:16px;flex:none;}
   .legalmini{margin-top:20px;display:flex;justify-content:center;gap:16px;flex-wrap:wrap;
     font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;}
   .legalmini a{color:var(--ink-dim);transition:color .2s;}
@@ -199,6 +204,11 @@
 
   <p class="note">Respondemos en menos de 24 h</p>
 
+  <p><a class="pdfline" id="catalogoPdf" href="docs/mazestudio-catalogo-servicios.pdf" download>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><polyline points="7 11 12 16 17 11"/><path d="M4 20h16"/></svg>
+    Descargar catálogo de servicios (PDF)
+  </a></p>
+
   <!-- LEGALES desenlazadas hasta el alta de autónomo
   <nav class="legalmini">
     <a href="aviso-legal.html">Aviso legal</a>
@@ -229,7 +239,8 @@
     "empezar?":"start?",
     "Elige el canal que más te convenga. Te respondemos rápido y sin compromiso.":"Choose whichever channel suits you best. We reply fast and with no commitment.",
     "Escríbenos ahora mismo":"Message us right now",
-    "Respondemos en menos de 24 h":"We reply within 24 h"
+    "Respondemos en menos de 24 h":"We reply within 24 h",
+    "Descargar catálogo de servicios (PDF)":"Download services catalogue (PDF)"
   };
   var lang = 'es', orig = new WeakMap();
   function accept(n){ var p=n.parentNode; if(!p) return false; var t=p.nodeName; if(t==='SCRIPT'||t==='STYLE') return false; if(p.nodeType===1 && p.closest && p.closest('[data-i18n-skip]')) return false; return !!(n.nodeValue && n.nodeValue.trim()); }
@@ -242,9 +253,12 @@
   var WA_EN = "Hi, I came from your website and I'd like your help identifying and improving certain processes.";
   var MS_EN = "I want to automate my business";
   var MB_EN = "Hi Mazestudio,\r\n\r\nI came from your website and I'd like you to tell me how you can help me.\r\n\r\nThanks.";
+  var pdf = document.getElementById('catalogoPdf');
+  var pdfEs = pdf ? pdf.getAttribute('href') : null;
   function links(l){
     if(wa)   wa.setAttribute('href',   l==='en' ? 'https://wa.me/34636152135?text='+encodeURIComponent(WA_EN) : waEs);
     if(mail) mail.setAttribute('href', l==='en' ? 'mailto:info@mazestudio.site?subject='+encodeURIComponent(MS_EN)+'&body='+encodeURIComponent(MB_EN) : mailEs);
+    if(pdf)  pdf.setAttribute('href',  l==='en' ? 'docs/mazestudio-services-catalogue.pdf' : pdfEs);
   }
   function toEN(){ lang='en'; document.documentElement.lang='en'; document.title="Mazestudio · let's talk"; walk(document.body, tr); links('en'); }
   function toES(){ lang='es'; document.documentElement.lang='es'; document.title='Mazestudio · hablemos'; walk(document.body, function(n){ if(orig.has(n)){ var o=orig.get(n); if(n.nodeValue!==o) n.nodeValue=o; } }); links('es'); }
