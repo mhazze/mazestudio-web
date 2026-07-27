@@ -317,6 +317,11 @@
     "Descargar catálogo de servicios (PDF)": "Download services catalogue (PDF)",
     "Catálogo de servicios": "Services catalogue",
     "Qué automatizamos, cómo trabajamos y qué recibes. PDF, sin dejar tus datos.": "What we automate, how we work and what you get. PDF, no form to fill in.",
+    "// catálogo de servicios": "// services catalogue",
+    "descarga directa, sin formulario": "direct download, no form",
+    "Descargar el catálogo": "Download the catalogue",
+    "Preparando la descarga…": "Preparing your download…",
+    "Catálogo descargado": "Catalogue downloaded",
   };
 
   /* PDF del catálogo según idioma (los dos ficheros viven en publicado/docs/) */
@@ -1094,6 +1099,112 @@ video::-webkit-media-controls{display:none!important;}
   .cta-acciones .v2-btn{width:100%;justify-content:center;text-align:center;}
 }
 
+/* ═══ Banda de descarga del catálogo · entre «Cómo funciona» y el ROI ═══
+   Idea: el botón parte en dos una línea de sección (elemento que rompe la
+   retícula) y, al pasar el ratón, una HOJA asoma por debajo — el documento
+   saliendo de la ranura. Al pulsar, el propio botón confirma la descarga
+   (el navegador la hace en silencio y el usuario se queda sin saber si fue). */
+.dl-band{position:relative;z-index:2;padding:clamp(40px,8vh,86px) clamp(21px,6vw,84px) clamp(64px,10vh,112px);}
+.dl-wrap{max-width:1120px;margin:0 auto;}
+.dl-kicker{font-family:'JetBrains Mono',monospace;font-size:12.4px;letter-spacing:.05em;
+  color:var(--niebla);text-align:center;margin:0 0 22px;}
+.dl-kicker b{font-weight:400;color:var(--accent-soft);}
+
+.dl-rule{display:flex;align-items:center;justify-content:center;gap:clamp(14px,3.5vw,40px);}
+.dl-rule i{flex:1;height:1px;display:block;}
+.dl-rule i:first-child{background:linear-gradient(90deg,transparent,var(--line-2));transform-origin:100% 50%;}
+.dl-rule i:last-child {background:linear-gradient(270deg,transparent,var(--line-2));transform-origin:0 50%;}
+
+/* El ancho mínimo va en el contenedor, no en el botón: las etiquetas de los 3
+   estados miden distinto y, si el botón se dimensiona por su texto, cambia de
+   tamaño al pulsarlo y arrastra las líneas de la retícula. */
+.dl-slot{position:relative;flex:none;display:flex;min-width:min(348px,100%);}
+
+/* las hojas que asoman por detrás del botón — dos, para que se lea «documento»
+   y no «rectángulo»; la máscara las disuelve antes de tocar la sección de abajo */
+.dl-sheet{position:absolute;left:50%;top:11px;width:112px;height:150px;margin-left:-56px;z-index:0;
+  border-radius:7px;box-shadow:0 26px 46px -20px rgba(0,0,0,.85);
+  opacity:0;transform:translateY(-6px);pointer-events:none;
+  -webkit-mask-image:linear-gradient(180deg,#000 26%,rgba(0,0,0,0) 100%);
+          mask-image:linear-gradient(180deg,#000 26%,rgba(0,0,0,0) 100%);
+  transition:opacity .26s ease,transform .62s cubic-bezier(.16,1,.3,1);}
+.dl-sheet-a{background:linear-gradient(172deg,#F7F6FB 0%,#DEDCE8 40%,#B3B0C6 100%);}
+.dl-sheet-b{background:linear-gradient(172deg,#CFCDDD 0%,#A9A6BC 55%,#807DA0 100%);}
+.dl-sheet .l{position:absolute;left:15px;height:4px;border-radius:2px;background:rgba(30,29,44,.15);}
+.dl-sheet .l1{top:57px;width:72px;} .dl-sheet .l2{top:69px;width:56px;} .dl-sheet .l3{top:81px;width:64px;}
+.dl-sheet .mk{position:absolute;left:15px;top:40px;width:26px;height:6px;border-radius:2px;background:var(--accent);}
+.dl-slot:hover .dl-sheet-b,.dl-slot:focus-within .dl-sheet-b{opacity:.72;transform:translateY(21px) rotate(3.4deg);}
+.dl-slot:hover .dl-sheet-a,.dl-slot:focus-within .dl-sheet-a{opacity:1;transform:translateY(38px) rotate(-2.6deg);transition-delay:.06s;}
+
+.dl-btn{position:relative;z-index:1;isolation:isolate;overflow:hidden;
+  flex:1;display:inline-flex;align-items:center;justify-content:center;gap:11px;
+  padding:15px 26px;min-height:52px;border-radius:9999px;cursor:pointer;
+  font-family:'Inter',sans-serif;font-size:16px;font-weight:500;letter-spacing:-.01em;color:#fff;
+  background:linear-gradient(180deg,#1B1930 0%,#100E1B 100%);border:1px solid var(--line-2);
+  box-shadow:0 18px 40px -22px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.07);
+  transition:border-color .25s,box-shadow .25s,transform .18s;}
+.dl-btn:hover{border-color:rgba(143,182,255,.62);
+  box-shadow:0 26px 60px -24px rgba(75,140,247,.62),0 0 0 4px rgba(75,140,247,.1),
+             inset 0 1px 0 rgba(255,255,255,.14);}
+.dl-btn:active{transform:scale(.985);}
+.dl-btn:focus-visible{outline:2px solid var(--accent-soft);outline-offset:3px;}
+
+/* foco que sigue al cursor (--mx/--my) */
+.dl-btn::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;opacity:0;transition:opacity .3s;
+  background:radial-gradient(190px circle at var(--mx,50%) var(--my,50%),rgba(75,140,247,.32),transparent 72%);}
+.dl-btn:hover::before{opacity:1;}
+/* destello que viaja (NO es respiración: no hay escala en bucle) */
+.dl-btn::after{content:"";position:absolute;top:0;bottom:0;width:36%;z-index:-1;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.14),transparent);
+  transform:translateX(-170%);animation:dlSheen 6.5s cubic-bezier(.45,0,.2,1) 2.4s infinite;}
+@keyframes dlSheen{0%{transform:translateX(-170%);}20%,100%{transform:translateX(380%);}}
+
+/* relleno de confirmación al pulsar */
+.dl-fill{position:absolute;inset:0;z-index:-1;border-radius:inherit;
+  transform:scaleX(0);transform-origin:0 50%;transition:transform .3s ease;
+  background:linear-gradient(90deg,var(--accent-deep),var(--accent));}
+.dl-btn.is-yendo .dl-fill{transform:scaleX(1);transition:transform .9s cubic-bezier(.3,.7,.2,1);}
+.dl-btn.is-listo .dl-fill{transform:scaleX(1);background:linear-gradient(90deg,rgba(75,140,247,.42),rgba(75,140,247,.2));}
+.dl-btn.is-listo{border-color:rgba(143,182,255,.6);}
+.dl-btn.is-yendo::after,.dl-btn.is-listo::after{animation:none;opacity:0;}
+
+/* la flecha cae y vuelve a entrar por arriba */
+.dl-ico{position:relative;width:18px;height:18px;flex:none;overflow:hidden;color:var(--accent-soft);
+  transition:color .25s;}
+.dl-btn:hover .dl-ico,.dl-btn.is-yendo .dl-ico,.dl-btn.is-listo .dl-ico{color:#fff;}
+.dl-ico svg{position:absolute;left:0;top:0;transition:transform .5s cubic-bezier(.16,1,.3,1);}
+.dl-ico svg+svg{transform:translateY(-115%);}
+/* :not(.is-listo) — con el check hay UN solo svg y el :hover lo expulsaba del recuadro */
+.dl-btn:hover:not(.is-listo) .dl-ico svg:first-child{transform:translateY(115%);}
+.dl-btn:hover:not(.is-listo) .dl-ico svg+svg{transform:translateY(0);}
+.dl-ico .ok{animation:dlOk .42s cubic-bezier(.16,1,.3,1) both;}
+@keyframes dlOk{from{transform:scale(.35) rotate(-14deg);opacity:0;}to{transform:scale(1) rotate(0);opacity:1;}}
+
+.dl-tag{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.12em;
+  color:var(--accent-soft);border:1px solid rgba(143,182,255,.3);border-radius:4px;padding:3px 7px;
+  transition:color .25s,border-color .25s,background .25s;}
+.dl-btn:hover .dl-tag{color:#fff;border-color:rgba(255,255,255,.45);background:rgba(255,255,255,.08);}
+.dl-btn.is-yendo .dl-tag,.dl-btn.is-listo .dl-tag{color:#fff;border-color:rgba(255,255,255,.5);}
+
+@media(max-width:760px){
+  .dl-slot{min-width:min(300px,100%);}
+  .dl-btn{font-size:15px;padding:14px 20px;gap:9px;}
+  .dl-tag{display:none;}
+}
+@media(max-width:520px){
+  .dl-rule i{display:none;}
+  .dl-slot{width:100%;max-width:360px;min-width:0;}
+  .dl-band{padding-bottom:clamp(40px,7vh,64px);}
+}
+@media(hover:none){.dl-sheet{display:none;}}
+@media(prefers-reduced-motion:reduce){
+  .dl-btn::after{animation:none;opacity:0;}
+  .dl-sheet,.dl-ico svg{transition:none;}
+  .dl-slot:hover .dl-sheet,.dl-slot:focus-within .dl-sheet{opacity:0;}
+  .dl-btn:hover .dl-ico svg:first-child,.dl-btn:hover .dl-ico svg+svg{transform:none;}
+  .dl-btn:hover .dl-ico svg+svg{opacity:0;}
+}
+
 /* ── NAV responsive ── */
 .v2nav-burger{display:none;}
 @media(max-width:920px){
@@ -1191,11 +1302,13 @@ video::-webkit-media-controls{display:none!important;}
   50%{background-position:38% 29%,40% 32%,48% 42%,0 0,0 0,0 0;}
 }
 
-.hero-sub{margin-top:22px;max-width:640px;font-family:'Bricolage Grotesque',sans-serif;font-weight:300;
-  font-size:clamp(16.5px,1.9vw,22px);line-height:1.5;color:rgba(255,255,255,.86);
+.hero-sub{margin-top:22px;max-width:1000px;font-family:'Bricolage Grotesque',sans-serif;font-weight:300;
+  font-size:clamp(33px,3.8vw,44px);line-height:1.25;color:rgba(255,255,255,.86);
   text-shadow:0 1px 16px rgba(0,0,0,.55);
   opacity:0;}
-.hero-sub-accent{font-size:1.16em;font-weight:500;
+/* en bloque: el corte de línea cae entre las dos mitades de la frase,
+   no en medio de "de IA" ni de "en Tenerife" */
+.hero-sub-accent{display:block;font-size:1.16em;font-weight:500;
   background:linear-gradient(90deg,#8FB6FF,#4B8CF7 45%,#86E6FF);
   -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;
   text-shadow:none;filter:drop-shadow(0 0 18px rgba(75,140,247,.45));}
@@ -1355,6 +1468,10 @@ video::-webkit-media-controls{display:none!important;}
 
 <!-- ══════════════════════════════════════════
      9 · POR QUÉ MAZESTUDIO (empresa)
+════════════════════════════════════════════ -->
+
+<!-- ══════════════════════════════════════════
+     9 bis · CATÁLOGO · banda de descarga
 ════════════════════════════════════════════ -->
 
 <!-- ══════════════════════════════════════════

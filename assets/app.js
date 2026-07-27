@@ -1228,6 +1228,67 @@ window.MazeLogo = function MazeLogo() {
 
 (function(){
 (function() {
+  const { useState, useRef, useEffect, useLayoutEffect } = React;
+  window.CatalogoSection = function CatalogoSection() {
+    const rootRef = useRef(null);
+    const btnRef = useRef(null);
+    const [estado, setEstado] = useState("idle");
+    const timers = useRef([]);
+    useLayoutEffect(() => {
+      const root = rootRef.current;
+      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (!root || reduced || !window.gsap || !window.ScrollTrigger) return;
+      const ctx = window.gsap.context(() => {
+        const tl = window.gsap.timeline({
+          scrollTrigger: { trigger: root, start: "top 84%", once: true }
+        });
+        tl.from(".dl-kicker", { opacity: 0, y: 10, duration: 0.5, ease: "power2.out" }).from(".dl-rule i", { scaleX: 0, duration: 1.05, ease: "expo.out" }, "-=.2").from(".dl-slot", { opacity: 0, y: 18, scale: 0.92, duration: 0.75, ease: "back.out(1.6)" }, "-=.72");
+      }, root);
+      return () => ctx.revert();
+    }, []);
+    useEffect(() => {
+      const el = btnRef.current;
+      const coarse = window.matchMedia("(pointer: coarse)").matches;
+      if (!el || coarse) return;
+      const move = (e) => {
+        const r = el.getBoundingClientRect();
+        el.style.setProperty("--mx", (e.clientX - r.left) / r.width * 100 + "%");
+        el.style.setProperty("--my", (e.clientY - r.top) / r.height * 100 + "%");
+      };
+      el.addEventListener("pointermove", move);
+      return () => el.removeEventListener("pointermove", move);
+    }, []);
+    useEffect(() => () => timers.current.forEach(clearTimeout), []);
+    const alPulsar = () => {
+      timers.current.forEach(clearTimeout);
+      setEstado("yendo");
+      timers.current = [
+        setTimeout(() => setEstado("listo"), 950),
+        setTimeout(() => setEstado("idle"), 4200)
+      ];
+    };
+    const etiqueta = estado === "yendo" ? window.t("Preparando la descarga\u2026") : estado === "listo" ? window.t("Cat\xE1logo descargado") : window.t("Descargar el cat\xE1logo");
+    return /* @__PURE__ */ React.createElement("section", { className: "dl-band", ref: rootRef, "aria-label": window.t("Cat\xE1logo de servicios") }, /* @__PURE__ */ React.createElement("div", { className: "dl-wrap" }, /* @__PURE__ */ React.createElement("p", { className: "dl-kicker" }, window.t("// cat\xE1logo de servicios"), " \xB7 ", /* @__PURE__ */ React.createElement("b", null, window.t("descarga directa, sin formulario"))), /* @__PURE__ */ React.createElement("div", { className: "dl-rule" }, /* @__PURE__ */ React.createElement("i", { "aria-hidden": "true" }), /* @__PURE__ */ React.createElement("div", { className: "dl-slot" }, /* @__PURE__ */ React.createElement("span", { className: "dl-sheet dl-sheet-b", "aria-hidden": "true" }), /* @__PURE__ */ React.createElement("span", { className: "dl-sheet dl-sheet-a", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("span", { className: "mk" }), /* @__PURE__ */ React.createElement("span", { className: "l l1" }), /* @__PURE__ */ React.createElement("span", { className: "l l2" }), /* @__PURE__ */ React.createElement("span", { className: "l l3" })), /* @__PURE__ */ React.createElement(
+      "a",
+      {
+        ref: btnRef,
+        href: window.CATALOGO_PDF,
+        download: true,
+        onClick: alPulsar,
+        "aria-label": window.t("Descargar cat\xE1logo de servicios (PDF)"),
+        className: "dl-btn" + (estado === "yendo" ? " is-yendo" : estado === "listo" ? " is-listo" : "")
+      },
+      /* @__PURE__ */ React.createElement("span", { className: "dl-fill", "aria-hidden": "true" }),
+      /* @__PURE__ */ React.createElement("span", { className: "dl-ico", "aria-hidden": "true" }, estado === "listo" ? /* @__PURE__ */ React.createElement("svg", { className: "ok", width: "18", height: "18", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2.4", strokeLinecap: "round", strokeLinejoin: "round" }, /* @__PURE__ */ React.createElement("polyline", { points: "4 12.5 9.5 18 20 6.5" })) : /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(window.IconDownload, null), /* @__PURE__ */ React.createElement(window.IconDownload, null))),
+      /* @__PURE__ */ React.createElement("span", { className: "dl-label" }, etiqueta),
+      /* @__PURE__ */ React.createElement("span", { className: "dl-tag", "aria-hidden": "true" }, "PDF")
+    )), /* @__PURE__ */ React.createElement("i", { "aria-hidden": "true" }))));
+  };
+})();
+})();
+
+(function(){
+(function() {
   const { useState, useEffect, useRef } = React;
   const Reveal = window.Reveal;
   const HeadReveal = window.HeadReveal;
@@ -1672,7 +1733,7 @@ window.MazeLogo = function MazeLogo() {
     return null;
   }
   function App() {
-    return /* @__PURE__ */ React.createElement(MotionConfig, { reducedMotion: "user" }, /* @__PURE__ */ React.createElement(SmoothScroll, null), /* @__PURE__ */ React.createElement(window.Preloader, null), /* @__PURE__ */ React.createElement("div", { id: "smooth-wrapper" }, /* @__PURE__ */ React.createElement("div", { id: "smooth-content" }, /* @__PURE__ */ React.createElement(window.ScrollFX, null), /* @__PURE__ */ React.createElement(window.CinematicTransitions, null), /* @__PURE__ */ React.createElement(window.HeroSection, null), /* @__PURE__ */ React.createElement(window.LineaRectaSection, null), /* @__PURE__ */ React.createElement(window.MarqueeSection, null), /* @__PURE__ */ React.createElement(window.ComoFuncionaSection, null), /* @__PURE__ */ React.createElement(window.RoiSection, null), /* @__PURE__ */ React.createElement(window.ServiciosSection, null), /* @__PURE__ */ React.createElement(window.PorQueSection, null), /* @__PURE__ */ React.createElement(window.CtaSection, null), /* @__PURE__ */ React.createElement(window.Footer, null))));
+    return /* @__PURE__ */ React.createElement(MotionConfig, { reducedMotion: "user" }, /* @__PURE__ */ React.createElement(SmoothScroll, null), /* @__PURE__ */ React.createElement(window.Preloader, null), /* @__PURE__ */ React.createElement("div", { id: "smooth-wrapper" }, /* @__PURE__ */ React.createElement("div", { id: "smooth-content" }, /* @__PURE__ */ React.createElement(window.ScrollFX, null), /* @__PURE__ */ React.createElement(window.CinematicTransitions, null), /* @__PURE__ */ React.createElement(window.HeroSection, null), /* @__PURE__ */ React.createElement(window.LineaRectaSection, null), /* @__PURE__ */ React.createElement(window.MarqueeSection, null), /* @__PURE__ */ React.createElement(window.ComoFuncionaSection, null), /* @__PURE__ */ React.createElement(window.CatalogoSection, null), /* @__PURE__ */ React.createElement(window.RoiSection, null), /* @__PURE__ */ React.createElement(window.ServiciosSection, null), /* @__PURE__ */ React.createElement(window.PorQueSection, null), /* @__PURE__ */ React.createElement(window.CtaSection, null), /* @__PURE__ */ React.createElement(window.Footer, null))));
   }
   ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App, null));
 })();
