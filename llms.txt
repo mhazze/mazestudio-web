@@ -1,0 +1,32 @@
+# Mazestudio
+
+> Estudio de automatización con IA en Tenerife (Canarias, España). Conecta las
+> aplicaciones que una pyme ya usa —Gmail, Google Calendar, Sheets, Drive,
+> WhatsApp, Notion, Stripe, HubSpot— y monta asistentes con IA para que
+> correos, reservas y documentos se gestionen solos. No sustituye el software
+> del cliente: automatiza sobre lo que ya tiene.
+
+Mazestudio trabaja principalmente con pymes de 2 a 50 empleados y con empresas
+de excursiones y actividades turísticas del sur de Tenerife. El contacto inicial
+es una auditoría gratuita en la que se identifican los procesos manuales que se
+pueden automatizar.
+
+## Qué hace
+
+- **Gestión documental** — facturas y nóminas que llegan por email se clasifican con IA y se archivan solas en Drive por proveedor. Demo en vivo: https://gestion.demos.mazestudio.site/?v=2
+- **Agendado de citas** — un cliente rellena un formulario, el sistema comprueba disponibilidad real, reserva el hueco y avisa por WhatsApp. Demo en vivo: https://inmobiliaria-demo.demos.mazestudio.site/
+- **CRM centralizado** — WhatsApp, correo, web y llamadas entran, se convierten en ficha solas y aparecen ordenadas en un único panel. Demo en vivo: https://crm.demos.mazestudio.site/
+- **Radar de mercado** — lee webs públicas (precios de la competencia, negocios nuevos, reseñas) y avisa en lenguaje llano cuando algo cambia. Demo en vivo: https://radar.demos.mazestudio.site/
+- **Atención al cliente** — responde emails de clientes con IA usando la información real del negocio.
+
+## Enlaces
+
+- [Web principal](https://mazestudio.site/): propuesta, demos en vivo, calculadora de ROI y diagnóstico
+- [Hablemos](https://mazestudio.site/hablemos.html): vías de contacto directo
+
+## Contacto
+
+- Email: info@mazestudio.site
+- WhatsApp: +34 636 15 21 35
+- Zona de servicio: Tenerife y Canarias (trabajo en remoto para el resto de España)
+- Idiomas: español e inglés

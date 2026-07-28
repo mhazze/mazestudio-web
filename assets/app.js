@@ -588,8 +588,8 @@ window.MazeLogo = function MazeLogo() {
         "data-parallax-end": "bottom top",
         style: { flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", willChange: "transform" }
       },
-      /* @__PURE__ */ React.createElement("h1", { className: "hero-title", "aria-label": HERO_WORD + "." }, HERO_WORD.split("").map((ch, i) => /* @__PURE__ */ React.createElement("span", { key: i, className: "hw", style: { "--i": i, ...i === 4 ? { marginLeft: ".16em" } : {} } }, ch)), /* @__PURE__ */ React.createElement("span", { className: "hero-marble", style: { "--i": HERO_WORD.length }, "aria-hidden": "true" })),
-      /* @__PURE__ */ React.createElement("p", { className: "hero-sub" }, window.t("Consultor\xEDa e integraci\xF3n de IA "), /* @__PURE__ */ React.createElement("span", { className: "hero-sub-accent" }, window.t("para pymes en Tenerife"))),
+      /* @__PURE__ */ React.createElement("div", { className: "hero-title", role: "img", "aria-label": HERO_WORD + "." }, HERO_WORD.split("").map((ch, i) => /* @__PURE__ */ React.createElement("span", { key: i, className: "hw", style: { "--i": i, ...i === 4 ? { marginLeft: ".16em" } : {} }, "aria-hidden": "true" }, ch)), /* @__PURE__ */ React.createElement("span", { className: "hero-marble", style: { "--i": HERO_WORD.length }, "aria-hidden": "true" })),
+      /* @__PURE__ */ React.createElement("h1", { className: "hero-sub" }, window.t("Consultor\xEDa e integraci\xF3n de IA "), /* @__PURE__ */ React.createElement("span", { className: "hero-sub-accent" }, window.t("para pymes en Tenerife"))),
       /* @__PURE__ */ React.createElement("div", { className: "hero-cta-row" }, /* @__PURE__ */ React.createElement(
         "a",
         {
@@ -787,7 +787,7 @@ window.MazeLogo = function MazeLogo() {
         el.removeEventListener("touchend", onEnd);
       };
     }, []);
-    return /* @__PURE__ */ React.createElement("div", { className: "mq-sec" }, /* @__PURE__ */ React.createElement("p", { className: "mq-head" }, /* @__PURE__ */ React.createElement("span", { className: "mk" }, "//"), " ", window.t("nos conectamos a lo que ya usas "), /* @__PURE__ */ React.createElement("em", null, window.t("\u2014 sin migrar de software"))), /* @__PURE__ */ React.createElement("div", { className: "mq-mask", ref: maskRef }, /* @__PURE__ */ React.createElement("div", { className: "mq-track" }, row.map((t, i) => /* @__PURE__ */ React.createElement("span", { className: "mq-chip", key: i }, /* @__PURE__ */ React.createElement("img", { className: "mq-icon", src: t.icon, alt: "", loading: "lazy" }), t.name)))));
+    return /* @__PURE__ */ React.createElement("div", { className: "mq-sec" }, /* @__PURE__ */ React.createElement("p", { className: "mq-head" }, /* @__PURE__ */ React.createElement("span", { className: "mk" }, "//"), " ", window.t("nos conectamos a lo que ya usas "), /* @__PURE__ */ React.createElement("em", null, window.t("\u2014 sin migrar de software"))), /* @__PURE__ */ React.createElement("div", { className: "mq-mask", ref: maskRef }, /* @__PURE__ */ React.createElement("div", { className: "mq-track" }, row.map((t, i) => /* @__PURE__ */ React.createElement("span", { className: "mq-chip", key: i }, /* @__PURE__ */ React.createElement("img", { className: "mq-icon", src: t.icon, alt: "", "aria-hidden": "true", loading: "lazy" }), t.name)))));
   };
 })();
 })();
@@ -873,6 +873,7 @@ window.MazeLogo = function MazeLogo() {
         {
           src: "assets/referencias/imagen-cubo-cristal.webp",
           alt: "",
+          "aria-hidden": "true",
           className: "img-fade-in",
           style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0 }
         }
