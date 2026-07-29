@@ -1446,7 +1446,13 @@ video::-webkit-media-controls{display:none!important;}
      ve marca, propuesta de valor y vía de contacto en vez de una página en blanco. -->
 <noscript>
   <div style="max-width:680px;margin:0 auto;padding:14vh 24px;text-align:center;font-family:'Bricolage Grotesque',sans-serif;color:#EAE8F2;">
-    <h1 style="font-size:clamp(34px,7vw,64px);line-height:1.02;letter-spacing:-2px;margin-bottom:18px;">Del laberinto, una línea recta</h1>
+    <!-- Mismo encabezado que la ruta con JS: los crawlers que no ejecutan JS
+         (Bing, varios bots de IA) solo ven este bloque, y antes les llegaba
+         el eslogan sin ninguna keyword. El eslogan baja a línea de apoyo.
+         (Sin escribir la etiqueta literal aquí: dentro de un comentario no
+         afecta al navegador, pero despista a los grep de auditoría.) -->
+    <h1 style="font-size:clamp(34px,7vw,64px);line-height:1.02;letter-spacing:-2px;margin-bottom:10px;">Consultoría e integración de IA para pymes en Tenerife</h1>
+    <p style="font-size:clamp(17px,2.4vw,22px);line-height:1.2;letter-spacing:-.5px;color:rgba(234,232,242,.62);margin-bottom:18px;font-style:italic;">Del laberinto, una línea recta</p>
     <p style="font-size:18px;line-height:1.5;color:rgba(234,232,242,.8);margin-bottom:14px;">
       Mazestudio · estudio de automatización con IA en Tenerife. Conectamos tus aplicaciones y montamos
       asistentes con IA para que correos, reservas y documentos se hagan solos — sobre las herramientas que ya usas.

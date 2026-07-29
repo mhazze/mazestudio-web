@@ -727,18 +727,23 @@ window.MazeLogo = function MazeLogo() {
 (function(){
 (function() {
   const TOOLS = [
-    { name: "Gmail", icon: "https://cdn.simpleicons.org/gmail" },
-    { name: "Google Calendar", icon: "https://cdn.simpleicons.org/googlecalendar" },
-    { name: "Google Sheets", icon: "https://cdn.simpleicons.org/googlesheets" },
-    { name: "Google Drive", icon: "https://cdn.simpleicons.org/googledrive" },
-    { name: "WhatsApp", icon: "https://cdn.simpleicons.org/whatsapp" },
-    { name: "Notion", icon: "https://cdn.simpleicons.org/notion/e8e6f2" },
-    { name: "Stripe", icon: "https://cdn.simpleicons.org/stripe" },
-    { name: "Cal.com", icon: "https://cdn.simpleicons.org/caldotcom/e8e6f2" },
-    { name: "n8n", icon: "https://cdn.simpleicons.org/n8n" },
-    { name: "HubSpot", icon: "https://cdn.simpleicons.org/hubspot" },
-    { name: "Telegram", icon: "https://cdn.simpleicons.org/telegram" },
-    { name: "Make", icon: "https://cdn.simpleicons.org/make" }
+    // auto-alojados en assets/integraciones/ (descargados de simpleicons.org,
+    // CC0). Antes se pedían a cdn.simpleicons.org en caliente: eso contradecía
+    // la política de cero-terceros del resto del sitio y mandaba la IP de cada
+    // visitante a un CDN ajeno sin consentimiento. Para actualizarlos:
+    // Invoke-WebRequest https://cdn.simpleicons.org/<slug> -OutFile <slug>.svg
+    { name: "Gmail", icon: "assets/integraciones/gmail.svg" },
+    { name: "Google Calendar", icon: "assets/integraciones/googlecalendar.svg" },
+    { name: "Google Sheets", icon: "assets/integraciones/googlesheets.svg" },
+    { name: "Google Drive", icon: "assets/integraciones/googledrive.svg" },
+    { name: "WhatsApp", icon: "assets/integraciones/whatsapp.svg" },
+    { name: "Notion", icon: "assets/integraciones/notion.svg" },
+    { name: "Stripe", icon: "assets/integraciones/stripe.svg" },
+    { name: "Cal.com", icon: "assets/integraciones/caldotcom.svg" },
+    { name: "n8n", icon: "assets/integraciones/n8n.svg" },
+    { name: "HubSpot", icon: "assets/integraciones/hubspot.svg" },
+    { name: "Telegram", icon: "assets/integraciones/telegram.svg" },
+    { name: "Make", icon: "assets/integraciones/make.svg" }
   ];
   const { useEffect, useRef } = React;
   window.MarqueeSection = function MarqueeSection() {
