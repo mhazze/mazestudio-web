@@ -14,14 +14,14 @@
 <!-- Open Graph -->
 <meta property="og:type"        content="website">
 <meta property="og:url"         content="https://mazestudio.site">
-<meta property="og:title"       content="Mazestudio · Automatización con IA en Tenerife">
+<meta property="og:title"       content="Maze studio, consultoría e integración de IA">
 <meta property="og:description" content="Conectamos tus aplicaciones y montamos asistentes con IA para que correos, reservas y documentos se hagan solos — sobre las herramientas que ya usas.">
 <meta property="og:image"       content="https://mazestudio.site/og-image.png">
 <meta property="og:locale"      content="es_ES">
 
 <!-- Twitter / X -->
 <meta name="twitter:card"        content="summary_large_image">
-<meta name="twitter:title"       content="Mazestudio · Automatización con IA en Tenerife">
+<meta name="twitter:title"       content="Maze studio, consultoría e integración de IA">
 <meta name="twitter:description" content="Conectamos tus aplicaciones y montamos asistentes con IA para que correos, reservas y documentos se hagan solos — sobre las herramientas que ya usas.">
 <meta name="twitter:image"       content="https://mazestudio.site/og-image.png">
 
@@ -1242,6 +1242,16 @@ video::-webkit-media-controls{display:none!important;}
 @media(max-width:920px){
   .v2nav-links{display:none!important;}
   .v2nav-burger{display:flex!important;}
+}
+/* la píldora de enlaces se centra con el EJE DE LA WEB, no con el hueco que deja
+   el flex: con `space-between` la marca (~218px) pesa mucho más que el toggle de
+   idioma (~70px) y eso empujaba la píldora ~74px a la derecha del centro real.
+   Se saca del flujo y se centra sobre el 50% del viewport (la nav es fixed, así
+   que es su bloque contenedor). Solo ≥1100px: por debajo de ese ancho la píldora
+   centrada pisaría la marca — ahí se deja el reparto por flex hasta que a 920px
+   entra el burger. */
+@media(min-width:1100px){
+  .v2nav-links{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);}
 }
 
 /* ── botón de idioma (muy visible, arriba a la derecha) ── */
