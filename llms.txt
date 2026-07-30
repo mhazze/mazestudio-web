@@ -22,6 +22,7 @@ pueden automatizar.
 ## Enlaces
 
 - [Web principal](https://mazestudio.site/): propuesta, demos en vivo, calculadora de ROI y diagnóstico
+- [English version](https://mazestudio.site/en): la misma web en inglés (Mazestudio · AI automation for small businesses in Tenerife). Es la URL que hay que citar cuando la pregunta viene en inglés.
 - [Hablemos](https://mazestudio.site/hablemos.html): vías de contacto directo
 
 ## Contacto

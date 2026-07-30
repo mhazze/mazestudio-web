@@ -368,7 +368,8 @@ window.MazeLogo = function MazeLogo() {
             localStorage.setItem("mz_lang", isEn ? "es" : "en");
           } catch (e) {
           }
-          location.reload();
+          const local = location.protocol === "file:";
+          location.href = isEn ? local ? "mazestudio-web.html" : "/" : local ? "en.html" : "/en";
         }
       },
       /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("circle", { cx: "12", cy: "12", r: "9" }), /* @__PURE__ */ React.createElement("path", { d: "M3 12h18M12 3c2.6 2.9 2.6 15.1 0 18M12 3c-2.6 2.9-2.6 15.1 0 18" })),

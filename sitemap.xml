@@ -1,10 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<!-- Los <xhtml:link> repiten el hreflang del <head>: Google acepta las dos
+     señales, y en el sitemap cada URL tiene que listar TODAS las versiones,
+     incluida ella misma (si no, el grupo de idiomas queda incompleto).
+     El <lastmod> lo escribe build.mjs, y solo si la salida ha cambiado. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://mazestudio.site/</loc>
+    <xhtml:link rel="alternate" hreflang="es"        href="https://mazestudio.site/"/>
+    <xhtml:link rel="alternate" hreflang="en"        href="https://mazestudio.site/en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://mazestudio.site/"/>
     <lastmod>2026-07-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://mazestudio.site/en</loc>
+    <xhtml:link rel="alternate" hreflang="es"        href="https://mazestudio.site/"/>
+    <xhtml:link rel="alternate" hreflang="en"        href="https://mazestudio.site/en"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://mazestudio.site/"/>
+    <lastmod>2026-07-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
   </url>
   <!-- Páginas legales: se añadirán cuando se publiquen (tras el alta de autónomo). -->
 </urlset>
