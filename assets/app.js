@@ -382,7 +382,7 @@ window.MazeLogo = function MazeLogo() {
       { label: t("C\xF3mo funciona"), href: "#como" },
       { label: t("Ahorro"), href: "#roi" },
       { label: t("Servicios"), href: "#servicios" },
-      { label: t("\xBFNos necesitas?"), href: "#diagnostico" }
+      { label: t("Diagn\xF3stico"), href: "#diagnostico" }
     ];
     return /* @__PURE__ */ React.createElement("nav", { className: "v2nav", style: {
       position: "fixed",
