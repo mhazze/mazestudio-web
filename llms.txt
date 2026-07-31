@@ -14,7 +14,7 @@ pueden automatizar.
 ## Qué hace
 
 - **Gestión documental** — facturas y nóminas que llegan por email se clasifican con IA y se archivan solas en Drive por proveedor. Demo en vivo: https://gestion.demos.mazestudio.site/?v=2
-- **Agendado de citas** — un cliente rellena un formulario, el sistema comprueba disponibilidad real, reserva el hueco y avisa por WhatsApp. Demo en vivo: https://inmobiliaria-demo.demos.mazestudio.site/
+- **Reservas y citas sin fricción** — el cliente reserva un hueco (una cita, una mesa o una plaza en una excursión) con disponibilidad real, confirmación automática y aviso por WhatsApp. Demo en vivo: https://inmobiliaria-demo.demos.mazestudio.site/
 - **CRM centralizado** — WhatsApp, correo, web y llamadas entran, se convierten en ficha solas y aparecen ordenadas en un único panel. Demo en vivo: https://crm.demos.mazestudio.site/
 - **Radar de mercado** — lee webs públicas (precios de la competencia, negocios nuevos, reseñas) y avisa en lenguaje llano cuando algo cambia. Demo en vivo: https://radar.demos.mazestudio.site/
 - **Atención al cliente** — responde emails de clientes con IA usando la información real del negocio.

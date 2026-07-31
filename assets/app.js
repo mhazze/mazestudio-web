@@ -1,5 +1,6 @@
 /* mazestudio · app.js — GENERADO por build.mjs. NO editar a mano.
    Fuente: WEB/src/mazestudio-web.html · regenerar: npm run build */
+/* MZLASTMOD:2026-08-01 */
 (function(){
 (function() {
   const { useRef, useState, useEffect } = React;
@@ -956,9 +957,9 @@ window.MazeLogo = function MazeLogo() {
     {
       id: "citas",
       num: "02",
-      name: "Agendado de citas",
+      name: "Reservas y citas sin fricci\xF3n",
       icon: "calendar",
-      desc: "Un cliente rellena un formulario, el sistema comprueba disponibilidad real y reserva el hueco con aviso autom\xE1tico.",
+      desc: "Tu cliente reserva un hueco \u2014una cita, una mesa o una plaza en una excursi\xF3n\u2014 con disponibilidad real y confirmaci\xF3n autom\xE1tica, sin llamadas ni WhatsApp cruzados.",
       time: "~45s",
       url: "https://inmobiliaria-demo.demos.mazestudio.site/",
       live: true,
@@ -1548,7 +1549,7 @@ window.MazeLogo = function MazeLogo() {
       { label: window.t("Servicios"), href: "#servicios" },
       { label: window.t("\xBFNos necesitas?"), href: "#diagnostico" }
     ];
-    return /* @__PURE__ */ React.createElement("footer", { className: "v2-footer" }, /* @__PURE__ */ React.createElement("div", { className: "inner" }, /* @__PURE__ */ React.createElement("div", { className: "top" }, /* @__PURE__ */ React.createElement("a", { href: "#top", style: { display: "flex", alignItems: "center", gap: 10 }, "aria-label": "Mazestudio" }, /* @__PURE__ */ React.createElement(window.MazeLogo, null), /* @__PURE__ */ React.createElement("span", { style: { fontFamily: "Bricolage Grotesque", fontWeight: 600, fontSize: 18.9, color: "#EAE8F2", letterSpacing: "-.02em" } }, "Maze studio", /* @__PURE__ */ React.createElement("span", { style: { color: "#4B8CF7" } }, "."))), /* @__PURE__ */ React.createElement("nav", null, links.map((l) => /* @__PURE__ */ React.createElement("a", { key: l.href, href: l.href }, l.label)), /* @__PURE__ */ React.createElement("a", { href: window.CATALOGO_PDF, download: true, className: "f-pdf" }, /* @__PURE__ */ React.createElement(window.IconDownload, null), " ", window.t("Cat\xE1logo de servicios"), " ", /* @__PURE__ */ React.createElement("span", null, "PDF")))), /* @__PURE__ */ React.createElement("div", { className: "bot" }, /* @__PURE__ */ React.createElement("span", null, window.t("\xA9 2026 Mazestudio \xB7 estudio de automatizaci\xF3n con IA \xB7 Tenerife")), /* @__PURE__ */ React.createElement("span", { className: "legal" }, /* @__PURE__ */ React.createElement("a", { href: "aviso-legal.html" }, window.t("Aviso legal")), /* @__PURE__ */ React.createElement("a", { href: "privacidad.html" }, window.t("Privacidad")), /* @__PURE__ */ React.createElement("a", { href: "cookies.html" }, "Cookies")))));
+    return /* @__PURE__ */ React.createElement("footer", { className: "v2-footer" }, /* @__PURE__ */ React.createElement("div", { className: "inner" }, /* @__PURE__ */ React.createElement("div", { className: "top" }, /* @__PURE__ */ React.createElement("a", { href: "#top", style: { display: "flex", alignItems: "center", gap: 10 }, "aria-label": "Mazestudio" }, /* @__PURE__ */ React.createElement(window.MazeLogo, null), /* @__PURE__ */ React.createElement("span", { style: { fontFamily: "Bricolage Grotesque", fontWeight: 600, fontSize: 18.9, color: "#EAE8F2", letterSpacing: "-.02em" } }, "Maze studio", /* @__PURE__ */ React.createElement("span", { style: { color: "#4B8CF7" } }, "."))), /* @__PURE__ */ React.createElement("nav", null, links.map((l) => /* @__PURE__ */ React.createElement("a", { key: l.href, href: l.href }, l.label)), /* @__PURE__ */ React.createElement("a", { href: window.CATALOGO_PDF, download: true, className: "f-pdf" }, /* @__PURE__ */ React.createElement(window.IconDownload, null), " ", window.t("Cat\xE1logo de servicios"), " ", /* @__PURE__ */ React.createElement("span", null, "PDF")))), /* @__PURE__ */ React.createElement("div", { className: "bot" }, /* @__PURE__ */ React.createElement("span", null, window.t("\xA9 2026 Mazestudio \xB7 estudio de automatizaci\xF3n con IA \xB7 Tenerife"), " \xB7 ", window.t("\xDAltima actualizaci\xF3n"), ": ", "2026-08-01"), /* @__PURE__ */ React.createElement("span", { className: "legal" }, /* @__PURE__ */ React.createElement("a", { href: "aviso-legal.html" }, window.t("Aviso legal")), /* @__PURE__ */ React.createElement("a", { href: "privacidad.html" }, window.t("Privacidad")), /* @__PURE__ */ React.createElement("a", { href: "cookies.html" }, "Cookies")))));
   };
 })();
 })();
