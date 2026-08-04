@@ -100,8 +100,8 @@ window.MazeLogo = function MazeLogo() {
       {
         ref,
         className,
-        initial: { opacity: 0, y, filter: "blur(8px)" },
-        animate: inView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {},
+        initial: { y, filter: "blur(8px)" },
+        animate: inView ? { y: 0, filter: "blur(0px)" } : {},
         transition: { duration: 0.7, delay, ease: [0.16, 1, 0.3, 1] },
         style
       },
@@ -182,11 +182,10 @@ window.MazeLogo = function MazeLogo() {
         const ems = h2 ? Array.from(h2.querySelectorAll("em")) : olh ? Array.from(olh.querySelectorAll(".hr-olfill em")) : [];
         const fill = olh ? olh.querySelector(".hr-olfill") : null;
         const beam = olh ? olh.querySelector(".hr-olbeam") : null;
-        if (kicker) window.gsap.set(kicker, { opacity: 0, y: 14 });
-        if (words.length) window.gsap.set(words, { yPercent: 135, rotation: 4, transformOrigin: "0% 100%" });
-        if (olh) window.gsap.set(olh, { opacity: 0 });
+        if (kicker) window.gsap.set(kicker, { y: 14 });
+        if (words.length) window.gsap.set(words, { yPercent: 12, rotation: 4, transformOrigin: "0% 100%" });
         if (fill) window.gsap.set(fill, { clipPath: "inset(-10% 102% -10% -2%)" });
-        if (others.length) window.gsap.set(others, { opacity: 0, y });
+        if (others.length) window.gsap.set(others, { y });
         const tl = window.gsap.timeline({
           delay,
           scrollTrigger: { trigger: el, start: "top 84%", once: true }
@@ -335,7 +334,6 @@ window.MazeLogo = function MazeLogo() {
       const ctx = window.gsap.context(() => {
         const cta = document.querySelector("#contacto .cta-converge");
         if (cta) window.gsap.from(cta, {
-          opacity: 0,
           scale: 0.82,
           filter: "blur(10px)",
           ease: "power2.out",
@@ -705,7 +703,7 @@ window.MazeLogo = function MazeLogo() {
             // las frases acaban de revelarse también antes del centro
             scrollTrigger: lite ? { trigger: flank, start: "top 82%", once: true } : { trigger: flank, start: "top 84%", end: "center 66%", scrub: 1.5 }
           });
-          const wordIn = lite ? { opacity: 0.06 } : { opacity: 0.06, filter: "blur(8px)" };
+          const wordIn = lite ? {} : { filter: "blur(8px)" };
           const wordOut = () => ({ opacity: 1, ...lite ? {} : { filter: "blur(0px)" }, ease: "sine.out", duration: 1.6, stagger: { each: 0.35, ease: "sine.inOut" } });
           if (leftW.length) tlw.fromTo(leftW, wordIn, wordOut(), 0);
           if (rightW.length) tlw.fromTo(rightW, wordIn, wordOut(), ">-0.8");
@@ -1250,7 +1248,7 @@ window.MazeLogo = function MazeLogo() {
         const tl = window.gsap.timeline({
           scrollTrigger: { trigger: root, start: "top 84%", once: true }
         });
-        tl.from(".dl-kicker", { opacity: 0, y: 10, duration: 0.5, ease: "power2.out" }).from(".dl-rule i", { scaleX: 0, duration: 1.05, ease: "expo.out" }, "-=.2").from(".dl-slot", { opacity: 0, y: 18, scale: 0.92, duration: 0.75, ease: "back.out(1.6)" }, "-=.72");
+        tl.from(".dl-kicker", { y: 10, duration: 0.5, ease: "power2.out" }).from(".dl-rule i", { scaleX: 0, duration: 1.05, ease: "expo.out" }, "-=.2").from(".dl-slot", { y: 18, scale: 0.92, duration: 0.75, ease: "back.out(1.6)" }, "-=.72");
       }, root);
       return () => ctx.revert();
     }, []);
@@ -1507,11 +1505,75 @@ window.MazeLogo = function MazeLogo() {
 
 (function(){
 (function() {
+  const { useState } = React;
+  const Reveal = window.Reveal;
+  const HeadReveal = window.HeadReveal;
+  const FAQS = [
+    {
+      tag: window.t("Precio"),
+      q: window.t("\xBFCu\xE1nto cuesta automatizar procesos con IA?"),
+      a: window.t("El precio var\xEDa dependiendo del proceso a llevar a cabo. Trabajamos con un diagn\xF3stico inicial gratuito: analizamos lo que ya usas y te damos presupuesto antes de empezar, sin sorpresas ni compromiso.")
+    },
+    {
+      tag: window.t("Reservas"),
+      q: window.t("\xBFSirve esto para gestionar reservas de excursiones o actividades tur\xEDsticas?"),
+      a: window.t("S\xED. Conectamos tu sistema de reservas actual (plataforma de reservas, Google Calendar, WhatsApp) para que las consultas se respondan solas, se compruebe la disponibilidad real y se confirme la plaza sin que tengas que estar pendiente del m\xF3vil todo el d\xEDa, pudiendo configurarlo plenamente a tu gusto.")
+    },
+    {
+      tag: window.t("Herramientas"),
+      q: window.t("\xBFQu\xE9 necesito tener ya montado para empezar?"),
+      a: window.t("Nada nuevo. No te cambiamos de programa: nos conectamos a las herramientas que ya usas \u2014tu sistema de reservas, Google Calendar, hojas de c\xE1lculo, CRM, WhatsApp\u2014 y automatizamos encima.")
+    },
+    {
+      tag: window.t("Plazos"),
+      q: window.t("\xBFCu\xE1nto se tarda en implementar?"),
+      a: window.t("Depende de la complejidad, pero muchas automatizaciones sencillas est\xE1n listas en pocos d\xEDas. En el diagn\xF3stico inicial te damos un plazo real, no una estimaci\xF3n gen\xE9rica.")
+    },
+    {
+      tag: window.t("Migraci\xF3n"),
+      q: window.t("\xBFHay que cambiar de herramientas o software?"),
+      a: window.t("No. Es uno de los principios del servicio: automatizamos sobre lo que ya tienes, no te obligamos a migrar a un sistema nuevo.")
+    },
+    {
+      tag: window.t("Resultados"),
+      q: window.t("\xBFC\xF3mo se muestran los resultados?"),
+      a: window.t("Por defecto, en las mismas herramientas que ya usas: tu calendario se actualiza solo, te llega la confirmaci\xF3n por WhatsApp o email, tu hoja de c\xE1lculo se rellena sin que tengas que tocar nada. Si quieres verlo todo junto, podemos a\xF1adir un resumen o panel sencillo con lo que se ha hecho, explicado en lenguaje claro, sin tecnicismos.")
+    }
+  ];
+  const FAQ_SCHEMA = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": FAQS.map((f) => ({
+      "@type": "Question",
+      "name": f.q,
+      "acceptedAnswer": { "@type": "Answer", "text": f.a }
+    }))
+  };
+  window.FaqSection = function FaqSection() {
+    const [open, setOpen] = useState(() => /* @__PURE__ */ new Set([0]));
+    const toggle = (i) => {
+      setOpen((prev) => {
+        const next = new Set(prev);
+        if (next.has(i)) next.delete(i);
+        else next.add(i);
+        return next;
+      });
+    };
+    return /* @__PURE__ */ React.createElement("section", { id: "faq", className: "v2-sec" }, /* @__PURE__ */ React.createElement("div", { className: "v2-inner" }, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("p", { className: "v2-kicker" }, window.t("// antes de escribirnos")), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2" }, window.t("Lo que sueles "), /* @__PURE__ */ React.createElement("em", null, window.t("preguntar")), window.t(" antes de decidirte")), /* @__PURE__ */ React.createElement("p", { className: "v2-note" }, window.t("Las dudas m\xE1s habituales antes de pedir el diagn\xF3stico \u2014 sin gen\xE9ricos de blog, con la l\xF3gica real de Mazestudio."))), /* @__PURE__ */ React.createElement("div", { className: "faq-list" }, FAQS.map((f, i) => {
+      const isOpen = open.has(i);
+      return /* @__PURE__ */ React.createElement(Reveal, { key: f.q, delay: i * 0.05 }, /* @__PURE__ */ React.createElement("div", { className: "faq-item" + (isOpen ? " open" : "") }, /* @__PURE__ */ React.createElement("button", { className: "faq-q", "aria-expanded": isOpen, onClick: () => toggle(i) }, /* @__PURE__ */ React.createElement("span", { className: "faq-tag" }, f.tag), /* @__PURE__ */ React.createElement("span", { className: "faq-question" }, f.q), /* @__PURE__ */ React.createElement("span", { className: "faq-toggle", "aria-hidden": "true" }, "+")), /* @__PURE__ */ React.createElement("div", { className: "faq-a-wrap" }, /* @__PURE__ */ React.createElement("div", { className: "faq-a-inner" }, /* @__PURE__ */ React.createElement("p", { className: "faq-answer" }, f.a)))));
+    }))), /* @__PURE__ */ React.createElement("script", { type: "application/ld+json", dangerouslySetInnerHTML: { __html: JSON.stringify(FAQ_SCHEMA) } }));
+  };
+})();
+})();
+
+(function(){
+(function() {
   const motion = window.Motion.motion;
   function fu(delay) {
     return {
-      initial: { filter: "blur(10px)", opacity: 0, y: 20 },
-      whileInView: { filter: "blur(0px)", opacity: 1, y: 0 },
+      initial: { filter: "blur(10px)", y: 20 },
+      whileInView: { filter: "blur(0px)", y: 0 },
       viewport: { once: true, amount: 0.4 },
       transition: { duration: 0.7, delay, ease: "easeOut" }
     };
@@ -1739,7 +1801,7 @@ window.MazeLogo = function MazeLogo() {
     return null;
   }
   function App() {
-    return /* @__PURE__ */ React.createElement(MotionConfig, { reducedMotion: "user" }, /* @__PURE__ */ React.createElement(SmoothScroll, null), /* @__PURE__ */ React.createElement(window.Preloader, null), /* @__PURE__ */ React.createElement("div", { id: "smooth-wrapper" }, /* @__PURE__ */ React.createElement("div", { id: "smooth-content" }, /* @__PURE__ */ React.createElement(window.ScrollFX, null), /* @__PURE__ */ React.createElement(window.CinematicTransitions, null), /* @__PURE__ */ React.createElement(window.HeroSection, null), /* @__PURE__ */ React.createElement(window.LineaRectaSection, null), /* @__PURE__ */ React.createElement(window.MarqueeSection, null), /* @__PURE__ */ React.createElement(window.ComoFuncionaSection, null), /* @__PURE__ */ React.createElement(window.CatalogoSection, null), /* @__PURE__ */ React.createElement(window.RoiSection, null), /* @__PURE__ */ React.createElement(window.ServiciosSection, null), /* @__PURE__ */ React.createElement(window.PorQueSection, null), /* @__PURE__ */ React.createElement(window.CtaSection, null), /* @__PURE__ */ React.createElement(window.Footer, null))));
+    return /* @__PURE__ */ React.createElement(MotionConfig, { reducedMotion: "user" }, /* @__PURE__ */ React.createElement(SmoothScroll, null), /* @__PURE__ */ React.createElement(window.Preloader, null), /* @__PURE__ */ React.createElement("div", { id: "smooth-wrapper" }, /* @__PURE__ */ React.createElement("div", { id: "smooth-content" }, /* @__PURE__ */ React.createElement(window.ScrollFX, null), /* @__PURE__ */ React.createElement(window.CinematicTransitions, null), /* @__PURE__ */ React.createElement(window.HeroSection, null), /* @__PURE__ */ React.createElement(window.LineaRectaSection, null), /* @__PURE__ */ React.createElement(window.MarqueeSection, null), /* @__PURE__ */ React.createElement(window.ComoFuncionaSection, null), /* @__PURE__ */ React.createElement(window.CatalogoSection, null), /* @__PURE__ */ React.createElement(window.RoiSection, null), /* @__PURE__ */ React.createElement(window.ServiciosSection, null), /* @__PURE__ */ React.createElement(window.PorQueSection, null), /* @__PURE__ */ React.createElement(window.FaqSection, null), /* @__PURE__ */ React.createElement(window.CtaSection, null), /* @__PURE__ */ React.createElement(window.Footer, null))));
   }
   ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App, null));
 })();

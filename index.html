@@ -367,6 +367,31 @@
     "→ Solicita tu auditoría gratis": "→ Request your free audit",
     "Volver a intentarlo": "Try again",
 
+    /* faq */
+    "// antes de escribirnos": "// before you write to us",
+    "Lo que sueles ": "What you usually ",
+    "preguntar": "ask",
+    " antes de decidirte": " before deciding",
+    "Las dudas más habituales antes de pedir el diagnóstico — sin genéricos de blog, con la lógica real de Mazestudio.": "The most common doubts before requesting the diagnosis — no generic blog answers, just Mazestudio's real approach.",
+    "Precio": "Price",
+    "Reservas": "Bookings",
+    "Herramientas": "Tools",
+    "Plazos": "Timeline",
+    "Migración": "Migration",
+    "Resultados": "Results",
+    "¿Cuánto cuesta automatizar procesos con IA?": "How much does it cost to automate processes with AI?",
+    "El precio varía dependiendo del proceso a llevar a cabo. Trabajamos con un diagnóstico inicial gratuito: analizamos lo que ya usas y te damos presupuesto antes de empezar, sin sorpresas ni compromiso.": "The price varies depending on the process involved. We start with a free initial diagnosis: we look at what you already use and give you a quote before starting, no surprises and no commitment.",
+    "¿Sirve esto para gestionar reservas de excursiones o actividades turísticas?": "Does this work for managing bookings for tours or other tourism activities?",
+    "Sí. Conectamos tu sistema de reservas actual (plataforma de reservas, Google Calendar, WhatsApp) para que las consultas se respondan solas, se compruebe la disponibilidad real y se confirme la plaza sin que tengas que estar pendiente del móvil todo el día, pudiendo configurarlo plenamente a tu gusto.": "Yes. We connect your current booking system (booking platform, Google Calendar, WhatsApp) so enquiries get answered automatically, real availability gets checked, and the spot gets confirmed without you having to watch your phone all day — fully configurable to your liking.",
+    "¿Qué necesito tener ya montado para empezar?": "What do I need to already have in place to get started?",
+    "Nada nuevo. No te cambiamos de programa: nos conectamos a las herramientas que ya usas —tu sistema de reservas, Google Calendar, hojas de cálculo, CRM, WhatsApp— y automatizamos encima.": "Nothing new. We don't switch you to a different program: we connect to the tools you already use —your booking system, Google Calendar, spreadsheets, CRM, WhatsApp— and automate on top of them.",
+    "¿Cuánto se tarda en implementar?": "How long does it take to implement?",
+    "Depende de la complejidad, pero muchas automatizaciones sencillas están listas en pocos días. En el diagnóstico inicial te damos un plazo real, no una estimación genérica.": "It depends on the complexity, but many simple automations are ready in a few days. In the initial diagnosis we give you a real timeline, not a generic estimate.",
+    "¿Hay que cambiar de herramientas o software?": "Do I have to switch tools or software?",
+    "No. Es uno de los principios del servicio: automatizamos sobre lo que ya tienes, no te obligamos a migrar a un sistema nuevo.": "No. It's one of the core principles of the service: we automate on top of what you already have, we don't force you to migrate to a new system.",
+    "¿Cómo se muestran los resultados?": "How are the results shown?",
+    "Por defecto, en las mismas herramientas que ya usas: tu calendario se actualiza solo, te llega la confirmación por WhatsApp o email, tu hoja de cálculo se rellena sin que tengas que tocar nada. Si quieres verlo todo junto, podemos añadir un resumen o panel sencillo con lo que se ha hecho, explicado en lenguaje claro, sin tecnicismos.": "By default, in the same tools you already use: your calendar updates itself, the confirmation reaches you by WhatsApp or email, your spreadsheet fills in without you touching anything. If you want it all in one place, we can add a simple summary or panel showing what was done, explained in plain language, no jargon.",
+
     /* cta + footer */
     "Empieza a trazar tu línea recta": "Start drawing your straight line",
     "Solicita tu auditoría gratis": "Request your free audit",
@@ -511,7 +536,7 @@ video::-webkit-media-controls{display:none!important;}
    gradiente pasa a vivir en cada palabra: un hijo con transform rompe el
    background-clip:text del padre. El padding + margen negativo de .hr-wm abre
    ventana a descendentes e itálicas sin alterar el interlineado. */
-.hr-wm{display:inline-block;overflow:hidden;vertical-align:bottom;
+.hr-wm{display:inline-block;vertical-align:bottom;
   padding:.16em .08em .2em;margin:-.16em -.08em -.2em;}
 .hr-w{display:inline-block;}
 .hr-split em{background:none;-webkit-text-fill-color:currentColor;color:inherit;padding-right:0;margin-right:0;}
@@ -678,7 +703,7 @@ video::-webkit-media-controls{display:none!important;}
 .lr-side-l{text-align:right;color:var(--ceniza);}      /* el problema · apagado */
 .lr-side-r{text-align:left;color:#EAE8F2;}              /* la solución · claro */
 .lr-side-r .w{color:#EAE8F2;}
-.lr-side .w{opacity:.06;filter:blur(8px);will-change:opacity,filter;}
+.lr-side .w{will-change:filter;}
 @media(max-width:980px){
   .lr-flank{grid-template-columns:1fr;gap:22px;}
   .lr-side{text-align:center!important;font-size:clamp(19px,5.2vw,28px);max-width:22ch;margin:0 auto;line-height:1.2;letter-spacing:-.6px;}
@@ -1136,6 +1161,46 @@ video::-webkit-media-controls{display:none!important;}
 }
 @media(max-width:560px){.qd-tl .pq-grid{grid-template-columns:1fr;}}
 
+/* ═══ FAQ · lista de preguntas frecuentes ═══
+   Sin tarjeta/caja: líneas finas como el resto del sitio. El glifo «+» → «×»
+   reutiliza el mismo signo que ya separa los cuadrantes de «Quiénes somos»
+   (.qd-br::after) — es el único indicador de estado (abierto/cerrado). */
+.faq-list{margin-top:52px;border-top:1px solid var(--line-2);max-width:900px;}
+.faq-item{position:relative;border-bottom:1px solid var(--line-2);}
+.faq-item::before{content:'';position:absolute;left:-1px;top:0;bottom:0;width:2px;background:var(--accent);
+  transform:scaleY(0);transform-origin:50% 50%;transition:transform .4s cubic-bezier(.16,1,.3,1);}
+.faq-item.open::before{transform:scaleY(1);}
+.faq-q{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:20px;width:100%;
+  padding:24px 4px 24px 22px;cursor:pointer;}
+.faq-tag{flex:0 0 auto;width:112px;font-family:'JetBrains Mono',monospace;font-size:11.5px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--accent-soft);opacity:.85;
+  transition:opacity .25s,color .25s;}
+.faq-item.open .faq-tag{color:#fff;opacity:1;}
+.faq-question{flex:1 1 auto;font-family:'Bricolage Grotesque',sans-serif;font-weight:600;
+  font-size:clamp(16.5px,1.9vw,20px);letter-spacing:-.01em;color:rgba(234,232,242,.88);
+  transition:color .25s;}
+.faq-item.open .faq-question,.faq-q:hover .faq-question{color:#fff;}
+.faq-toggle{flex:0 0 auto;width:26px;height:26px;display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:19px;color:var(--ceniza);
+  transition:transform .4s cubic-bezier(.16,1,.3,1),color .25s;transform:rotate(0deg);}
+.faq-item.open .faq-toggle{transform:rotate(45deg);color:var(--accent-soft);}
+.faq-q:hover .faq-toggle{color:#fff;}
+.faq-a-wrap{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s cubic-bezier(.16,1,.3,1);}
+.faq-item.open .faq-a-wrap{grid-template-rows:1fr;}
+.faq-a-inner{overflow:hidden;}
+.faq-answer{font-family:'Inter';font-weight:300;font-size:15.3px;line-height:1.62;
+  color:rgba(234,232,242,.72);max-width:62ch;padding:0 4px 26px 22px;}
+@media(max-width:640px){
+  .faq-q{gap:12px;padding:20px 4px 20px 16px;flex-wrap:wrap;}
+  .faq-tag{width:auto;order:1;flex-basis:100%;}
+  .faq-question{order:2;flex-basis:calc(100% - 46px);font-size:15.5px;}
+  .faq-toggle{order:3;}
+  .faq-answer{padding-left:16px;}
+}
+@media(prefers-reduced-motion:reduce){
+  .faq-a-wrap,.faq-toggle,.faq-item::before{transition:none;}
+}
+
 /* ═══ FOOTER ═══ */
 .v2-footer{position:relative;z-index:1;background:#06060A;border-top:1px solid var(--line);padding:54px clamp(21px,6vw,84px) 38px;}
 .v2-footer .inner{max-width:1200px;margin:0 auto;}
@@ -1581,6 +1646,10 @@ video::-webkit-media-controls{display:none!important;}
 
 <!-- ══════════════════════════════════════════
      11 · DIAGNÓSTICO
+════════════════════════════════════════════ -->
+
+<!-- ══════════════════════════════════════════
+     11.5 · FAQ · preguntas frecuentes
 ════════════════════════════════════════════ -->
 
 <!-- ══════════════════════════════════════════
