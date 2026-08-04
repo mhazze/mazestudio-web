@@ -298,11 +298,11 @@
     "El laberinto, resuelto ": "The maze, solved ",
     "con IA": "with AI",
     ". En Tenerife.": ". In Tenerife.",
-    "Excursiones, comercios y pymes recuperan horas que hoy pierden en tareas repetitivas.": "Tour operators, shops and small businesses reclaim hours they currently lose to repetitive tasks.",
+    "Excursiones en Costa Adeje, Los Cristianos y Las Américas, comercios y pymes de toda Canarias recuperan horas que hoy pierden en tareas repetitivas.": "Tour operators in Costa Adeje, Los Cristianos and Las Américas, shops and small businesses across the Canary Islands reclaim hours they currently lose to repetitive tasks.",
     "Tenerife, de cerca": "Tenerife, up close",
-    "Conocemos tu mercado. Estamos cerca.": "We know your market. We're close by.",
+    "Del sur de Tenerife. Conocemos tu mercado y estamos cerca.": "From southern Tenerife. We know your market and we're close by.",
     "Sobre tus herramientas": "Built on your tools",
-    "Cero migraciones. Automatizamos lo que ya tienes.": "Zero migrations. We automate what you already have.",
+    "Cero migraciones. Automatizamos con n8n sobre lo que ya tienes.": "Zero migrations. We automate with n8n on top of what you already have.",
     "Sin tecnicismos": "No tech jargon",
     "Demo de tu caso, antes de decidir nada.": "A demo of your case, before you decide anything.",
     "Te acompañamos": "We stick with you",
@@ -1326,7 +1326,16 @@ video::-webkit-media-controls{display:none!important;}
 @media(max-width:430px){
   .hero-title{font-size:clamp(40px,12.8vw,50px);}
 }
-.hero-title .hw{display:inline-block;line-height:1;opacity:0;}
+/* opacity:0 de base porque la entrada la coreografía .hero-ready (abajo).
+   La animación heroFallbackIn es una RED DE SEGURIDAD: si .hero-ready nunca
+   llega —preloader colgado, o un renderizador con presupuesto de tiempo como
+   Googlebot, que deja el titular invisible y la captura en negro— el texto se
+   revela igualmente a los 5 s. La regla de .hero-ready es más específica y
+   sustituye esta animación en cuanto entra, así que en una carga normal esta
+   red no se llega a ver nunca. */
+.hero-title .hw{display:inline-block;line-height:1;opacity:0;
+  animation:heroFallbackIn .01s linear 5s both;}
+@keyframes heroFallbackIn{from{opacity:0;}to{opacity:1;}}
 /* la entrada arranca cuando el preloader termina (.hero-ready), no al montar
    el componente — si no, la coreografía entera se resuelve oculta detrás
    del preloader y el usuario nunca la ve */
