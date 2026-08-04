@@ -1625,17 +1625,15 @@ window.MazeLogo = function MazeLogo() {
         if (done) return;
         done = true;
         setHide(true);
-        setTimeout(() => {
-          window.__preloaderActive = false;
-          window.dispatchEvent(new Event("preloader-done"));
-          setGone(true);
-        }, 1300);
+        window.__preloaderActive = false;
+        window.dispatchEvent(new Event("preloader-done"));
+        setTimeout(() => setGone(true), 650);
       };
       const t = setTimeout(() => {
         if (document.readyState === "complete") finish();
         else window.addEventListener("load", finish, { once: true });
-      }, 3700);
-      const hard = setTimeout(finish, 4e3);
+      }, 2500);
+      const hard = setTimeout(finish, 3e3);
       return () => {
         clearTimeout(t);
         clearTimeout(hard);
@@ -1650,7 +1648,7 @@ window.MazeLogo = function MazeLogo() {
       motion.div,
       {
         animate: { opacity: hide ? 0 : 1 },
-        transition: { duration: 1.2, ease: [0.4, 0, 0.2, 1] },
+        transition: { duration: 0.6, ease: [0.4, 0, 0.2, 1] },
         style: {
           position: "fixed",
           inset: 0,
