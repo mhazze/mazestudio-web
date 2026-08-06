@@ -325,33 +325,6 @@ window.MazeLogo = function MazeLogo() {
 
 (function(){
 (function() {
-  const { useEffect } = React;
-  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  window.CinematicTransitions = function CinematicTransitions() {
-    useEffect(() => {
-      const desktop = window.matchMedia("(min-width:881px)").matches;
-      if (reduced || !desktop || !window.gsap || !window.ScrollTrigger) return;
-      const ctx = window.gsap.context(() => {
-        const cta = document.querySelector("#contacto .cta-converge");
-        if (cta) window.gsap.from(cta, {
-          scale: 0.82,
-          filter: "blur(10px)",
-          ease: "power2.out",
-          scrollTrigger: { trigger: "#contacto", start: "top 80%", end: "top 38%", scrub: 0.6, invalidateOnRefresh: true }
-        });
-      });
-      if (window.__refreshST) window.__refreshST();
-      return () => {
-        ctx.revert();
-      };
-    }, []);
-    return null;
-  };
-})();
-})();
-
-(function(){
-(function() {
   const { useState } = React;
   const t = window.t;
   function LangToggle() {
@@ -1420,15 +1393,7 @@ window.MazeLogo = function MazeLogo() {
 
 (function(){
 (function() {
-  const motion = window.Motion.motion;
-  function fu(delay) {
-    return {
-      initial: { filter: "blur(10px)", y: 20 },
-      whileInView: { filter: "blur(0px)", y: 0 },
-      viewport: { once: true, amount: 0.4 },
-      transition: { duration: 0.7, delay, ease: "easeOut" }
-    };
-  }
+  const Reveal = window.Reveal;
   window.CtaSection = function CtaSection() {
     return /* @__PURE__ */ React.createElement("section", { id: "contacto", style: { position: "relative", overflow: "hidden", background: "#08070C", padding: "clamp(100.8px,16vh,176.4px) clamp(21px,6vw,84px)" } }, /* @__PURE__ */ React.createElement("div", { style: { position: "absolute", inset: 0, zIndex: 0, overflow: "hidden" } }, /* @__PURE__ */ React.createElement(
       "img",
@@ -1453,7 +1418,7 @@ window.MazeLogo = function MazeLogo() {
       zIndex: 1,
       pointerEvents: "none",
       background: "radial-gradient(120% 120% at 50% 30%, rgba(8,7,12,0) 40%, rgba(8,7,12,.74) 100%)"
-    } }), /* @__PURE__ */ React.createElement("div", { className: "cta-converge", style: { position: "relative", zIndex: 10, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" } }, /* @__PURE__ */ React.createElement(motion.h2, { ...fu(0), style: { fontFamily: "Bricolage Grotesque", fontWeight: 700, fontSize: "clamp(28px,4vw,52px)", letterSpacing: "-1.5px", lineHeight: 1.1, color: "#fff", marginBottom: 42, maxWidth: 560 } }, window.t("Empieza a trazar tu l\xEDnea recta")), /* @__PURE__ */ React.createElement(motion.div, { ...fu(0.12), style: { transform: "scale(1.2)", marginBottom: 8 } }, /* @__PURE__ */ React.createElement(window.MazeLogo, null)), /* @__PURE__ */ React.createElement(motion.div, { ...fu(0.28), className: "cta-acciones", style: { marginTop: 34 } }, /* @__PURE__ */ React.createElement("a", { href: "hablemos.html", className: "v2-btn v2-btn-white magnetic", style: { padding: "15px 28px", fontSize: 16.2 } }, window.t("Solicita tu auditor\xEDa gratis"), " ", /* @__PURE__ */ React.createElement(window.IconArrow, null)), /* @__PURE__ */ React.createElement("a", { href: window.CATALOGO_PDF, download: true, className: "v2-btn v2-btn-ghost", style: { padding: "15px 28px", fontSize: 16.2 } }, /* @__PURE__ */ React.createElement(window.IconDownload, null), " ", window.t("Descargar cat\xE1logo de servicios (PDF)"))), /* @__PURE__ */ React.createElement(motion.p, { ...fu(0.4), style: { marginTop: 22, fontFamily: "JetBrains Mono", fontSize: 13.2, color: "rgba(255,255,255,.65)" } }, window.t("info@mazestudio.site \xB7 respondemos en 24 h"))));
+    } }), /* @__PURE__ */ React.createElement("div", { className: "cta-converge", style: { position: "relative", zIndex: 10, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" } }, /* @__PURE__ */ React.createElement(Reveal, { delay: 0 }, /* @__PURE__ */ React.createElement("h2", { style: { fontFamily: "Bricolage Grotesque", fontWeight: 700, fontSize: "clamp(28px,4vw,52px)", letterSpacing: "-1.5px", lineHeight: 1.1, color: "#fff", marginBottom: 42, maxWidth: 560 } }, window.t("Empieza a trazar tu l\xEDnea recta"))), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.12, style: { transform: "scale(1.2)", marginBottom: 8 } }, /* @__PURE__ */ React.createElement(window.MazeLogo, null)), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.28, className: "cta-acciones", style: { marginTop: 34 } }, /* @__PURE__ */ React.createElement("a", { href: "hablemos.html", className: "v2-btn v2-btn-white magnetic", style: { padding: "15px 28px", fontSize: 16.2 } }, window.t("Solicita tu auditor\xEDa gratis"), " ", /* @__PURE__ */ React.createElement(window.IconArrow, null)), /* @__PURE__ */ React.createElement("a", { href: window.CATALOGO_PDF, download: true, className: "v2-btn v2-btn-ghost", style: { padding: "15px 28px", fontSize: 16.2 } }, /* @__PURE__ */ React.createElement(window.IconDownload, null), " ", window.t("Descargar cat\xE1logo de servicios (PDF)"))), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.4 }, /* @__PURE__ */ React.createElement("p", { style: { marginTop: 22, fontFamily: "JetBrains Mono", fontSize: 13.2, color: "rgba(255,255,255,.65)" } }, window.t("info@mazestudio.site \xB7 respondemos en 24 h")))));
   };
   window.Footer = function Footer() {
     const links = [
@@ -1652,7 +1617,7 @@ window.MazeLogo = function MazeLogo() {
     return null;
   }
   function App() {
-    return /* @__PURE__ */ React.createElement(MotionConfig, { reducedMotion: "user" }, /* @__PURE__ */ React.createElement(SmoothScroll, null), /* @__PURE__ */ React.createElement(window.Preloader, null), /* @__PURE__ */ React.createElement("div", { id: "smooth-wrapper" }, /* @__PURE__ */ React.createElement("div", { id: "smooth-content" }, /* @__PURE__ */ React.createElement(window.ScrollFX, null), /* @__PURE__ */ React.createElement(window.CinematicTransitions, null), /* @__PURE__ */ React.createElement(window.HeroSection, null), /* @__PURE__ */ React.createElement(window.LineaRectaSection, null), /* @__PURE__ */ React.createElement(window.MarqueeSection, null), /* @__PURE__ */ React.createElement(window.ComoFuncionaSection, null), /* @__PURE__ */ React.createElement(window.CatalogoSection, null), /* @__PURE__ */ React.createElement(window.RoiSection, null), /* @__PURE__ */ React.createElement(window.ServiciosSection, null), /* @__PURE__ */ React.createElement(window.PorQueSection, null), /* @__PURE__ */ React.createElement(window.FaqSection, null), /* @__PURE__ */ React.createElement(window.CtaSection, null), /* @__PURE__ */ React.createElement(window.Footer, null))));
+    return /* @__PURE__ */ React.createElement(MotionConfig, { reducedMotion: "user" }, /* @__PURE__ */ React.createElement(SmoothScroll, null), /* @__PURE__ */ React.createElement(window.Preloader, null), /* @__PURE__ */ React.createElement("div", { id: "smooth-wrapper" }, /* @__PURE__ */ React.createElement("div", { id: "smooth-content" }, /* @__PURE__ */ React.createElement(window.ScrollFX, null), /* @__PURE__ */ React.createElement(window.HeroSection, null), /* @__PURE__ */ React.createElement(window.LineaRectaSection, null), /* @__PURE__ */ React.createElement(window.MarqueeSection, null), /* @__PURE__ */ React.createElement(window.ComoFuncionaSection, null), /* @__PURE__ */ React.createElement(window.CatalogoSection, null), /* @__PURE__ */ React.createElement(window.RoiSection, null), /* @__PURE__ */ React.createElement(window.ServiciosSection, null), /* @__PURE__ */ React.createElement(window.PorQueSection, null), /* @__PURE__ */ React.createElement(window.FaqSection, null), /* @__PURE__ */ React.createElement(window.CtaSection, null), /* @__PURE__ */ React.createElement(window.Footer, null))));
   }
   ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App, null));
 })();
