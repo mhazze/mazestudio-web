@@ -381,7 +381,7 @@ window.MazeLogo = function MazeLogo() {
       { label: t("C\xF3mo funciona"), href: "#como" },
       { label: t("Ahorro"), href: "#roi" },
       { label: t("Servicios"), href: "#servicios" },
-      { label: t("Diagn\xF3stico"), href: "#diagnostico" }
+      { label: t("FAQ"), href: "#faq" }
     ];
     return /* @__PURE__ */ React.createElement("nav", { className: "v2nav", style: {
       position: "fixed",
@@ -1201,7 +1201,7 @@ window.MazeLogo = function MazeLogo() {
     return /* @__PURE__ */ React.createElement("div", { className: "qd-cell qd-tr qd-anim", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("div", { className: "cubo-halo" }), /* @__PURE__ */ React.createElement("div", { className: "cubo-scene" }, /* @__PURE__ */ React.createElement("img", { className: "cubo-img", src: "assets/referencias/cubo-laberinto-3d.webp", alt: "", loading: "lazy", decoding: "async" })), /* @__PURE__ */ React.createElement("p", { className: "qd-cap" }, window.t("// el laberinto, bajo control")));
   }
   window.PorQueSection = function PorQueSection() {
-    return /* @__PURE__ */ React.createElement("section", { id: "empresa", className: "qd-sec" }, /* @__PURE__ */ React.createElement("div", { className: "qd-grid" }, /* @__PURE__ */ React.createElement("div", { className: "qd-cell qd-tl" }, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("p", { className: "v2-kicker" }, window.t("// qui\xE9nes somos")), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2" }, window.t("El laberinto, resuelto "), /* @__PURE__ */ React.createElement("em", null, window.t("con IA")), window.t(". En Tenerife.")), /* @__PURE__ */ React.createElement("p", { className: "v2-note" }, window.t("Excursiones en Costa Adeje, Los Cristianos y Las Am\xE9ricas, comercios y pymes de toda Canarias recuperan horas que hoy pierden en tareas repetitivas."))), /* @__PURE__ */ React.createElement("div", { className: "pq-grid" }, VALUES.map((v, i) => /* @__PURE__ */ React.createElement(Reveal, { key: v.h, delay: i * 0.06 }, /* @__PURE__ */ React.createElement("div", { className: "pq-card", onPointerMove: spotlight }, /* @__PURE__ */ React.createElement("div", { className: "pq-ic" }, v.ic), /* @__PURE__ */ React.createElement("h4", null, v.h), /* @__PURE__ */ React.createElement("p", null, v.p)))))), /* @__PURE__ */ React.createElement(CuboMarca, null), /* @__PURE__ */ React.createElement("div", { id: "diagnostico", className: "qd-cell qd-br cd-center" }, /* @__PURE__ */ React.createElement(window.DiagnosticoInner, null))));
+    return /* @__PURE__ */ React.createElement("section", { id: "empresa", className: "qd-sec" }, /* @__PURE__ */ React.createElement("div", { className: "qd-grid" }, /* @__PURE__ */ React.createElement("div", { className: "qd-cell qd-tl" }, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("p", { className: "v2-kicker" }, window.t("// qui\xE9nes somos")), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2" }, window.t("El laberinto, resuelto "), /* @__PURE__ */ React.createElement("em", null, window.t("con IA")), window.t(". En Tenerife.")), /* @__PURE__ */ React.createElement("p", { className: "v2-note" }, window.t("Excursiones en Costa Adeje, Los Cristianos y Las Am\xE9ricas, comercios y pymes de toda Canarias recuperan horas que hoy pierden en tareas repetitivas."))), /* @__PURE__ */ React.createElement("div", { className: "pq-grid" }, VALUES.map((v, i) => /* @__PURE__ */ React.createElement(Reveal, { key: v.h, delay: i * 0.06 }, /* @__PURE__ */ React.createElement("div", { className: "pq-card", onPointerMove: spotlight }, /* @__PURE__ */ React.createElement("div", { className: "pq-ic" }, v.ic), /* @__PURE__ */ React.createElement("h4", null, v.h), /* @__PURE__ */ React.createElement("p", null, v.p)))))), /* @__PURE__ */ React.createElement(CuboMarca, null)));
   };
 })();
 })();
@@ -1356,129 +1356,6 @@ window.MazeLogo = function MazeLogo() {
 
 (function(){
 (function() {
-  const { useState, useEffect, useRef } = React;
-  const Reveal = window.Reveal;
-  const HeadReveal = window.HeadReveal;
-  const CARDS = [
-    "\xBFHas contestado otra vez la pregunta de siempre \u2014 horarios, precios, disponibilidad?",
-    "\xBFHas pasado datos a mano de un sitio a otro: del WhatsApp al calendario, del correo al Excel?",
-    "\xBFSe te ha quedado alg\xFAn mensaje de un cliente sin responder hasta el d\xEDa siguiente?",
-    "\xBFHas hecho papeleo de noche o en fin de semana, fuera de tu horario?",
-    '\xBFHas pensado al menos una vez "esto deber\xEDa hacerse solo"?'
-  ].map(window.t);
-  function verdict(n) {
-    if (n <= 1) return {
-      tag: window.t("resultado \xB7 quiz\xE1 no es el momento"),
-      title: /* @__PURE__ */ React.createElement(React.Fragment, null, window.t("Tu semana ya va bastante "), /* @__PURE__ */ React.createElement("em", null, window.t("fluida."))),
-      body: window.t("No detectamos una fuga de tiempo clara ahora mismo. Si esto cambia, nos cuentas y lo miramos sin compromiso.")
-    };
-    if (n <= 3) return {
-      tag: window.t("resultado \xB7 vale la pena mirarlo"),
-      title: /* @__PURE__ */ React.createElement(React.Fragment, null, window.t("Hay una fuga de tiempo "), /* @__PURE__ */ React.createElement("em", null, window.t("ah\xED."))),
-      body: window.t("Lo que has marcado se repite semana tras semana. Una conversaci\xF3n de 20 minutos aclara cu\xE1ntas horas puedes recuperar.")
-    };
-    return {
-      tag: window.t("resultado \xB7 encajamos"),
-      title: /* @__PURE__ */ React.createElement(React.Fragment, null, window.t("S\xED. Podemos "), /* @__PURE__ */ React.createElement("em", null, window.t("ayudarte."))),
-      body: window.t("Todo lo que has marcado pasa cada semana \u2014 y se puede automatizar sobre las herramientas que ya usas. Hablemos y te ense\xF1amos por d\xF3nde empezar.")
-    };
-  }
-  function ResultBox({ res, onRestart }) {
-    const [show, setShow] = useState(false);
-    useEffect(() => {
-      const id = requestAnimationFrame(() => setShow(true));
-      return () => cancelAnimationFrame(id);
-    }, []);
-    return /* @__PURE__ */ React.createElement("div", { className: "cd-result" + (show ? " show" : ""), "aria-live": "polite" }, /* @__PURE__ */ React.createElement("span", { className: "rtag" }, res.tag), /* @__PURE__ */ React.createElement("h3", null, res.title), /* @__PURE__ */ React.createElement("p", null, res.body), /* @__PURE__ */ React.createElement("div", { className: "acts" }, /* @__PURE__ */ React.createElement("a", { className: "v2-btn v2-btn-accent", href: "hablemos.html" }, window.t("\u2192 Solicita tu auditor\xEDa gratis")), /* @__PURE__ */ React.createElement("a", { className: "v2-btn v2-btn-ghost", href: "#como" }, window.t("Ver c\xF3mo funciona"))), /* @__PURE__ */ React.createElement("button", { className: "cd-restart", onClick: onRestart }, window.t("Volver a intentarlo")));
-  }
-  window.DiagnosticoInner = function DiagnosticoInner() {
-    const [idx, setIdx] = useState(0);
-    const [yes, setYes] = useState(0);
-    const done = idx >= CARDS.length;
-    const frontRef = useRef(null);
-    const busyRef = useRef(false);
-    const dragRef = useRef({ on: false, x0: 0, dx: 0 });
-    function resolve(isYes) {
-      if (busyRef.current || done) return;
-      busyRef.current = true;
-      const el = frontRef.current;
-      if (el) {
-        el.style.transition = "transform .45s cubic-bezier(.16,1,.3,1), opacity .4s";
-        el.style.transform = "translateX(" + (isYes ? 140 : -140) + "%) rotate(" + (isYes ? 18 : -18) + "deg)";
-        el.style.opacity = "0";
-      }
-      setTimeout(() => {
-        if (isYes) setYes((y) => y + 1);
-        setIdx((i) => i + 1);
-        busyRef.current = false;
-      }, 260);
-    }
-    function onDown(e) {
-      if (busyRef.current) return;
-      dragRef.current = { on: true, x0: e.clientX, dx: 0 };
-      const el = frontRef.current;
-      if (el) {
-        if (el.setPointerCapture) el.setPointerCapture(e.pointerId);
-        el.classList.add("dragging");
-      }
-    }
-    function onMove(e) {
-      if (!dragRef.current.on) return;
-      const dx = e.clientX - dragRef.current.x0;
-      dragRef.current.dx = dx;
-      const el = frontRef.current;
-      if (!el) return;
-      el.style.transform = "translateX(" + dx + "px) rotate(" + dx / 18 + "deg)";
-      const p = Math.min(Math.abs(dx) / 120, 1);
-      const bn = el.querySelector(".cd-badge.no"), bs = el.querySelector(".cd-badge.si");
-      if (bn) bn.style.opacity = dx < 0 ? p : 0;
-      if (bs) bs.style.opacity = dx > 0 ? p : 0;
-    }
-    function onUp() {
-      if (!dragRef.current.on) return;
-      const dx = dragRef.current.dx;
-      dragRef.current.on = false;
-      const el = frontRef.current;
-      if (el) el.classList.remove("dragging");
-      if (Math.abs(dx) > 100) {
-        resolve(dx > 0);
-      } else if (el) {
-        el.style.transform = "";
-        const bn = el.querySelector(".cd-badge.no"), bs = el.querySelector(".cd-badge.si");
-        if (bn) bn.style.opacity = 0;
-        if (bs) bs.style.opacity = 0;
-      }
-    }
-    function restart() {
-      setIdx(0);
-      setYes(0);
-    }
-    const res = done ? verdict(yes) : null;
-    return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("p", { className: "v2-kicker" }, window.t("// \xBFlo necesitas?")), /* @__PURE__ */ React.createElement("div", { className: "hr-olh" }, /* @__PURE__ */ React.createElement("h2", { className: "v2-h2 hr-olbase", "aria-hidden": "true" }, window.t("\xBFNos "), /* @__PURE__ */ React.createElement("em", null, window.t("necesitas?"))), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2 hr-olfill" }, window.t("\xBFNos "), /* @__PURE__ */ React.createElement("em", null, window.t("necesitas?"))), /* @__PURE__ */ React.createElement("span", { className: "hr-olbeam", "aria-hidden": "true" })), /* @__PURE__ */ React.createElement("p", { className: "v2-note" }, window.t("Piensa solo en tus \xFAltimos 7 d\xEDas. Desliza o pulsa \u2014 al final te decimos si encajamos."))), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.05 }, /* @__PURE__ */ React.createElement("div", { className: "cd-dots", "aria-hidden": "true" }, CARDS.map((_, i) => /* @__PURE__ */ React.createElement("span", { key: i, className: "cd-dot" + (i < idx ? " done" : "") + (i === idx && !done ? " cur" : "") }))), !done && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "cd-stage" }, CARDS.map((q, i) => /* @__PURE__ */ React.createElement("div", { key: "sz" + i, className: "cd-sizer", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("span", { className: "cd-num" }, "01 / 05"), /* @__PURE__ */ React.createElement("p", { className: "cd-txt" }, q))), [0, 1, 2].map((k) => {
-      const i = idx + k;
-      if (i >= CARDS.length) return null;
-      const front = k === 0;
-      return /* @__PURE__ */ React.createElement(
-        "div",
-        {
-          key: i,
-          ref: front ? frontRef : null,
-          className: "cd-card",
-          style: { zIndex: 10 - k, transform: "translateY(" + k * 12 + "px) scale(" + (1 - k * 0.055) + ")", opacity: k === 2 ? 0.5 : k === 1 ? 0.8 : 1 },
-          onPointerDown: front ? onDown : void 0,
-          onPointerMove: front ? onMove : void 0,
-          onPointerUp: front ? onUp : void 0,
-          onPointerCancel: front ? onUp : void 0
-        },
-        /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("span", { className: "cd-badge no" }, window.t("No")), /* @__PURE__ */ React.createElement("span", { className: "cd-badge si" }, window.t("S\xED")), /* @__PURE__ */ React.createElement("span", { className: "cd-num" }, "0" + (i + 1) + " / 0" + CARDS.length), /* @__PURE__ */ React.createElement("p", { className: "cd-txt" }, CARDS[i]))
-      );
-    })), /* @__PURE__ */ React.createElement("div", { className: "cd-actions" }, /* @__PURE__ */ React.createElement("button", { className: "cd-abtn no", onClick: () => resolve(false) }, /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2.4", strokeLinecap: "round" }, /* @__PURE__ */ React.createElement("path", { d: "M6 6l12 12M18 6L6 18" })), window.t("No me pasa")), /* @__PURE__ */ React.createElement("button", { className: "cd-abtn si", onClick: () => resolve(true) }, /* @__PURE__ */ React.createElement("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2.6", strokeLinecap: "round", strokeLinejoin: "round" }, /* @__PURE__ */ React.createElement("path", { d: "M4 12l5 5L20 6" })), window.t("S\xED, me suena")))), done && res && /* @__PURE__ */ React.createElement(ResultBox, { res, onRestart: restart })));
-  };
-})();
-})();
-
-(function(){
-(function() {
   const { useState } = React;
   const Reveal = window.Reveal;
   const HeadReveal = window.HeadReveal;
@@ -1583,7 +1460,7 @@ window.MazeLogo = function MazeLogo() {
       { label: window.t("C\xF3mo funciona"), href: "#como" },
       { label: window.t("Ahorro"), href: "#roi" },
       { label: window.t("Servicios"), href: "#servicios" },
-      { label: window.t("\xBFNos necesitas?"), href: "#diagnostico" }
+      { label: window.t("FAQ"), href: "#faq" }
     ];
     return /* @__PURE__ */ React.createElement("footer", { className: "v2-footer" }, /* @__PURE__ */ React.createElement("div", { className: "inner" }, /* @__PURE__ */ React.createElement("div", { className: "top" }, /* @__PURE__ */ React.createElement("a", { href: "#top", style: { display: "flex", alignItems: "center", gap: 10 }, "aria-label": "Mazestudio" }, /* @__PURE__ */ React.createElement(window.MazeLogo, null), /* @__PURE__ */ React.createElement("span", { style: { fontFamily: "Bricolage Grotesque", fontWeight: 600, fontSize: 18.9, color: "#EAE8F2", letterSpacing: "-.02em" } }, "Maze studio", /* @__PURE__ */ React.createElement("span", { style: { color: "#4B8CF7" } }, "."))), /* @__PURE__ */ React.createElement("nav", null, links.map((l) => /* @__PURE__ */ React.createElement("a", { key: l.href, href: l.href }, l.label)), /* @__PURE__ */ React.createElement("a", { href: window.CATALOGO_PDF, download: true, className: "f-pdf" }, /* @__PURE__ */ React.createElement(window.IconDownload, null), " ", window.t("Cat\xE1logo de servicios"), " ", /* @__PURE__ */ React.createElement("span", null, "PDF")))), /* @__PURE__ */ React.createElement("div", { className: "bot" }, /* @__PURE__ */ React.createElement("span", null, window.t("\xA9 2026 Mazestudio \xB7 estudio de automatizaci\xF3n con IA \xB7 Tenerife"), " \xB7 ", window.t("\xDAltima actualizaci\xF3n"), ": ", "2026-08-06"), /* @__PURE__ */ React.createElement("span", { className: "legal" }, /* @__PURE__ */ React.createElement("a", { href: "aviso-legal.html" }, window.t("Aviso legal")), /* @__PURE__ */ React.createElement("a", { href: "privacidad.html" }, window.t("Privacidad")), /* @__PURE__ */ React.createElement("a", { href: "cookies.html" }, "Cookies")))));
   };
