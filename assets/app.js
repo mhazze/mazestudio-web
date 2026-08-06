@@ -1,6 +1,6 @@
 /* mazestudio · app.js — GENERADO por build.mjs. NO editar a mano.
    Fuente: WEB/src/mazestudio-web.html · regenerar: npm run build */
-/* MZLASTMOD:2026-08-04 */
+/* MZLASTMOD:2026-08-06 */
 (function(){
 (function() {
   const { useRef, useState, useEffect } = React;
@@ -609,9 +609,6 @@ window.MazeLogo = function MazeLogo() {
 (function() {
   const { useEffect, useRef } = React;
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const LEFT_WORDS = window.t("Tu operativa hoy es un laberinto de tareas que se repiten.").split(" ");
-  const RIGHT_WORDS = window.t("Nuestro trabajo es trazar el camino directo \u2014 y dejar que se recorra solo.").split(" ");
-  const Words = ({ list }) => list.map((w, i) => /* @__PURE__ */ React.createElement(React.Fragment, { key: i }, /* @__PURE__ */ React.createElement("span", { className: "w" }, w), " "));
   window.LineaRectaSection = function LineaRectaSection() {
     const secRef = useRef(null);
     const stageRef = useRef(null);
@@ -622,9 +619,6 @@ window.MazeLogo = function MazeLogo() {
     const ghostRef = useRef(null);
     const topRef = useRef(null);
     const botRef = useRef(null);
-    const flankRef = useRef(null);
-    const leftRef = useRef(null);
-    const rightRef = useRef(null);
     useEffect(() => {
       const path = pathRef.current, node = nodeRef.current, ring = ringRef.current, dot = dotRef.current, stage = stageRef.current, ghost = ghostRef.current, top = topRef.current, bot = botRef.current;
       if (!path) return;
@@ -656,12 +650,6 @@ window.MazeLogo = function MazeLogo() {
         if (stage) stage.querySelectorAll(".lr-wp").forEach((wp) => {
           wp.setAttribute("r", "5.5");
           wp.style.opacity = 1;
-        });
-        [leftRef.current, rightRef.current].forEach((el) => {
-          if (el) el.querySelectorAll(".w").forEach((w) => {
-            w.style.opacity = 1;
-            w.style.filter = "none";
-          });
         });
       };
       if (reduced || !window.gsap || !window.ScrollTrigger) {
@@ -695,31 +683,17 @@ window.MazeLogo = function MazeLogo() {
         if (ring) tl.fromTo(ring, { opacity: 0, attr: { r: 8 } }, { opacity: 1, attr: { r: 26 }, duration: 0.2, ease: "power2.out" }, 0.82);
         if (bot) tl.fromTo(bot, { opacity: 0, attr: { y: 886 } }, { opacity: 1, attr: { y: 878 }, duration: 0.16, ease: "power2.out" }, 0.84);
         if (lite) tl.duration(2.8);
-        const flank = flankRef.current;
-        const leftW = leftRef.current ? leftRef.current.querySelectorAll(".w") : [];
-        const rightW = rightRef.current ? rightRef.current.querySelectorAll(".w") : [];
-        if (flank && (leftW.length || rightW.length)) {
-          const tlw = window.gsap.timeline({
-            // las frases acaban de revelarse también antes del centro
-            scrollTrigger: lite ? { trigger: flank, start: "top 82%", once: true } : { trigger: flank, start: "top 84%", end: "center 66%", scrub: 1.5 }
-          });
-          const wordIn = lite ? {} : { filter: "blur(8px)" };
-          const wordOut = () => ({ opacity: 1, ...lite ? {} : { filter: "blur(0px)" }, ease: "sine.out", duration: 1.6, stagger: { each: 0.35, ease: "sine.inOut" } });
-          if (leftW.length) tlw.fromTo(leftW, wordIn, wordOut(), 0);
-          if (rightW.length) tlw.fromTo(rightW, wordIn, wordOut(), ">-0.8");
-          if (lite) tlw.duration(2.6);
-        }
       }, stage);
       return () => ctx.revert();
     }, []);
-    return /* @__PURE__ */ React.createElement("section", { ref: secRef, id: "idea", className: "lr-sec" }, /* @__PURE__ */ React.createElement("div", { className: "lr-blob", style: { width: 460, height: 460, left: "-8%", top: "2%", background: "rgba(99,80,170,.42)", animation: "lrFloat1 14s ease-in-out infinite" } }), /* @__PURE__ */ React.createElement("div", { className: "lr-blob", style: { width: 420, height: 420, right: "-6%", bottom: "-8%", background: "rgba(75,140,247,.4)", animation: "lrFloat2 17s ease-in-out infinite" } }), /* @__PURE__ */ React.createElement("div", { className: "lr-inner" }, /* @__PURE__ */ React.createElement(window.Reveal, null, /* @__PURE__ */ React.createElement("span", { className: "lr-kicker" }, window.t("// la idea, en una imagen")), /* @__PURE__ */ React.createElement("h2", { className: "lr-title" }, window.t("De lo enredado a lo simple. "), /* @__PURE__ */ React.createElement("em", null, window.t("Una l\xEDnea recta.")))), /* @__PURE__ */ React.createElement("div", { ref: flankRef, className: "lr-flank" }, /* @__PURE__ */ React.createElement("p", { ref: leftRef, className: "lr-side lr-side-l" }, /* @__PURE__ */ React.createElement(Words, { list: LEFT_WORDS })), /* @__PURE__ */ React.createElement("div", { ref: stageRef, className: "lr-stage" }, /* @__PURE__ */ React.createElement("svg", { className: "lr-svg", viewBox: "0 0 300 900", preserveAspectRatio: "xMidYMid meet", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("defs", null, /* @__PURE__ */ React.createElement("linearGradient", { id: "lr-grad-v", gradientUnits: "userSpaceOnUse", x1: "150", y1: "96", x2: "150", y2: "840" }, /* @__PURE__ */ React.createElement("stop", { offset: "0", stopColor: "#6E6D7E" }), /* @__PURE__ */ React.createElement("stop", { offset: "0.34", stopColor: "#4B8CF7" }), /* @__PURE__ */ React.createElement("stop", { offset: "1", stopColor: "#86E6FF" }))), /* @__PURE__ */ React.createElement("text", { ref: topRef, className: "lr-axis-top", x: "150", y: "58", textAnchor: "middle", style: { opacity: 0 } }, window.t("ENREDADO")), /* @__PURE__ */ React.createElement("g", { ref: ghostRef, style: { opacity: 0 } }, /* @__PURE__ */ React.createElement("path", { className: "maze-ghost", d: "M70 140 V220 H180 V170 H120 V274" }), /* @__PURE__ */ React.createElement("path", { className: "maze-ghost", d: "M214 132 V214 H90 V292 H172" }), /* @__PURE__ */ React.createElement("path", { className: "maze-ghost", d: "M150 116 V152 H58 V206" })), /* @__PURE__ */ React.createElement(
+    return /* @__PURE__ */ React.createElement("section", { ref: secRef, id: "idea", className: "lr-sec" }, /* @__PURE__ */ React.createElement("div", { className: "lr-blob", style: { width: 460, height: 460, left: "-8%", top: "2%", background: "rgba(99,80,170,.42)", animation: "lrFloat1 14s ease-in-out infinite" } }), /* @__PURE__ */ React.createElement("div", { className: "lr-blob", style: { width: 420, height: 420, right: "-6%", bottom: "-8%", background: "rgba(75,140,247,.4)", animation: "lrFloat2 17s ease-in-out infinite" } }), /* @__PURE__ */ React.createElement("div", { className: "lr-inner" }, /* @__PURE__ */ React.createElement(window.Reveal, null, /* @__PURE__ */ React.createElement("span", { className: "lr-kicker" }, window.t("// la idea, en una imagen")), /* @__PURE__ */ React.createElement("h2", { className: "lr-title" }, window.t("De lo enredado a lo simple. "), /* @__PURE__ */ React.createElement("em", null, window.t("Una l\xEDnea recta.")))), /* @__PURE__ */ React.createElement("div", { className: "lr-flank" }, /* @__PURE__ */ React.createElement("div", { ref: stageRef, className: "lr-stage" }, /* @__PURE__ */ React.createElement("svg", { className: "lr-svg", viewBox: "0 0 300 900", preserveAspectRatio: "xMidYMid meet", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("defs", null, /* @__PURE__ */ React.createElement("linearGradient", { id: "lr-grad-v", gradientUnits: "userSpaceOnUse", x1: "150", y1: "96", x2: "150", y2: "840" }, /* @__PURE__ */ React.createElement("stop", { offset: "0", stopColor: "#6E6D7E" }), /* @__PURE__ */ React.createElement("stop", { offset: "0.34", stopColor: "#4B8CF7" }), /* @__PURE__ */ React.createElement("stop", { offset: "1", stopColor: "#86E6FF" }))), /* @__PURE__ */ React.createElement("text", { ref: topRef, className: "lr-axis-top", x: "150", y: "58", textAnchor: "middle", style: { opacity: 0 } }, window.t("ENREDADO")), /* @__PURE__ */ React.createElement("g", { ref: ghostRef, style: { opacity: 0 } }, /* @__PURE__ */ React.createElement("path", { className: "maze-ghost", d: "M70 140 V220 H180 V170 H120 V274" }), /* @__PURE__ */ React.createElement("path", { className: "maze-ghost", d: "M214 132 V214 H90 V292 H172" }), /* @__PURE__ */ React.createElement("path", { className: "maze-ghost", d: "M150 116 V152 H58 V206" })), /* @__PURE__ */ React.createElement(
       "path",
       {
         ref: pathRef,
         className: "maze-path",
         d: "M150 96 H60 V170 H240 V126 H96 V236 H210 V296 H130 V360 H150 V840"
       }
-    ), /* @__PURE__ */ React.createElement("circle", { className: "lr-wp", cx: "240", cy: "170", r: "5.5", "data-frac": "0.236" }), /* @__PURE__ */ React.createElement("circle", { className: "lr-wp", cx: "96", cy: "126", r: "5.5", "data-frac": "0.364" }), /* @__PURE__ */ React.createElement("circle", { className: "lr-wp", cx: "210", cy: "236", r: "5.5", "data-frac": "0.518" }), /* @__PURE__ */ React.createElement("circle", { className: "lr-wp", cx: "130", cy: "296", r: "5.5", "data-frac": "0.614" }), /* @__PURE__ */ React.createElement("circle", { ref: ringRef, cx: "150", cy: "840", r: "26", fill: "none", stroke: "rgba(134,230,255,.4)", strokeWidth: "1.5", style: { opacity: 0 } }), /* @__PURE__ */ React.createElement("circle", { ref: nodeRef, className: "maze-node", cx: "150", cy: "840", r: "13", fill: "#86E6FF", style: { opacity: 0 } }), /* @__PURE__ */ React.createElement("circle", { ref: dotRef, className: "lr-traveldot", cx: "150", cy: "96", r: "7", style: { opacity: 0 } }), /* @__PURE__ */ React.createElement("text", { ref: botRef, className: "lr-axis-bot", x: "150", y: "878", textAnchor: "middle", style: { opacity: 0 } }, window.t("RESUELTO")))), /* @__PURE__ */ React.createElement("p", { ref: rightRef, className: "lr-side lr-side-r" }, /* @__PURE__ */ React.createElement(Words, { list: RIGHT_WORDS })))));
+    ), /* @__PURE__ */ React.createElement("circle", { className: "lr-wp", cx: "240", cy: "170", r: "5.5", "data-frac": "0.236" }), /* @__PURE__ */ React.createElement("circle", { className: "lr-wp", cx: "96", cy: "126", r: "5.5", "data-frac": "0.364" }), /* @__PURE__ */ React.createElement("circle", { className: "lr-wp", cx: "210", cy: "236", r: "5.5", "data-frac": "0.518" }), /* @__PURE__ */ React.createElement("circle", { className: "lr-wp", cx: "130", cy: "296", r: "5.5", "data-frac": "0.614" }), /* @__PURE__ */ React.createElement("circle", { ref: ringRef, cx: "150", cy: "840", r: "26", fill: "none", stroke: "rgba(134,230,255,.4)", strokeWidth: "1.5", style: { opacity: 0 } }), /* @__PURE__ */ React.createElement("circle", { ref: nodeRef, className: "maze-node", cx: "150", cy: "840", r: "13", fill: "#86E6FF", style: { opacity: 0 } }), /* @__PURE__ */ React.createElement("circle", { ref: dotRef, className: "lr-traveldot", cx: "150", cy: "96", r: "7", style: { opacity: 0 } }), /* @__PURE__ */ React.createElement("text", { ref: botRef, className: "lr-axis-bot", x: "150", y: "878", textAnchor: "middle", style: { opacity: 0 } }, window.t("RESUELTO")))))));
   };
 })();
 })();
@@ -1611,7 +1585,7 @@ window.MazeLogo = function MazeLogo() {
       { label: window.t("Servicios"), href: "#servicios" },
       { label: window.t("\xBFNos necesitas?"), href: "#diagnostico" }
     ];
-    return /* @__PURE__ */ React.createElement("footer", { className: "v2-footer" }, /* @__PURE__ */ React.createElement("div", { className: "inner" }, /* @__PURE__ */ React.createElement("div", { className: "top" }, /* @__PURE__ */ React.createElement("a", { href: "#top", style: { display: "flex", alignItems: "center", gap: 10 }, "aria-label": "Mazestudio" }, /* @__PURE__ */ React.createElement(window.MazeLogo, null), /* @__PURE__ */ React.createElement("span", { style: { fontFamily: "Bricolage Grotesque", fontWeight: 600, fontSize: 18.9, color: "#EAE8F2", letterSpacing: "-.02em" } }, "Maze studio", /* @__PURE__ */ React.createElement("span", { style: { color: "#4B8CF7" } }, "."))), /* @__PURE__ */ React.createElement("nav", null, links.map((l) => /* @__PURE__ */ React.createElement("a", { key: l.href, href: l.href }, l.label)), /* @__PURE__ */ React.createElement("a", { href: window.CATALOGO_PDF, download: true, className: "f-pdf" }, /* @__PURE__ */ React.createElement(window.IconDownload, null), " ", window.t("Cat\xE1logo de servicios"), " ", /* @__PURE__ */ React.createElement("span", null, "PDF")))), /* @__PURE__ */ React.createElement("div", { className: "bot" }, /* @__PURE__ */ React.createElement("span", null, window.t("\xA9 2026 Mazestudio \xB7 estudio de automatizaci\xF3n con IA \xB7 Tenerife"), " \xB7 ", window.t("\xDAltima actualizaci\xF3n"), ": ", "2026-08-04"), /* @__PURE__ */ React.createElement("span", { className: "legal" }, /* @__PURE__ */ React.createElement("a", { href: "aviso-legal.html" }, window.t("Aviso legal")), /* @__PURE__ */ React.createElement("a", { href: "privacidad.html" }, window.t("Privacidad")), /* @__PURE__ */ React.createElement("a", { href: "cookies.html" }, "Cookies")))));
+    return /* @__PURE__ */ React.createElement("footer", { className: "v2-footer" }, /* @__PURE__ */ React.createElement("div", { className: "inner" }, /* @__PURE__ */ React.createElement("div", { className: "top" }, /* @__PURE__ */ React.createElement("a", { href: "#top", style: { display: "flex", alignItems: "center", gap: 10 }, "aria-label": "Mazestudio" }, /* @__PURE__ */ React.createElement(window.MazeLogo, null), /* @__PURE__ */ React.createElement("span", { style: { fontFamily: "Bricolage Grotesque", fontWeight: 600, fontSize: 18.9, color: "#EAE8F2", letterSpacing: "-.02em" } }, "Maze studio", /* @__PURE__ */ React.createElement("span", { style: { color: "#4B8CF7" } }, "."))), /* @__PURE__ */ React.createElement("nav", null, links.map((l) => /* @__PURE__ */ React.createElement("a", { key: l.href, href: l.href }, l.label)), /* @__PURE__ */ React.createElement("a", { href: window.CATALOGO_PDF, download: true, className: "f-pdf" }, /* @__PURE__ */ React.createElement(window.IconDownload, null), " ", window.t("Cat\xE1logo de servicios"), " ", /* @__PURE__ */ React.createElement("span", null, "PDF")))), /* @__PURE__ */ React.createElement("div", { className: "bot" }, /* @__PURE__ */ React.createElement("span", null, window.t("\xA9 2026 Mazestudio \xB7 estudio de automatizaci\xF3n con IA \xB7 Tenerife"), " \xB7 ", window.t("\xDAltima actualizaci\xF3n"), ": ", "2026-08-06"), /* @__PURE__ */ React.createElement("span", { className: "legal" }, /* @__PURE__ */ React.createElement("a", { href: "aviso-legal.html" }, window.t("Aviso legal")), /* @__PURE__ */ React.createElement("a", { href: "privacidad.html" }, window.t("Privacidad")), /* @__PURE__ */ React.createElement("a", { href: "cookies.html" }, "Cookies")))));
   };
 })();
 })();
