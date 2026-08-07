@@ -486,7 +486,7 @@ window.MazeLogo = function MazeLogo() {
   const { useRef, useState, useEffect } = React;
   const MOVIL = window.matchMedia("(max-width:860px)").matches;
   const HERO_VIDEO = MOVIL ? "assets/referencias/referencia-cubo-cristal-01-movil-loop.mp4" : "assets/referencias/referencia-cubo-cristal-01-4k60-loop.mp4";
-  const HERO_POSTER = MOVIL ? "assets/referencias/poster-cubo-carga-movil.jpg" : "assets/referencias/poster-cubo-carga.jpg";
+  const HERO_POSTER = MOVIL ? "assets/referencias/poster-cubo-carga-movil.webp" : "assets/referencias/poster-cubo-carga.webp";
   const HERO_WORD = "Mazestudio";
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
@@ -1174,7 +1174,7 @@ window.MazeLogo = function MazeLogo() {
     return /* @__PURE__ */ React.createElement("div", { className: "qd-cell qd-tr qd-anim", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("div", { className: "cubo-halo" }), /* @__PURE__ */ React.createElement("div", { className: "cubo-scene" }, /* @__PURE__ */ React.createElement("img", { className: "cubo-img", src: "assets/referencias/cubo-laberinto-3d.webp", alt: "", loading: "lazy", decoding: "async" })), /* @__PURE__ */ React.createElement("p", { className: "qd-cap" }, window.t("// el laberinto, bajo control")));
   }
   window.PorQueSection = function PorQueSection() {
-    return /* @__PURE__ */ React.createElement("section", { id: "empresa", className: "qd-sec" }, /* @__PURE__ */ React.createElement("div", { className: "qd-grid" }, /* @__PURE__ */ React.createElement("div", { className: "qd-cell qd-tl" }, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("p", { className: "v2-kicker" }, window.t("// qui\xE9nes somos")), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2" }, window.t("El laberinto, resuelto "), /* @__PURE__ */ React.createElement("em", null, window.t("con IA")), window.t(". En Tenerife.")), /* @__PURE__ */ React.createElement("p", { className: "v2-note" }, window.t("Excursiones en Costa Adeje, Los Cristianos y Las Am\xE9ricas, comercios y pymes de toda Canarias recuperan horas que hoy pierden en tareas repetitivas."))), /* @__PURE__ */ React.createElement("div", { className: "pq-grid" }, VALUES.map((v, i) => /* @__PURE__ */ React.createElement(Reveal, { key: v.h, delay: i * 0.06 }, /* @__PURE__ */ React.createElement("div", { className: "pq-card", onPointerMove: spotlight }, /* @__PURE__ */ React.createElement("div", { className: "pq-ic" }, v.ic), /* @__PURE__ */ React.createElement("h4", null, v.h), /* @__PURE__ */ React.createElement("p", null, v.p)))))), /* @__PURE__ */ React.createElement(CuboMarca, null)));
+    return /* @__PURE__ */ React.createElement("section", { id: "empresa", className: "qd-sec" }, /* @__PURE__ */ React.createElement("div", { className: "qd-grid" }, /* @__PURE__ */ React.createElement("div", { className: "qd-cell qd-tl" }, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("p", { className: "v2-kicker" }, window.t("// qui\xE9nes somos")), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2" }, window.t("El laberinto, resuelto "), /* @__PURE__ */ React.createElement("em", null, window.t("con IA")), window.t(". En Tenerife.")), /* @__PURE__ */ React.createElement("p", { className: "v2-note" }, window.t("Excursiones en Costa Adeje, Los Cristianos y Las Am\xE9ricas, comercios y pymes de toda Canarias recuperan horas que hoy pierden en tareas repetitivas."))), /* @__PURE__ */ React.createElement("div", { className: "pq-grid" }, VALUES.map((v, i) => /* @__PURE__ */ React.createElement(Reveal, { key: v.h, delay: i * 0.06 }, /* @__PURE__ */ React.createElement("div", { className: "pq-card", onPointerMove: spotlight }, /* @__PURE__ */ React.createElement("div", { className: "pq-ic" }, v.ic), /* @__PURE__ */ React.createElement("h3", null, v.h), /* @__PURE__ */ React.createElement("p", null, v.p)))))), /* @__PURE__ */ React.createElement(CuboMarca, null)));
   };
 })();
 })();
@@ -1438,7 +1438,7 @@ window.MazeLogo = function MazeLogo() {
   const motion = window.Motion.motion;
   const PRE_MOVIL = window.matchMedia("(max-width:860px)").matches;
   const PRE_VIDEO = PRE_MOVIL ? "assets/referencias/referencia-cubo-cristal-01-movil-loop.mp4" : "assets/referencias/referencia-cubo-cristal-01-4k60-loop.mp4";
-  const PRE_POSTER = PRE_MOVIL ? "assets/referencias/poster-cubo-carga-movil.jpg" : "assets/referencias/poster-cubo-carga.jpg";
+  const PRE_POSTER = PRE_MOVIL ? "assets/referencias/poster-cubo-carga-movil.webp" : "assets/referencias/poster-cubo-carga.webp";
   const IS_BOT = /bot|crawl|spider|slurp|mediapartners|lighthouse|pagespeed/i.test(navigator.userAgent);
   window.__preloaderActive = !IS_BOT;
   function MazeSolve() {
