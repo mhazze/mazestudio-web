@@ -1228,13 +1228,12 @@ window.MazeLogo = function MazeLogo() {
         href: window.CATALOGO_PDF,
         download: true,
         onClick: alPulsar,
-        "aria-label": window.t("Descargar cat\xE1logo de servicios (PDF)"),
         className: "dl-btn" + (estado === "yendo" ? " is-yendo" : estado === "listo" ? " is-listo" : "")
       },
       /* @__PURE__ */ React.createElement("span", { className: "dl-fill", "aria-hidden": "true" }),
       /* @__PURE__ */ React.createElement("span", { className: "dl-ico", "aria-hidden": "true" }, estado === "listo" ? /* @__PURE__ */ React.createElement("svg", { className: "ok", width: "18", height: "18", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2.4", strokeLinecap: "round", strokeLinejoin: "round" }, /* @__PURE__ */ React.createElement("polyline", { points: "4 12.5 9.5 18 20 6.5" })) : /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(window.IconDownload, null), /* @__PURE__ */ React.createElement(window.IconDownload, null))),
       /* @__PURE__ */ React.createElement("span", { className: "dl-label" }, etiqueta),
-      /* @__PURE__ */ React.createElement("span", { className: "dl-tag", "aria-hidden": "true" }, "PDF")
+      /* @__PURE__ */ React.createElement("span", { className: "dl-tag" }, "PDF")
     )), /* @__PURE__ */ React.createElement("i", { "aria-hidden": "true" }))));
   };
 })();
