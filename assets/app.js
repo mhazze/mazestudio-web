@@ -1,6 +1,6 @@
 /* mazestudio · app.js — GENERADO por build.mjs. NO editar a mano.
    Fuente: WEB/src/mazestudio-web.html · regenerar: npm run build */
-/* MZLASTMOD:2026-08-13 */
+/* MZLASTMOD:2026-08-19 */
 (function(){
 (function() {
   const { useRef, useState, useEffect } = React;
@@ -520,7 +520,7 @@ window.MazeLogo = function MazeLogo() {
     const onCtaLeave = () => {
       if (ctaRef.current) ctaRef.current.style.transform = "translate(0,0)";
     };
-    return /* @__PURE__ */ React.createElement("section", { id: "top", style: { position: "relative", width: "100%", height: "100svh", minHeight: 640, background: "#08070C", overflow: "hidden" } }, /* @__PURE__ */ React.createElement(window.FadingVideo, { src: HERO_VIDEO, poster: HERO_POSTER, style: { zIndex: 0 } }), /* @__PURE__ */ React.createElement("div", { style: {
+    return /* @__PURE__ */ React.createElement("section", { id: "top", style: { position: "relative", width: "100%", height: "82svh", minHeight: 640, background: "#08070C", overflow: "hidden" } }, /* @__PURE__ */ React.createElement(window.FadingVideo, { src: HERO_VIDEO, poster: HERO_POSTER, style: { zIndex: 0 } }), /* @__PURE__ */ React.createElement("div", { style: {
       position: "absolute",
       inset: 0,
       zIndex: 1,
@@ -563,6 +563,7 @@ window.MazeLogo = function MazeLogo() {
       },
       /* @__PURE__ */ React.createElement("div", { className: "hero-title", role: "img", "aria-label": HERO_WORD + "." }, HERO_WORD.split("").map((ch, i) => /* @__PURE__ */ React.createElement("span", { key: i, className: "hw", style: { "--i": i, ...i === 4 ? { marginLeft: ".16em" } : {} }, "aria-hidden": "true" }, ch)), /* @__PURE__ */ React.createElement("span", { className: "hero-marble", style: { "--i": HERO_WORD.length }, "aria-hidden": "true" })),
       /* @__PURE__ */ React.createElement("h1", { className: "hero-sub" }, window.t("Consultor\xEDa e integraci\xF3n de IA "), /* @__PURE__ */ React.createElement("span", { className: "hero-sub-accent" }, window.t("para pymes en Tenerife"))),
+      /* @__PURE__ */ React.createElement("div", { className: "hero-chips" }, /* @__PURE__ */ React.createElement("span", { className: "chip" }, window.t("Sur de Tenerife")), /* @__PURE__ */ React.createElement("span", { className: "chip chip-on" }, window.t("Sobre las herramientas que ya usas")), /* @__PURE__ */ React.createElement("span", { className: "chip" }, window.t("Demos en vivo, sin registro"))),
       /* @__PURE__ */ React.createElement("div", { className: "hero-cta-row" }, /* @__PURE__ */ React.createElement(
         "a",
         {
@@ -571,39 +572,9 @@ window.MazeLogo = function MazeLogo() {
           className: "btn-glow",
           ...enableMagnet ? { onPointerMove: onCtaMove, onPointerLeave: onCtaLeave } : {}
         },
-        /* @__PURE__ */ React.createElement("span", { ref: faceRef, className: "btn-glow-face" }, window.t("Solicita tu auditor\xEDa gratis"), /* @__PURE__ */ React.createElement("span", { className: "btn-glow-arrow", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement(window.IconArrow, null)))
+        /* @__PURE__ */ React.createElement("span", { ref: faceRef, className: "btn-glow-face" }, window.t("Auditor\xEDa gratis en 3 d\xEDas"), /* @__PURE__ */ React.createElement("span", { className: "btn-glow-arrow", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement(window.IconArrow, null)))
       ))
     )));
-  };
-})();
-})();
-
-(function(){
-(function() {
-  const { useEffect, useState, useRef } = React;
-  window.PanelSection = function PanelSection() {
-    const frameRef = useRef(null);
-    const [h, setH] = useState(720);
-    useEffect(() => {
-      const onMsg = (e) => {
-        const f = frameRef.current;
-        if (!f || !e.source || e.source !== f.contentWindow) return;
-        const d = e.data;
-        if (d && d.type === "mazeDemoHeight" && d.height > 200) setH(Math.round(d.height));
-      };
-      window.addEventListener("message", onMsg);
-      return () => window.removeEventListener("message", onMsg);
-    }, []);
-    return /* @__PURE__ */ React.createElement("section", { id: "idea", className: "lr-sec" }, /* @__PURE__ */ React.createElement("div", { className: "lr-blob", style: { width: 460, height: 460, left: "-8%", top: "2%", background: "rgba(99,80,170,.42)", animation: "lrFloat1 14s ease-in-out infinite" } }), /* @__PURE__ */ React.createElement("div", { className: "lr-blob", style: { width: 420, height: 420, right: "-6%", bottom: "-8%", background: "rgba(75,140,247,.4)", animation: "lrFloat2 17s ease-in-out infinite" } }), /* @__PURE__ */ React.createElement("div", { className: "lr-inner" }, /* @__PURE__ */ React.createElement(window.Reveal, null, /* @__PURE__ */ React.createElement("span", { className: "lr-kicker" }, window.t("// el panel, en vivo")), /* @__PURE__ */ React.createElement("h2", { className: "lr-title" }, window.t("Todo tu negocio, en "), /* @__PURE__ */ React.createElement("em", null, window.t("un solo sitio."))), /* @__PURE__ */ React.createElement("p", { className: "lr-note" }, window.t("Un CRM centralizado donde aterriza todo lo que automatizamos: WhatsApp, correo, la web y las llamadas se convierten en ficha solas. Pru\xE9balo aqu\xED mismo \u2014 es la demo real."))), /* @__PURE__ */ React.createElement("div", { className: "lr-app" }, /* @__PURE__ */ React.createElement(
-      "iframe",
-      {
-        ref: frameRef,
-        style: { height: h + "px" },
-        loading: "lazy",
-        src: "https://crm.demos.mazestudio.site/?embed=1",
-        title: window.t("Demo del panel \xB7 CRM centralizado")
-      }
-    ))));
   };
 })();
 })();
@@ -784,7 +755,7 @@ window.MazeLogo = function MazeLogo() {
         justifyContent: "center",
         minHeight: "100svh",
         padding: "96px clamp(21px,6vw,84px) 64px"
-      } }, /* @__PURE__ */ React.createElement(HeadReveal, { style: { textAlign: "center", marginBottom: "clamp(36px,6vh,64px)" } }, /* @__PURE__ */ React.createElement("p", { style: { fontFamily: "JetBrains Mono", fontSize: 13.6, color: "rgba(255,255,255,.5)", marginBottom: 20 } }, window.t("// lo que cambia")), /* @__PURE__ */ React.createElement("h2", { style: { fontFamily: "Bricolage Grotesque", color: "white", fontSize: "clamp(48.3px,7.5vw,100.8px)", lineHeight: 0.9, letterSpacing: "-3px" } }, window.t("Antes. Y despu\xE9s."))), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.1, style: { display: "flex", flexDirection: "column", alignItems: "center", width: "100%" } }, /* @__PURE__ */ React.createElement("button", { className: "ba-switch", role: "switch", "aria-checked": after, onClick: onToggle }, /* @__PURE__ */ React.createElement("span", { className: "ba-thumb", "aria-hidden": "true" }), /* @__PURE__ */ React.createElement("span", { className: "ba-opt o-before" }, /* @__PURE__ */ React.createElement("span", { className: "ba-ico", "aria-hidden": "true" }, "\u2715"), window.t("A mano")), /* @__PURE__ */ React.createElement("span", { className: "ba-opt o-after" }, /* @__PURE__ */ React.createElement("span", { className: "ba-ico", "aria-hidden": "true" }, "\u26A1"), window.t("En autom\xE1tico"))), /* @__PURE__ */ React.createElement("p", { className: "ba-hint" + (hintOff ? " off" : "") }, window.t("pulsa el interruptor \u2014 o espera, cambia solo"))), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.2, style: { width: "100%", display: "flex", justifyContent: "center" } }, /* @__PURE__ */ React.createElement("div", { className: "ba-panel", ref: panelRef }, /* @__PURE__ */ React.createElement("div", { className: "ba-tags" }, /* @__PURE__ */ React.createElement("span", { className: "ba-tag-before" }, window.t("// antes \xB7 a mano")), /* @__PURE__ */ React.createElement("span", { className: "ba-tag-after" }, window.t("// despu\xE9s \xB7 solo"))), /* @__PURE__ */ React.createElement("div", null, PARES.map(([antes, despues], i) => /* @__PURE__ */ React.createElement("div", { className: "ba-row", key: i }, /* @__PURE__ */ React.createElement("div", { className: "ba-flip", style: { "--d": i * 0.09 + "s" } }, /* @__PURE__ */ React.createElement("div", { className: "ba-face f-before" }, /* @__PURE__ */ React.createElement("span", { className: "ba-x" }, "\u2715"), /* @__PURE__ */ React.createElement("span", null, antes)), /* @__PURE__ */ React.createElement("div", { className: "ba-face f-after" }, /* @__PURE__ */ React.createElement("span", { className: "ba-check" }, /* @__PURE__ */ React.createElement(window.IconCheck, null)), /* @__PURE__ */ React.createElement("span", null, despues), i === PARES.length - 1 && /* @__PURE__ */ React.createElement("span", { className: "ba-247" }, "24/7")))))))))
+      } }, /* @__PURE__ */ React.createElement(HeadReveal, { style: { textAlign: "center", marginBottom: "clamp(36px,6vh,64px)" } }, /* @__PURE__ */ React.createElement("p", { style: { fontFamily: "JetBrains Mono", fontSize: 13.6, color: "rgba(255,255,255,.5)", marginBottom: 20 } }, window.t("// lo que cambia")), /* @__PURE__ */ React.createElement("h2", { style: { fontFamily: "Bricolage Grotesque", color: "white", fontSize: "clamp(42.5px,6.6vw,88.7px)", lineHeight: 0.9, letterSpacing: "-3px" } }, window.t("Antes. Y despu\xE9s."))), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.1, style: { display: "flex", flexDirection: "column", alignItems: "center", width: "100%" } }, /* @__PURE__ */ React.createElement("button", { className: "ba-switch", role: "switch", "aria-checked": after, onClick: onToggle }, /* @__PURE__ */ React.createElement("span", { className: "ba-thumb", "aria-hidden": "true" }), /* @__PURE__ */ React.createElement("span", { className: "ba-opt o-before" }, /* @__PURE__ */ React.createElement("span", { className: "ba-ico", "aria-hidden": "true" }, "\u2715"), window.t("A mano")), /* @__PURE__ */ React.createElement("span", { className: "ba-opt o-after" }, /* @__PURE__ */ React.createElement("span", { className: "ba-ico", "aria-hidden": "true" }, "\u26A1"), window.t("En autom\xE1tico"))), /* @__PURE__ */ React.createElement("p", { className: "ba-hint" + (hintOff ? " off" : "") }, window.t("pulsa el interruptor \u2014 o espera, cambia solo"))), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.2, style: { width: "100%", display: "flex", justifyContent: "center" } }, /* @__PURE__ */ React.createElement("div", { className: "ba-panel", ref: panelRef }, /* @__PURE__ */ React.createElement("div", { className: "ba-tags" }, /* @__PURE__ */ React.createElement("span", { className: "ba-tag-before" }, window.t("// antes \xB7 a mano")), /* @__PURE__ */ React.createElement("span", { className: "ba-tag-after" }, window.t("// despu\xE9s \xB7 solo"))), /* @__PURE__ */ React.createElement("div", null, PARES.map(([antes, despues], i) => /* @__PURE__ */ React.createElement("div", { className: "ba-row", key: i }, /* @__PURE__ */ React.createElement("div", { className: "ba-flip", style: { "--d": i * 0.09 + "s" } }, /* @__PURE__ */ React.createElement("div", { className: "ba-face f-before" }, /* @__PURE__ */ React.createElement("span", { className: "ba-x" }, "\u2715"), /* @__PURE__ */ React.createElement("span", null, antes)), /* @__PURE__ */ React.createElement("div", { className: "ba-face f-after" }, /* @__PURE__ */ React.createElement("span", { className: "ba-check" }, /* @__PURE__ */ React.createElement(window.IconCheck, null)), /* @__PURE__ */ React.createElement("span", null, despues), i === PARES.length - 1 && /* @__PURE__ */ React.createElement("span", { className: "ba-247" }, "24/7")))))))))
     );
   };
 })();
@@ -795,82 +766,167 @@ window.MazeLogo = function MazeLogo() {
   const { useState, useEffect, useRef } = React;
   const Reveal = window.Reveal;
   const HeadReveal = window.HeadReveal;
+  const t = window.t;
   const IC = {
-    folder: `<svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="11" width="23" height="16" rx="1" fill="#2D4ECC"/><rect x="2" y="10" width="23" height="16" rx="1" fill="#4361F0"/><path d="M2 10h11l2-4h10v4H2z" fill="#2D4ECC"/><path d="M2 10h10l2-4h9v4H2z" fill="#8295F2"/><rect x="2" y="10" width="23" height="3" rx="1" fill="#8295F2" opacity=".25"/><rect x="6" y="18" width="13" height="2" rx="1" fill="#ECEDF2" opacity=".55"/><rect x="6" y="21" width="9" height="2" rx="1" fill="#ECEDF2" opacity=".35"/><rect x="21" y="20" width="3" height="3" rx="1" fill="#8295F2" opacity=".5"/></svg>`,
-    calendar: `<svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="6" width="22" height="21" rx="1" fill="#2D4ECC"/><rect x="2" y="5" width="22" height="21" rx="1" fill="#4361F0"/><rect x="2" y="5" width="22" height="7" rx="1" fill="#8295F2"/><rect x="7" y="3" width="3" height="5" rx="1" fill="#ECEDF2"/><rect x="16" y="3" width="3" height="5" rx="1" fill="#ECEDF2"/><rect x="5" y="16" width="4" height="4" rx="1" fill="#ECEDF2" opacity=".7"/><rect x="11" y="16" width="4" height="4" rx="1" fill="#ECEDF2" opacity=".7"/><rect x="17" y="16" width="4" height="4" rx="1" fill="#8295F2"/><rect x="5" y="22" width="4" height="2" rx="1" fill="#ECEDF2" opacity=".4"/><rect x="11" y="22" width="4" height="2" rx="1" fill="#ECEDF2" opacity=".4"/></svg>`,
-    mountain: `<svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="24" height="24" rx="1" fill="#14161E"/><polygon points="15,6 24,22 6,22" fill="#2D4ECC"/><polygon points="8,12 20,26 2,26 2,22" fill="#4361F0"/><polygon points="15,6 18,13 12,13" fill="#ECEDF2" opacity=".85"/><polygon points="8,12 11,17 5,17" fill="#ECEDF2" opacity=".55"/><rect x="20" y="5" width="2" height="2" fill="#8295F2"/><rect x="5" y="7" width="2" height="2" fill="#8295F2" opacity=".6"/></svg>`,
-    chat: `<svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="22" height="17" rx="2" fill="#2D4ECC"/><rect x="2" y="4" width="22" height="17" rx="2" fill="#4361F0"/><rect x="2" y="4" width="22" height="4" rx="2" fill="#8295F2" opacity=".3"/><polygon points="6,21 14,21 6,27" fill="#2D4ECC"/><polygon points="5,20 13,20 5,26" fill="#4361F0"/><rect x="7" y="11" width="3" height="3" rx="1" fill="#ECEDF2" opacity=".85"/><rect x="12" y="11" width="3" height="3" rx="1" fill="#ECEDF2" opacity=".85"/><rect x="17" y="11" width="3" height="3" rx="1" fill="#8295F2" opacity=".6"/></svg>`,
-    envelope: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="6" width="20" height="13" rx="1" fill="#2D4ECC"/><rect x="1" y="5" width="20" height="13" rx="1" fill="#4361F0"/><path d="M1 5l10 8 10-8" stroke="#8295F2" stroke-width="1.5" fill="none"/><path d="M1 18l7-6M21 18l-7-6" stroke="#8295F2" stroke-width="1" opacity=".4"/></svg>`,
-    robot: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="11" y="1" width="2" height="4" fill="#8295F2"/><rect x="9" y="4" width="6" height="2" rx="1" fill="#8295F2"/><rect x="4" y="8" width="16" height="14" rx="1" fill="#2D4ECC"/><rect x="3" y="7" width="16" height="14" rx="1" fill="#4361F0"/><rect x="6" y="11" width="4" height="4" rx="1" fill="#ECEDF2"/><rect x="14" y="11" width="4" height="4" rx="1" fill="#ECEDF2"/><rect x="7" y="12" width="2" height="2" rx="1" fill="#8295F2"/><rect x="15" y="12" width="2" height="2" rx="1" fill="#8295F2"/><rect x="7" y="17" width="10" height="2" rx="1" fill="#8295F2" opacity=".8"/><rect x="0" y="11" width="3" height="5" rx="1" fill="#2D4ECC"/><rect x="21" y="11" width="3" height="5" rx="1" fill="#2D4ECC"/></svg>`,
-    driveFolder: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="9" width="20" height="13" rx="1" fill="#2D4ECC"/><rect x="1" y="8" width="20" height="13" rx="1" fill="#4361F0"/><path d="M1 8h9l2-3h9v3H1z" fill="#8295F2"/><rect x="4" y="15" width="12" height="2" rx="1" fill="#ECEDF2" opacity=".5"/><rect x="4" y="18" width="8" height="2" rx="1" fill="#ECEDF2" opacity=".35"/></svg>`,
-    clipboard: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="7" y="1" width="10" height="5" rx="1" fill="#8295F2"/><rect x="3" y="5" width="18" height="19" rx="1" fill="#2D4ECC"/><rect x="2" y="4" width="18" height="19" rx="1" fill="#4361F0"/><rect x="6" y="10" width="10" height="2" rx="1" fill="#ECEDF2" opacity=".6"/><rect x="6" y="14" width="8" height="2" rx="1" fill="#ECEDF2" opacity=".5"/><rect x="6" y="18" width="6" height="2" rx="1" fill="#ECEDF2" opacity=".35"/></svg>`,
-    phone: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="7" y="2" width="10" height="21" rx="2" fill="#2D4ECC"/><rect x="6" y="1" width="10" height="21" rx="2" fill="#4361F0"/><rect x="8" y="4" width="6" height="12" rx="1" fill="#0B0C10" opacity=".5"/><rect x="9" y="18" width="4" height="2" rx="1" fill="#8295F2" opacity=".7"/></svg>`,
-    lightning: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="14,1 5,13 12,13 10,23 19,11 12,11" fill="#2D4ECC"/><polygon points="13,1 4,13 11,13 9,23 18,11 11,11" fill="#4361F0"/><polygon points="13,1 4,13 11,13 9,23 18,11 11,11" fill="#8295F2" opacity=".25"/></svg>`,
-    check: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="19" height="19" rx="2" fill="#1a4a38"/><rect x="2" y="2" width="19" height="19" rx="2" fill="#065f46"/><rect x="2" y="2" width="19" height="5" rx="2" fill="#34D399" opacity=".2"/><path d="M6 12l4.5 4.5L18 8" stroke="#34D399" stroke-width="2.5" stroke-linecap="square" fill="none"/></svg>`,
-    grid: `<svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="4" width="21" height="21" rx="1" fill="#2D4ECC"/><rect x="3" y="3" width="21" height="21" rx="1" fill="#4361F0"/><rect x="6" y="6" width="7" height="7" rx="1" fill="#ECEDF2" opacity=".85"/><rect x="15" y="6" width="6" height="7" rx="1" fill="#8295F2"/><rect x="6" y="15" width="7" height="6" rx="1" fill="#8295F2" opacity=".55"/><rect x="15" y="15" width="6" height="6" rx="1" fill="#ECEDF2" opacity=".5"/></svg>`,
-    globe: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" fill="#2D4ECC"/><circle cx="11" cy="11" r="10" fill="#4361F0"/><ellipse cx="11" cy="11" rx="4.2" ry="10" fill="none" stroke="#8295F2" stroke-width="1.1"/><path d="M1 11h20M2.5 6.5h17M2.5 15.5h17" stroke="#8295F2" stroke-width="1.1"/><circle cx="11" cy="11" r="10" fill="none" stroke="#ECEDF2" stroke-width="1" opacity=".3"/></svg>`,
-    radar: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10" fill="#2D4ECC"/><circle cx="11" cy="11" r="10" fill="#4361F0"/><circle cx="11" cy="11" r="6.5" fill="none" stroke="#8295F2" stroke-width="1" opacity=".55"/><circle cx="11" cy="11" r="3" fill="none" stroke="#8295F2" stroke-width="1" opacity=".55"/><path d="M11 11 L18.5 6" stroke="#ECEDF2" stroke-width="1.6" stroke-linecap="round"/><path d="M11 11 L20 11 A9 9 0 0 0 15.5 3.2 Z" fill="#86E6FF" opacity=".28"/><circle cx="16" cy="7.5" r="1.6" fill="#86E6FF"/></svg>`
+    folder: `<svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="11" width="23" height="16" rx="1" fill="#2D4ECC"/><rect x="2" y="10" width="23" height="16" rx="1" fill="#4361F0"/><path d="M2 10h11l2-4h10v4H2z" fill="#2D4ECC"/><path d="M2 10h10l2-4h9v4H2z" fill="#8295F2"/><rect x="6" y="18" width="13" height="2" rx="1" fill="#ECEDF2" opacity=".55"/><rect x="6" y="21" width="9" height="2" rx="1" fill="#ECEDF2" opacity=".35"/></svg>`,
+    calendar: `<svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="6" width="22" height="21" rx="1" fill="#2D4ECC"/><rect x="2" y="5" width="22" height="21" rx="1" fill="#4361F0"/><rect x="2" y="5" width="22" height="7" rx="1" fill="#8295F2"/><rect x="7" y="3" width="3" height="5" rx="1" fill="#ECEDF2"/><rect x="16" y="3" width="3" height="5" rx="1" fill="#ECEDF2"/><rect x="5" y="16" width="4" height="4" rx="1" fill="#ECEDF2" opacity=".7"/><rect x="11" y="16" width="4" height="4" rx="1" fill="#ECEDF2" opacity=".7"/><rect x="17" y="16" width="4" height="4" rx="1" fill="#8295F2"/></svg>`,
+    chat: `<svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="5" width="22" height="17" rx="2" fill="#2D4ECC"/><rect x="2" y="4" width="22" height="17" rx="2" fill="#4361F0"/><polygon points="6,21 14,21 6,27" fill="#2D4ECC"/><polygon points="5,20 13,20 5,26" fill="#4361F0"/><rect x="7" y="11" width="3" height="3" rx="1" fill="#ECEDF2" opacity=".85"/><rect x="12" y="11" width="3" height="3" rx="1" fill="#ECEDF2" opacity=".85"/><rect x="17" y="11" width="3" height="3" rx="1" fill="#8295F2" opacity=".6"/></svg>`,
+    phone: `<svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="8" y="3" width="13" height="24" rx="2.5" fill="#2D4ECC"/><rect x="7" y="2" width="13" height="24" rx="2.5" fill="#4361F0"/><rect x="9" y="5" width="9" height="15" rx="1" fill="#0B0C10" opacity=".55"/><rect x="11" y="22" width="5" height="2" rx="1" fill="#8295F2" opacity=".75"/><path d="M22 6a7 7 0 0 1 0 10" stroke="#86E6FF" stroke-width="1.4" fill="none" opacity=".8"/><path d="M24.5 3.5a11 11 0 0 1 0 15" stroke="#86E6FF" stroke-width="1.2" fill="none" opacity=".45"/></svg>`,
+    radar: `<svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="15" cy="15" r="12" fill="#2D4ECC"/><circle cx="14" cy="14" r="12" fill="#4361F0"/><circle cx="14" cy="14" r="7.8" fill="none" stroke="#8295F2" stroke-width="1.1" opacity=".55"/><circle cx="14" cy="14" r="3.6" fill="none" stroke="#8295F2" stroke-width="1.1" opacity=".55"/><path d="M14 14 L23 8" stroke="#ECEDF2" stroke-width="1.7" stroke-linecap="round"/><path d="M14 14 L26 14 A12 12 0 0 0 20 3.6 Z" fill="#86E6FF" opacity=".28"/><circle cx="20" cy="9" r="1.9" fill="#86E6FF"/></svg>`,
+    funnel: `<svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4h21l-8 10v10l-5 3V14z" fill="#2D4ECC"/><path d="M3 3h21l-8 10v10l-5 3V13z" fill="#4361F0"/><path d="M3 3h21l-3 3.8H6z" fill="#8295F2"/><circle cx="13" cy="20" r="2.2" fill="#86E6FF" opacity=".85"/></svg>`,
+    megafono: `<svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 11h5l11-6v18l-11-6H5z" fill="#2D4ECC"/><path d="M4 10h5l11-6v18L9 16H4z" fill="#4361F0"/><path d="M4 10h5v6H4z" fill="#8295F2" opacity=".7"/><path d="M23 9a6 6 0 0 1 0 8" stroke="#86E6FF" stroke-width="1.5" fill="none"/><rect x="6" y="16" width="4" height="8" rx="1.5" fill="#2D4ECC"/></svg>`,
+    grafica: `<svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="4" width="22" height="22" rx="1.5" fill="#2D4ECC"/><rect x="3" y="3" width="22" height="22" rx="1.5" fill="#4361F0"/><rect x="6" y="15" width="3.6" height="7" rx="1" fill="#ECEDF2" opacity=".75"/><rect x="11.4" y="11" width="3.6" height="11" rx="1" fill="#8295F2"/><rect x="16.8" y="7" width="3.6" height="15" rx="1" fill="#86E6FF" opacity=".9"/><path d="M6 12l5.4-4 5.4-3 4 2" stroke="#ECEDF2" stroke-width="1.2" fill="none" opacity=".4"/></svg>`,
+    equipo: `<svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="9" r="4.4" fill="#4361F0"/><path d="M2 24c0-4.4 3.6-7.2 8-7.2s8 2.8 8 7.2z" fill="#2D4ECC"/><circle cx="20" cy="11" r="3.6" fill="#8295F2"/><path d="M13.5 24c0-3.6 2.9-6 6.5-6s6 2.4 6 6z" fill="#4361F0" opacity=".75"/><circle cx="24" cy="6" r="2.6" fill="#86E6FF" opacity=".9"/></svg>`,
+    estrella: `<svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="15,3 18.6,10.4 26.8,11.6 20.9,17.3 22.3,25.4 15,21.6 7.7,25.4 9.1,17.3 3.2,11.6 11.4,10.4" fill="#2D4ECC"/><polygon points="14,2 17.6,9.4 25.8,10.6 19.9,16.3 21.3,24.4 14,20.6 6.7,24.4 8.1,16.3 2.2,10.6 10.4,9.4" fill="#4361F0"/><polygon points="14,2 17.6,9.4 25.8,10.6 19.9,16.3 14,13" fill="#8295F2" opacity=".55"/><circle cx="23" cy="22" r="3.4" fill="#34D399"/></svg>`
   };
-  const DEMOS = [
+  const MOMENTOS = [
     {
-      id: "gestion",
-      num: "01",
-      name: "Gesti\xF3n documental",
-      icon: "folder",
-      desc: "Facturas y n\xF3minas que llegan por email se clasifican con IA y se archivan solas en Drive por proveedor.",
-      time: "~60s",
-      url: "https://gestion.demos.mazestudio.site/?v=2",
-      live: true,
-      mw: 1160,
-      steps: [{ ic: "envelope", t: "Llega un email con una factura o n\xF3mina" }, { ic: "robot", t: "La IA la lee y la clasifica sola" }, { ic: "driveFolder", t: "Se archiva en su carpeta de Drive" }]
+      n: "01",
+      tit: "Te escriben",
+      c: "var(--m1)",
+      gloss: "Llega una consulta, venga por donde venga \u2014 y se responde sola, a cualquier hora.",
+      procesos: [
+        {
+          id: "atencion",
+          num: "01",
+          ic: "chat",
+          live: true,
+          mw: 540,
+          url: "https://atencion.demos.mazestudio.site/",
+          name: "Atenci\xF3n al cliente",
+          desc: "Tu WhatsApp responde solo, 24/7, con la informaci\xF3n real de tu negocio. Al segundo y a cualquier hora."
+        },
+        {
+          id: "telefonica",
+          num: "02",
+          ic: "phone",
+          live: true,
+          mw: 1180,
+          url: "https://procesos.demos.mazestudio.site/telefonica/",
+          name: "Atenci\xF3n telef\xF3nica",
+          desc: "La IA descuelga, entiende y reserva por voz. Al colgar, la cita ya est\xE1 puesta y el resumen escrito."
+        }
+      ]
     },
     {
-      id: "citas",
-      num: "02",
-      name: "Reservas y citas sin fricci\xF3n",
-      icon: "calendar",
-      desc: "Tu cliente reserva un hueco \u2014una cita, una mesa o una plaza en una excursi\xF3n\u2014 con disponibilidad real y confirmaci\xF3n autom\xE1tica, sin llamadas ni WhatsApp cruzados.",
-      time: "~45s",
-      url: "https://inmobiliaria-demo.demos.mazestudio.site/",
-      live: true,
-      mw: 1160,
-      steps: [{ ic: "clipboard", t: "Tu cliente pide cita en un formulario" }, { ic: "calendar", t: "El sistema busca el hueco libre y lo reserva" }, { ic: "phone", t: "Le llega el aviso por WhatsApp" }]
+      n: "02",
+      tit: "Se cierra",
+      c: "var(--m2)",
+      gloss: "El momento que cobra: el lead se cualifica, sale el presupuesto y se coge el hueco.",
+      procesos: [
+        {
+          id: "captacion",
+          num: "03",
+          ic: "funnel",
+          live: true,
+          mw: 1240,
+          url: "https://procesos.demos.mazestudio.site/captacion/",
+          name: "Captaci\xF3n y ventas",
+          desc: "Llegue de donde llegue \u2014web, WhatsApp, Instagram\u2014, la IA lo lee, lo punt\xFAa y manda presupuesto. Nadie se queda sin seguimiento."
+        },
+        {
+          id: "citas",
+          num: "04",
+          ic: "calendar",
+          live: true,
+          mw: 1160,
+          url: "https://inmobiliaria-demo.demos.mazestudio.site/",
+          name: "Reservas y citas",
+          desc: "Tu cliente coge hueco con disponibilidad real y confirmaci\xF3n autom\xE1tica. Sin llamadas ni WhatsApp cruzados."
+        }
+      ]
     },
     {
-      id: "radar",
-      num: "03",
-      name: "Radar de mercado",
-      icon: "radar",
-      desc: "Tu CRM tambi\xE9n mira hacia fuera: lee webs p\xFAblicas \u2014precios de la competencia, negocios nuevos, rese\xF1as\u2014 y te avisa en cristiano cuando algo cambia.",
-      time: "~1 min",
-      url: "https://radar.demos.mazestudio.site/",
-      live: true,
-      mw: 1200,
-      steps: [{ ic: "globe", t: "Lee webs p\xFAblicas: competencia, directorios, rese\xF1as" }, { ic: "robot", t: "Compara con ayer y decide si algo importa" }, { ic: "radar", t: "Te avisa en cristiano: \xABbajaron el catamar\xE1n a 39 \u20AC\xBB" }]
+      n: "03",
+      tit: "Lo hac\xE9is",
+      c: "var(--m3)",
+      gloss: "El trabajo del d\xEDa: sin papeleo, sin reenviar nada a mano, sin grupos de WhatsApp.",
+      procesos: [
+        {
+          id: "documental",
+          num: "05",
+          ic: "folder",
+          live: true,
+          mw: 1160,
+          url: "https://gestion.demos.mazestudio.site/?v=2",
+          name: "Gesti\xF3n documental",
+          desc: "Facturas y n\xF3minas llegan por correo, se leen, se clasifican con IA y se archivan solas en Drive."
+        },
+        {
+          id: "equipo",
+          num: "06",
+          ic: "equipo",
+          live: true,
+          mw: 1140,
+          url: "https://procesos.demos.mazestudio.site/equipo/",
+          name: "Equipo y operativa",
+          desc: "Cada evento del d\xEDa decide solo a qui\xE9n le toca. Sin grupos de WhatsApp, sin reenviar nada a mano."
+        },
+        {
+          id: "marketing",
+          num: "07",
+          ic: "megafono",
+          live: true,
+          mw: 1240,
+          url: "https://procesos.demos.mazestudio.site/marketing/",
+          name: "Comunicaci\xF3n y marketing",
+          desc: "Un evento dispara el env\xEDo: la IA lo redacta con tu tono, elige el canal y t\xFA ves subir el contador."
+        }
+      ]
     },
     {
-      id: "atencion",
-      num: "04",
-      name: "Atenci\xF3n al cliente",
-      icon: "chat",
-      desc: "Responde los emails de clientes con IA usando la informaci\xF3n real de tu negocio.",
-      time: "~90s",
-      url: "",
-      live: false,
-      steps: [{ ic: "envelope", t: "Entra el email de un cliente" }, { ic: "robot", t: "La IA responde con la info de tu negocio" }, { ic: "check", t: "Respuesta enviada \u2014 t\xFA no tocas nada" }]
+      n: "04",
+      tit: "Vuelven",
+      c: "var(--m4)",
+      gloss: "Rese\xF1a, informe y aviso de lo que pasa ah\xED fuera \u2014 para que haya un d\xEDa siguiente.",
+      procesos: [
+        {
+          id: "reputacion",
+          num: "08",
+          ic: "estrella",
+          live: true,
+          mw: 1240,
+          url: "https://procesos.demos.mazestudio.site/reputacion/",
+          name: "Reputaci\xF3n y postventa",
+          desc: "Cada servicio pide rese\xF1a solo. Si es buena, se publica y se agradece. Si es mala, te avisa a ti antes que a nadie."
+        },
+        {
+          id: "reporting",
+          num: "09",
+          ic: "grafica",
+          live: true,
+          mw: 1240,
+          url: "https://procesos.demos.mazestudio.site/reporting/",
+          name: "Control y reporting",
+          desc: "Los datos se agregan solos. Cada semana, un resumen en tu idioma y no una tabla: \xABentraron 23 reservas, un 18 % m\xE1s\xBB."
+        },
+        {
+          id: "radar",
+          num: "10",
+          ic: "radar",
+          live: true,
+          mw: 1200,
+          url: "https://radar.demos.mazestudio.site/",
+          name: "Radar de mercado",
+          desc: "Tu panel tambi\xE9n mira hacia fuera: precios de la competencia, negocios nuevos, rese\xF1as \u2014 \xABbajaron el catamar\xE1n a 39 \u20AC\xBB."
+        }
+      ]
     }
-  ].map((d) => ({ ...d, name: window.t(d.name), desc: window.t(d.desc), steps: d.steps.map((s) => ({ ...s, t: window.t(s.t) })) }));
-  const SERVICES = DEMOS;
+  ];
+  const HUB = {
+    id: "crm",
+    live: true,
+    mw: 1240,
+    url: "https://crm.demos.mazestudio.site/",
+    feeds: ["whatsapp", "correo", "la web", "llamadas", "agenda", "presupuestos"]
+  };
+  const PARADAS = MOMENTOS.reduce((a, m) => a.concat(m.procesos), []);
   window.ComoFuncionaSection = function ComoFuncionaSection() {
-    const [cur, setCur] = useState(SERVICES[0]);
-    const [modal, setModal] = useState(false);
+    const [cur, setCur] = useState(null);
     const [frameH, setFrameH] = useState(null);
     const [vw, setVw] = useState(typeof window !== "undefined" ? window.innerWidth : 1280);
-    const [openId, setOpenId] = useState(() => {
-      const f = SERVICES.find((s) => s.live);
-      return f ? f.id : null;
-    });
     const iframeRef = useRef(null);
+    const modal = !!cur;
     useEffect(() => {
       document.documentElement.style.overflowY = modal ? "hidden" : "";
       document.body.classList.toggle("demo-open", modal);
@@ -881,7 +937,7 @@ window.MazeLogo = function MazeLogo() {
     }, [modal]);
     useEffect(() => {
       const fn = (e) => {
-        if (e.key === "Escape") setModal(false);
+        if (e.key === "Escape") setCur(null);
       };
       window.addEventListener("keydown", fn);
       return () => window.removeEventListener("keydown", fn);
@@ -937,37 +993,42 @@ window.MazeLogo = function MazeLogo() {
         clearTimeout(tEnd);
       };
     }, [modal, cur, vw]);
-    function openDemo(d) {
-      if (!d || !d.live) return;
-      setCur(d);
-      setModal(true);
-    }
-    return /* @__PURE__ */ React.createElement("section", { id: "como", className: "v2-sec" }, /* @__PURE__ */ React.createElement("div", { className: "fx-glow", "data-depth": "0.2", style: { width: 420, height: 420, right: "-8%", top: "4%", background: "rgba(75,140,247,.3)" } }), /* @__PURE__ */ React.createElement("div", { className: "fx-glow", "data-depth": "0.12", style: { width: 480, height: 480, left: "-60px", bottom: "-190px", background: "rgba(75,140,247,.16)", filter: "blur(90px)", opacity: 1 } }), /* @__PURE__ */ React.createElement("div", { className: "fx-glow", "data-depth": "0.12", style: { width: 420, height: 420, right: "-50px", bottom: "-160px", background: "rgba(99,80,170,.15)", filter: "blur(90px)", opacity: 1 } }), /* @__PURE__ */ React.createElement("div", { className: "v2-inner" }, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("p", { className: "v2-kicker" }, window.t("// c\xF3mo funciona")), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2" }, window.t("Demo de "), /* @__PURE__ */ React.createElement("em", null, window.t("procesos"))), /* @__PURE__ */ React.createElement("p", { className: "v2-note" }, window.t("Estas automatizaciones est\xE1n funcionando ahora mismo. \xC1brelas y juega con ellas."))), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.05, style: { marginTop: 44 } }, /* @__PURE__ */ React.createElement("div", { className: "pm-rail" }, /* @__PURE__ */ React.createElement("p", { className: "dgr-glabel" }, window.t("automatizaciones que contratas")), /* @__PURE__ */ React.createElement("p", { className: "dgr-gsub" }, window.t("Cada proceso es una "), /* @__PURE__ */ React.createElement("em", null, window.t("pieza que puedes contratar por separado")), window.t(". Empieza por la que m\xE1s te aprieta.")), /* @__PURE__ */ React.createElement("div", { className: "dgr-acc" }, SERVICES.map((d) => {
-      const isOpen = d.live && openId === d.id;
-      return /* @__PURE__ */ React.createElement("div", { key: d.id, className: "dgr-acc-item " + (d.live ? "live" : "soon") + (isOpen ? " open" : "") }, /* @__PURE__ */ React.createElement(
+    const abrir = (p) => {
+      if (p && p.live) setCur(p);
+    };
+    return /* @__PURE__ */ React.createElement("section", { id: "como", className: "v2-sec rc-sec" }, /* @__PURE__ */ React.createElement("div", { className: "fx-glow", "data-depth": "0.2", style: { width: 420, height: 420, right: "-8%", top: "4%", background: "rgba(75,140,247,.3)" } }), /* @__PURE__ */ React.createElement("div", { className: "fx-glow", "data-depth": "0.12", style: { width: 480, height: 480, left: "-60px", bottom: "-190px", background: "rgba(75,140,247,.16)", filter: "blur(90px)", opacity: 1 } }), /* @__PURE__ */ React.createElement("div", { className: "fx-glow", "data-depth": "0.12", style: { width: 420, height: 420, right: "-50px", bottom: "-160px", background: "rgba(99,80,170,.15)", filter: "blur(90px)", opacity: 1 } }), /* @__PURE__ */ React.createElement("div", { className: "v2-inner" }, /* @__PURE__ */ React.createElement("div", { className: "rc-head" }, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("p", { className: "v2-kicker" }, t("// demos de procesos")), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2" }, t("Un d\xEDa entero de tu negocio, "), /* @__PURE__ */ React.createElement("em", null, t("funcionando solo")), "."), /* @__PURE__ */ React.createElement("p", { className: "v2-note" }, t("Alguien te escribe, coge hueco, hac\xE9is el trabajo y vuelve. Cada parada del recorrido es una automatizaci\xF3n que ya funciona y que puedes contratar por separado. \xC1brelas y juega con ellas.")))), /* @__PURE__ */ React.createElement("div", { className: "rc-bandas" }, MOMENTOS.map((m, i) => /* @__PURE__ */ React.createElement(
+      Reveal,
+      {
+        key: m.n,
+        className: "rc-banda",
+        delay: i * 0.04,
+        style: { "--ac": m.c, "--span": 6 / m.procesos.length }
+      },
+      /* @__PURE__ */ React.createElement("div", { className: "rc-rotulo" }, /* @__PURE__ */ React.createElement("p", { className: "rc-num" }, m.n), /* @__PURE__ */ React.createElement("h3", { className: "rc-tit" }, t(m.tit)), /* @__PURE__ */ React.createElement("p", { className: "rc-gloss" }, t(m.gloss)), /* @__PURE__ */ React.createElement("span", { className: "rc-cuenta" }, m.procesos.length, " ", t("procesos"))),
+      /* @__PURE__ */ React.createElement("div", { className: "rc-modulos" }, m.procesos.map((p) => /* @__PURE__ */ React.createElement(
         "button",
         {
-          className: "dgr-acc-head",
+          key: p.id,
           type: "button",
-          disabled: !d.live,
-          "aria-expanded": isOpen,
-          "aria-controls": "acc-" + d.id,
-          onClick: d.live ? () => setOpenId(isOpen ? null : d.id) : void 0
+          disabled: !p.live,
+          className: "rc-mod " + (p.live ? "live" : "soon"),
+          onClick: () => abrir(p)
         },
-        /* @__PURE__ */ React.createElement("span", { className: "dgr-acc-ic", dangerouslySetInnerHTML: { __html: IC[d.icon] } }),
-        /* @__PURE__ */ React.createElement("span", { className: "dgr-acc-name" }, d.live && /* @__PURE__ */ React.createElement("span", { className: "dgr-acc-dot" }), d.name),
-        !d.live && /* @__PURE__ */ React.createElement("span", { className: "dgr-acc-soon" }, window.t("Pr\xF3ximamente"))
-      ), d.live && /* @__PURE__ */ React.createElement("div", { className: "dgr-acc-body", id: "acc-" + d.id }, /* @__PURE__ */ React.createElement("div", { className: "dgr-acc-bodyin" }, /* @__PURE__ */ React.createElement("div", { className: "dgr-acc-pad" }, /* @__PURE__ */ React.createElement("p", { className: "dgr-acc-desc" }, d.desc), /* @__PURE__ */ React.createElement("button", { className: "dgr-acc-cta", onClick: () => openDemo(d) }, window.t("Ver demo"), " ", /* @__PURE__ */ React.createElement("em", null, "\u2192"))))));
-    }))))), modal && ReactDOM.createPortal(
-      /* @__PURE__ */ React.createElement("div", { className: "dp-modal", onClick: () => setModal(false) }, /* @__PURE__ */ React.createElement(
+        /* @__PURE__ */ React.createElement("span", { className: "rc-mrow" }, /* @__PURE__ */ React.createElement("span", { className: "rc-micon", dangerouslySetInnerHTML: { __html: IC[p.ic] } }), /* @__PURE__ */ React.createElement("span", { className: "rc-mnum" }, p.num), !p.live && /* @__PURE__ */ React.createElement("span", { className: "rc-mtag" }, t("en preparaci\xF3n"))),
+        /* @__PURE__ */ React.createElement("span", { className: "rc-mname" }, t(p.name)),
+        /* @__PURE__ */ React.createElement("span", { className: "rc-mdesc" }, t(p.desc)),
+        p.live && /* @__PURE__ */ React.createElement("span", { className: "rc-mcta" }, t("Ver demo"), " ", /* @__PURE__ */ React.createElement("em", null, "\u2192"))
+      )))
+    ))), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.06 }, /* @__PURE__ */ React.createElement("button", { type: "button", className: "rc-cierre", onClick: () => abrir(HUB) }, /* @__PURE__ */ React.createElement("span", { className: "rc-cbody" }, /* @__PURE__ */ React.createElement("span", { className: "rc-ckick" }, t("// y todo aterriza en el mismo sitio")), /* @__PURE__ */ React.createElement("span", { className: "rc-ctit" }, t("Todo tu negocio, en un solo sitio.")), /* @__PURE__ */ React.createElement("span", { className: "rc-cdesc" }, t("Las diez paradas anteriores acaban aqu\xED: un solo panel con tus clientes, sus mensajes, sus citas y sus documentos. Dejas de saltar entre seis apps y abres solo una.")), /* @__PURE__ */ React.createElement("span", { className: "rc-cbtn" }, t("Abrir el panel"), " ", /* @__PURE__ */ React.createElement("em", null, "\u2192"))), /* @__PURE__ */ React.createElement("span", { className: "rc-feeds" }, HUB.feeds.map((f) => /* @__PURE__ */ React.createElement("span", { key: f }, t(f)))))), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.1, className: "rc-foot" }, /* @__PURE__ */ React.createElement("p", null, t("\xBFNo ves el tuyo? Casi siempre es una mezcla de dos. Cu\xE9ntanos qu\xE9 haces a mano y te montamos la demo con tus datos antes de decidir nada.")), /* @__PURE__ */ React.createElement("a", { href: "hablemos.html" }, t("Hablemos"), " ", /* @__PURE__ */ React.createElement("em", null, "\u2192")))), modal && ReactDOM.createPortal(
+      /* @__PURE__ */ React.createElement("div", { className: "dp-modal", onClick: () => setCur(null) }, /* @__PURE__ */ React.createElement(
         "div",
         {
           className: "dp-shell",
           style: vw > 860 ? { maxWidth: "min(94vw, " + (cur.mw || 760) + "px)" } : void 0,
           onClick: (e) => e.stopPropagation()
         },
-        /* @__PURE__ */ React.createElement("button", { className: "dp-close", "aria-label": window.t("Cerrar demo"), onClick: () => setModal(false) }, "\u2715"),
-        /* @__PURE__ */ React.createElement("div", { className: "dp-frame", style: vw > 860 && frameH ? { height: frameH + "px" } : void 0 }, /* @__PURE__ */ React.createElement("iframe", { ref: iframeRef, src: cur.url + (cur.url.indexOf("?") < 0 ? "?" : "&") + "embed=1", title: cur.name, allow: "fullscreen" }))
+        /* @__PURE__ */ React.createElement("button", { className: "dp-close", "aria-label": t("Cerrar demo"), onClick: () => setCur(null) }, "\u2715"),
+        /* @__PURE__ */ React.createElement("div", { className: "dp-frame", style: vw > 860 && frameH ? { height: frameH + "px" } : void 0 }, /* @__PURE__ */ React.createElement("iframe", { ref: iframeRef, src: cur.url + (cur.url.indexOf("?") < 0 ? "?" : "&") + "embed=1", title: t(cur.name || "Todo tu negocio, en un solo sitio."), allow: "fullscreen" }))
       )),
       document.body
     ));
@@ -1131,7 +1192,7 @@ window.MazeLogo = function MazeLogo() {
     const hPct = horas / 40 * 100;
     const cPct = (coste - 8) / (30 - 8) * 100;
     const recPct = Math.round(lvl * 100);
-    return /* @__PURE__ */ React.createElement("section", { id: "roi", className: "roi2-sec", ref: wrapRef }, /* @__PURE__ */ React.createElement("div", { className: "roi2-atmos", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("div", { className: "roi2-blob", style: { width: 480, height: 480, background: "rgba(75,140,247,.16)", top: "-120px", left: "-60px", animation: "roi2Float 14s ease-in-out infinite" } }), /* @__PURE__ */ React.createElement("div", { className: "roi2-blob", style: { width: 420, height: 420, background: "rgba(99,80,170,.15)", bottom: "-150px", right: "-50px", animation: "roi2Float 17s ease-in-out infinite reverse" } })), /* @__PURE__ */ React.createElement("div", { className: "roi2-inner" }, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("div", { className: "roi2-head" }, /* @__PURE__ */ React.createElement("p", { className: "v2-kicker", style: { textAlign: "center" } }, window.t("// tu ahorro estimado")), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2", style: { fontSize: "clamp(26px,5.6vw,69.3px)", textAlign: "center" } }, window.t("\xBFCu\xE1nto te ahorras "), /* @__PURE__ */ React.createElement("em", null, window.t("al mes?"))))), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.12 }, /* @__PURE__ */ React.createElement("div", { className: "roi2-card" }, /* @__PURE__ */ React.createElement("div", { className: "roi2-controls" }, /* @__PURE__ */ React.createElement("div", { className: "roi2-field" }, /* @__PURE__ */ React.createElement("div", { className: "roi2-flbl" }, /* @__PURE__ */ React.createElement("span", null, window.t("Horas/semana en tareas repetitivas")), /* @__PURE__ */ React.createElement("span", { className: "roi2-fval" }, horas, /* @__PURE__ */ React.createElement("small", null, "h"))), /* @__PURE__ */ React.createElement(
+    return /* @__PURE__ */ React.createElement("section", { id: "roi", className: "roi2-sec", ref: wrapRef }, /* @__PURE__ */ React.createElement("div", { className: "roi2-atmos", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("div", { className: "roi2-blob", style: { width: 480, height: 480, background: "rgba(75,140,247,.16)", top: "-120px", left: "-60px", animation: "roi2Float 14s ease-in-out infinite" } }), /* @__PURE__ */ React.createElement("div", { className: "roi2-blob", style: { width: 420, height: 420, background: "rgba(99,80,170,.15)", bottom: "-150px", right: "-50px", animation: "roi2Float 17s ease-in-out infinite reverse" } })), /* @__PURE__ */ React.createElement("div", { className: "roi2-inner" }, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("div", { className: "roi2-head" }, /* @__PURE__ */ React.createElement("p", { className: "v2-kicker", style: { textAlign: "center" } }, window.t("// tu ahorro estimado")), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2", style: { fontSize: "clamp(23px,4.9vw,61px)", textAlign: "center" } }, window.t("\xBFCu\xE1nto te ahorras "), /* @__PURE__ */ React.createElement("em", null, window.t("al mes?"))))), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.12 }, /* @__PURE__ */ React.createElement("div", { className: "roi2-card" }, /* @__PURE__ */ React.createElement("div", { className: "roi2-controls" }, /* @__PURE__ */ React.createElement("div", { className: "roi2-field" }, /* @__PURE__ */ React.createElement("div", { className: "roi2-flbl" }, /* @__PURE__ */ React.createElement("span", null, window.t("Horas/semana en tareas repetitivas")), /* @__PURE__ */ React.createElement("span", { className: "roi2-fval" }, horas, /* @__PURE__ */ React.createElement("small", null, "h"))), /* @__PURE__ */ React.createElement(
       "input",
       {
         className: "roi2-range",
@@ -1167,47 +1228,11 @@ window.MazeLogo = function MazeLogo() {
   const { useState } = React;
   const Reveal = window.Reveal;
   const HeadReveal = window.HeadReveal;
-  const FAQS = [
-    {
-      tag: window.t("Precio"),
-      q: window.t("\xBFCu\xE1nto cuesta automatizar procesos con IA?"),
-      a: window.t("El precio var\xEDa dependiendo del proceso a llevar a cabo. Trabajamos con un diagn\xF3stico inicial gratuito: analizamos lo que ya usas y te damos presupuesto antes de empezar, sin sorpresas ni compromiso.")
-    },
-    {
-      tag: window.t("Reservas"),
-      q: window.t("\xBFSirve esto para gestionar reservas de excursiones o actividades tur\xEDsticas?"),
-      a: window.t("S\xED. Conectamos tu sistema de reservas actual (plataforma de reservas, Google Calendar, WhatsApp) para que las consultas se respondan solas, se compruebe la disponibilidad real y se confirme la plaza sin que tengas que estar pendiente del m\xF3vil todo el d\xEDa, pudiendo configurarlo plenamente a tu gusto.")
-    },
-    {
-      tag: window.t("Herramientas"),
-      q: window.t("\xBFQu\xE9 necesito tener ya montado para empezar?"),
-      a: window.t("Nada nuevo. No te cambiamos de programa: nos conectamos a las herramientas que ya usas \u2014tu sistema de reservas, Google Calendar, hojas de c\xE1lculo, CRM, WhatsApp\u2014 y automatizamos encima.")
-    },
-    {
-      tag: window.t("Plazos"),
-      q: window.t("\xBFCu\xE1nto se tarda en implementar?"),
-      a: window.t("Depende de la complejidad, pero muchas automatizaciones sencillas est\xE1n listas en pocos d\xEDas. En el diagn\xF3stico inicial te damos un plazo real, no una estimaci\xF3n gen\xE9rica.")
-    },
-    {
-      tag: window.t("Migraci\xF3n"),
-      q: window.t("\xBFHay que cambiar de herramientas o software?"),
-      a: window.t("No. Es uno de los principios del servicio: automatizamos sobre lo que ya tienes, no te obligamos a migrar a un sistema nuevo.")
-    },
-    {
-      tag: window.t("Resultados"),
-      q: window.t("\xBFC\xF3mo se muestran los resultados?"),
-      a: window.t("Por defecto, en las mismas herramientas que ya usas: tu calendario se actualiza solo, te llega la confirmaci\xF3n por WhatsApp o email, tu hoja de c\xE1lculo se rellena sin que tengas que tocar nada. Si quieres verlo todo junto, podemos a\xF1adir un resumen o panel sencillo con lo que se ha hecho, explicado en lenguaje claro, sin tecnicismos.")
-    }
-  ];
-  const FAQ_SCHEMA = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": FAQS.map((f) => ({
-      "@type": "Question",
-      "name": f.q,
-      "acceptedAnswer": { "@type": "Answer", "text": f.a }
-    }))
-  };
+  const FAQS = window.FAQ_DATA.map((f) => ({
+    tag: window.t(f.tag),
+    q: window.t(f.q),
+    a: window.t(f.a)
+  }));
   window.FaqSection = function FaqSection() {
     const [open, setOpen] = useState(() => /* @__PURE__ */ new Set([0]));
     const toggle = (i) => {
@@ -1218,10 +1243,10 @@ window.MazeLogo = function MazeLogo() {
         return next;
       });
     };
-    return /* @__PURE__ */ React.createElement("section", { id: "faq", className: "v2-sec" }, /* @__PURE__ */ React.createElement("div", { className: "v2-inner" }, /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("p", { className: "v2-kicker" }, window.t("// antes de escribirnos")), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2" }, window.t("Lo que sueles "), /* @__PURE__ */ React.createElement("em", null, window.t("preguntar")), window.t(" antes de decidirte")), /* @__PURE__ */ React.createElement("p", { className: "v2-note" }, window.t("Las dudas m\xE1s habituales antes de pedir el diagn\xF3stico \u2014 sin gen\xE9ricos de blog, con la l\xF3gica real de Mazestudio."))), /* @__PURE__ */ React.createElement("div", { className: "faq-list" }, FAQS.map((f, i) => {
+    return /* @__PURE__ */ React.createElement("section", { id: "faq", className: "v2-sec" }, /* @__PURE__ */ React.createElement("div", { className: "v2-inner" }, /* @__PURE__ */ React.createElement(Reveal, null, /* @__PURE__ */ React.createElement("div", { className: "frase" }, /* @__PURE__ */ React.createElement("p", { className: "frase-lbl" }, window.t("Automatizaci\xF3n para pymes en Tenerife, en una frase")), /* @__PURE__ */ React.createElement("p", { className: "frase-txt" }, window.t("Mazestudio automatiza atenci\xF3n al cliente, papeleo y reservas para pymes del sur de Tenerife conect\xE1ndose a las herramientas que ya usas \u2014Gmail, Google Calendar, Sheets, Drive, WhatsApp\u2014 sin cambiarte de programa; los tres productos cerrados (Hilo Respuesta, Hilo Papeleo e Hilo Reserva) cuestan desde 1.200 \u20AC de alta m\xE1s 150 \u20AC/mes sin permanencia y est\xE1n funcionando en dos semanas, y antes de contratar hay una auditor\xEDa gratuita que entrega un informe en 3 d\xEDas laborables con qu\xE9 automatizar, cu\xE1nto ahorras y el precio.")))), /* @__PURE__ */ React.createElement(HeadReveal, null, /* @__PURE__ */ React.createElement("p", { className: "v2-kicker" }, window.t("// antes de escribirnos")), /* @__PURE__ */ React.createElement("h2", { className: "v2-h2" }, window.t("Lo que sueles "), /* @__PURE__ */ React.createElement("em", null, window.t("preguntar")), window.t(" antes de decidirte")), /* @__PURE__ */ React.createElement("p", { className: "v2-note" }, window.t("Las dudas m\xE1s habituales antes de pedir el diagn\xF3stico \u2014 sin gen\xE9ricos de blog, con la l\xF3gica real de Mazestudio."))), /* @__PURE__ */ React.createElement("div", { className: "faq-list" }, FAQS.map((f, i) => {
       const isOpen = open.has(i);
       return /* @__PURE__ */ React.createElement(Reveal, { key: f.q, delay: i * 0.05 }, /* @__PURE__ */ React.createElement("div", { className: "faq-item" + (isOpen ? " open" : "") }, /* @__PURE__ */ React.createElement("button", { className: "faq-q", "aria-expanded": isOpen, onClick: () => toggle(i) }, /* @__PURE__ */ React.createElement("span", { className: "faq-tag" }, f.tag), /* @__PURE__ */ React.createElement("span", { className: "faq-question" }, f.q), /* @__PURE__ */ React.createElement("span", { className: "faq-toggle", "aria-hidden": "true" }, "+")), /* @__PURE__ */ React.createElement("div", { className: "faq-a-wrap" }, /* @__PURE__ */ React.createElement("div", { className: "faq-a-inner" }, /* @__PURE__ */ React.createElement("p", { className: "faq-answer" }, f.a)))));
-    }))), /* @__PURE__ */ React.createElement("script", { type: "application/ld+json", dangerouslySetInnerHTML: { __html: JSON.stringify(FAQ_SCHEMA) } }));
+    }))));
   };
 })();
 })();
@@ -1253,7 +1278,7 @@ window.MazeLogo = function MazeLogo() {
       zIndex: 1,
       pointerEvents: "none",
       background: "radial-gradient(120% 120% at 50% 30%, rgba(8,7,12,0) 40%, rgba(8,7,12,.74) 100%)"
-    } }), /* @__PURE__ */ React.createElement("div", { className: "cta-converge", style: { position: "relative", zIndex: 10, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" } }, /* @__PURE__ */ React.createElement(Reveal, { delay: 0 }, /* @__PURE__ */ React.createElement("h2", { style: { fontFamily: "Bricolage Grotesque", fontWeight: 700, fontSize: "clamp(28px,4vw,52px)", letterSpacing: "-1.5px", lineHeight: 1.1, color: "#fff", marginBottom: 42, maxWidth: 560 } }, window.t("Empieza a trazar tu l\xEDnea recta"))), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.12, style: { transform: "scale(1.2)", marginBottom: 8 } }, /* @__PURE__ */ React.createElement(window.MazeLogo, null)), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.28, className: "cta-acciones", style: { marginTop: 34 } }, /* @__PURE__ */ React.createElement("a", { href: "hablemos.html", className: "v2-btn v2-btn-white magnetic", style: { padding: "15px 28px", fontSize: 16.2 } }, window.t("Solicita tu auditor\xEDa gratis"), " ", /* @__PURE__ */ React.createElement(window.IconArrow, null)), /* @__PURE__ */ React.createElement("a", { href: window.CATALOGO_PDF, download: true, className: "v2-btn v2-btn-ghost", style: { padding: "15px 28px", fontSize: 16.2 } }, /* @__PURE__ */ React.createElement(window.IconDownload, null), " ", window.t("Descargar cat\xE1logo de servicios (PDF)"))), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.4 }, /* @__PURE__ */ React.createElement("p", { style: { marginTop: 22, fontFamily: "JetBrains Mono", fontSize: 13.2, color: "rgba(255,255,255,.65)" } }, window.t("info@mazestudio.site \xB7 respondemos en 24 h")))));
+    } }), /* @__PURE__ */ React.createElement("div", { className: "cta-converge", style: { position: "relative", zIndex: 10, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" } }, /* @__PURE__ */ React.createElement(Reveal, { delay: 0 }, /* @__PURE__ */ React.createElement("h2", { style: { fontFamily: "Bricolage Grotesque", fontWeight: 700, fontSize: "clamp(24.6px,3.5vw,45.8px)", letterSpacing: "-1.5px", lineHeight: 1.1, color: "#fff", marginBottom: 42, maxWidth: 560 } }, window.t("Empieza a trazar tu l\xEDnea recta"))), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.12, style: { transform: "scale(1.2)", marginBottom: 8 } }, /* @__PURE__ */ React.createElement(window.MazeLogo, null)), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.28, className: "cta-acciones", style: { marginTop: 34 } }, /* @__PURE__ */ React.createElement("a", { href: "hablemos.html", className: "v2-btn v2-btn-white magnetic", style: { padding: "15px 28px", fontSize: 16.2 } }, window.t("Auditor\xEDa gratis en 3 d\xEDas"), " ", /* @__PURE__ */ React.createElement(window.IconArrow, null)), /* @__PURE__ */ React.createElement("a", { href: window.CATALOGO_PDF, download: true, className: "v2-btn v2-btn-ghost", style: { padding: "15px 28px", fontSize: 16.2 } }, /* @__PURE__ */ React.createElement(window.IconDownload, null), " ", window.t("Descargar cat\xE1logo de servicios (PDF)"))), /* @__PURE__ */ React.createElement(Reveal, { delay: 0.4 }, /* @__PURE__ */ React.createElement("p", { style: { marginTop: 22, fontFamily: "JetBrains Mono", fontSize: 13.2, color: "rgba(255,255,255,.65)" } }, window.t("info@mazestudio.site \xB7 respondemos en 24 h")))));
   };
   window.Footer = function Footer() {
     const links = [
@@ -1262,7 +1287,7 @@ window.MazeLogo = function MazeLogo() {
       { label: window.t("Servicios"), href: "#servicios" },
       { label: window.t("FAQ"), href: "#faq" }
     ];
-    return /* @__PURE__ */ React.createElement("footer", { className: "v2-footer" }, /* @__PURE__ */ React.createElement("div", { className: "inner" }, /* @__PURE__ */ React.createElement("div", { className: "top" }, /* @__PURE__ */ React.createElement("a", { href: "#top", style: { display: "flex", alignItems: "center", gap: 10 } }, /* @__PURE__ */ React.createElement(window.MazeLogo, null), /* @__PURE__ */ React.createElement("span", { style: { fontFamily: "Bricolage Grotesque", fontWeight: 600, fontSize: 18.9, color: "#EAE8F2", letterSpacing: "-.02em" } }, "Maze studio", /* @__PURE__ */ React.createElement("span", { style: { color: "#4B8CF7" } }, "."))), /* @__PURE__ */ React.createElement("nav", null, links.map((l) => /* @__PURE__ */ React.createElement("a", { key: l.href, href: l.href }, l.label)), /* @__PURE__ */ React.createElement("a", { href: window.CATALOGO_PDF, download: true, className: "f-pdf" }, /* @__PURE__ */ React.createElement(window.IconDownload, null), " ", window.t("Cat\xE1logo de servicios"), " ", /* @__PURE__ */ React.createElement("span", null, "PDF")))), /* @__PURE__ */ React.createElement("div", { className: "bot" }, /* @__PURE__ */ React.createElement("span", null, window.t("\xA9 2026 Mazestudio \xB7 estudio de automatizaci\xF3n con IA \xB7 Tenerife"), " \xB7 ", window.t("\xDAltima actualizaci\xF3n"), ": ", "2026-08-13"), /* @__PURE__ */ React.createElement("span", { className: "legal" }, /* @__PURE__ */ React.createElement("a", { href: "aviso-legal.html" }, window.t("Aviso legal")), /* @__PURE__ */ React.createElement("a", { href: "privacidad.html" }, window.t("Privacidad")), /* @__PURE__ */ React.createElement("a", { href: "cookies.html" }, "Cookies")))));
+    return /* @__PURE__ */ React.createElement("footer", { className: "v2-footer" }, /* @__PURE__ */ React.createElement("div", { className: "inner" }, /* @__PURE__ */ React.createElement("div", { className: "top" }, /* @__PURE__ */ React.createElement("a", { href: "#top", style: { display: "flex", alignItems: "center", gap: 10 } }, /* @__PURE__ */ React.createElement(window.MazeLogo, null), /* @__PURE__ */ React.createElement("span", { style: { fontFamily: "Bricolage Grotesque", fontWeight: 600, fontSize: 18.9, color: "#EAE8F2", letterSpacing: "-.02em" } }, "Maze studio", /* @__PURE__ */ React.createElement("span", { style: { color: "#4B8CF7" } }, "."))), /* @__PURE__ */ React.createElement("nav", null, links.map((l) => /* @__PURE__ */ React.createElement("a", { key: l.href, href: l.href }, l.label)), /* @__PURE__ */ React.createElement("a", { href: window.CATALOGO_PDF, download: true, className: "f-pdf" }, /* @__PURE__ */ React.createElement(window.IconDownload, null), " ", window.t("Cat\xE1logo de servicios"), " ", /* @__PURE__ */ React.createElement("span", null, "PDF")))), /* @__PURE__ */ React.createElement("div", { className: "bot" }, /* @__PURE__ */ React.createElement("span", null, window.t("\xA9 2026 Mazestudio \xB7 estudio de automatizaci\xF3n con IA \xB7 Tenerife"), " \xB7 ", window.t("\xDAltima actualizaci\xF3n"), ": ", "2026-08-19"), /* @__PURE__ */ React.createElement("span", { className: "legal" }, /* @__PURE__ */ React.createElement("a", { href: "aviso-legal.html" }, window.t("Aviso legal")), /* @__PURE__ */ React.createElement("a", { href: "privacidad.html" }, window.t("Privacidad")), /* @__PURE__ */ React.createElement("a", { href: "cookies.html" }, "Cookies")))));
   };
 })();
 })();
@@ -1453,7 +1478,7 @@ window.MazeLogo = function MazeLogo() {
     return null;
   }
   function App() {
-    return /* @__PURE__ */ React.createElement(MotionConfig, { reducedMotion: "user" }, /* @__PURE__ */ React.createElement(SmoothScroll, null), /* @__PURE__ */ React.createElement(window.Preloader, null), /* @__PURE__ */ React.createElement("div", { id: "smooth-wrapper" }, /* @__PURE__ */ React.createElement("div", { id: "smooth-content" }, /* @__PURE__ */ React.createElement(window.ScrollFX, null), /* @__PURE__ */ React.createElement(window.HeroSection, null), /* @__PURE__ */ React.createElement(window.PanelSection, null), /* @__PURE__ */ React.createElement(window.MarqueeSection, null), /* @__PURE__ */ React.createElement(window.ComoFuncionaSection, null), /* @__PURE__ */ React.createElement(window.CatalogoSection, null), /* @__PURE__ */ React.createElement(window.RoiSection, null), /* @__PURE__ */ React.createElement(window.ServiciosSection, null), /* @__PURE__ */ React.createElement(window.PorQueSection, null), /* @__PURE__ */ React.createElement(window.FaqSection, null), /* @__PURE__ */ React.createElement(window.CtaSection, null), /* @__PURE__ */ React.createElement(window.Footer, null))));
+    return /* @__PURE__ */ React.createElement(MotionConfig, { reducedMotion: "user" }, /* @__PURE__ */ React.createElement(SmoothScroll, null), /* @__PURE__ */ React.createElement(window.Preloader, null), /* @__PURE__ */ React.createElement("div", { id: "smooth-wrapper" }, /* @__PURE__ */ React.createElement("div", { id: "smooth-content" }, /* @__PURE__ */ React.createElement(window.ScrollFX, null), /* @__PURE__ */ React.createElement(window.HeroSection, null), /* @__PURE__ */ React.createElement(window.MarqueeSection, null), /* @__PURE__ */ React.createElement(window.ComoFuncionaSection, null), /* @__PURE__ */ React.createElement(window.CatalogoSection, null), /* @__PURE__ */ React.createElement(window.RoiSection, null), /* @__PURE__ */ React.createElement(window.ServiciosSection, null), /* @__PURE__ */ React.createElement(window.PorQueSection, null), /* @__PURE__ */ React.createElement(window.FaqSection, null), /* @__PURE__ */ React.createElement(window.CtaSection, null), /* @__PURE__ */ React.createElement(window.Footer, null))));
   }
   ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App, null));
 })();
