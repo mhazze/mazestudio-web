@@ -6,7 +6,14 @@ Web corporativa de **Mazestudio** (sitio estático). Este repositorio es el que
 - Producción: **https://mazestudio.site** (el antiguo `web.demos.mazestudio.site`
   sigue apuntando aquí). `www` redirige 301 al apex.
 - Se sirve con `nginx:alpine` (ver `Dockerfile` y `default.conf`), puerto **80**.
-- Un `git push` a `main` publica: Dokploy reconstruye la imagen y actualiza el sitio.
+- **El push NO publica solo**: este repo no tiene webhook de GitHub. Despues de
+  empujar hay que llamar al webhook de Dokploy para que reconstruya la imagen:
+  ```
+  curl -X POST -H "Content-Type: application/json" -H "X-GitHub-Event: push" \n       -d '{"ref":"refs/heads/main"}' \n       http://2.24.8.39:3000/api/deploy/sfHUNEivz2st3FekL4J_o
+  ```
+  El `{"message":"Application deployed successfully"}` es solo el acuse de que el
+  build se ha encolado: el sitio viejo se sigue sirviendo ~20 s mas. Validar con
+  un poll, no con una sola peticion.
 
 ## ⚠️ Este repo NO es la fuente
 
