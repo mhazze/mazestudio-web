@@ -6,3 +6,8 @@ Dockerfile
 .gitignore
 # El README lleva la URL del webhook de deploy. Fuera tambien.
 README.md
+# Dokploy escribe un .env en el contexto de build al desplegar. Hoy va
+# vacio, pero en cuanto se anada una variable en la UI de Dokploy ese
+# fichero llevaria secretos y acabaria dentro de la imagen.
+.env
+.env.*
