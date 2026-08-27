@@ -1,2 +1,8 @@
 Dockerfile
 .dockerignore
+# El .git entero se estaba sirviendo en publico (/.git/config, /.git/index...):
+# con eso se reconstruye el repo completo. Fuera de la imagen.
+.git
+.gitignore
+# El README lleva la URL del webhook de deploy. Fuera tambien.
+README.md

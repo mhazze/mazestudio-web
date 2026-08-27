@@ -3,13 +3,21 @@
 Web corporativa de **Mazestudio** (sitio estático). Este repositorio es el que
 **Dokploy** observa para construir y desplegar la web automáticamente.
 
-- Producción: **https://mazestudio.site** (el antiguo `web.demos.mazestudio.site`
-  sigue apuntando aquí). `www` redirige 301 al apex.
+- Producción: **https://mazestudio.site**. `www` redirige 301 al apex.
+  El antiguo `web.demos.mazestudio.site` **ya no sirve la web: da 404** (resuelve
+  por el wildcard DNS, pero Traefik no tiene router para él). Si algún día
+  interesa que los enlaces viejos no mueran, se añade como segundo dominio de la
+  app `web` desde la UI de Dokploy — nunca a mano en Traefik.
+- **HTTP/3 está desactivado a propósito** en Traefik (27-08-2026). Por h3 los
+  `.js` de más de ~100 KB llegaban truncados con status 200: el global nunca se
+  definía, React no montaba y la web salía **en blanco**. Se quitó el bloque
+  `http3` de `/etc/dokploy/traefik/traefik.yml` en el VPS. No lo reactives sin
+  reproducir antes el fallo.
 - Se sirve con `nginx:alpine` (ver `Dockerfile` y `default.conf`), puerto **80**.
 - **El push NO publica solo**: este repo no tiene webhook de GitHub. Despues de
   empujar hay que llamar al webhook de Dokploy para que reconstruya la imagen:
   ```
-  curl -X POST -H "Content-Type: application/json" -H "X-GitHub-Event: push" \n       -d '{"ref":"refs/heads/main"}' \n       http://2.24.8.39:3000/api/deploy/sfHUNEivz2st3FekL4J_o
+  curl -X POST -H "Content-Type: application/json" -H "X-GitHub-Event: push" \n       -d '{"ref":"refs/heads/main"}' \n       http://2.24.8.39:3000/api/deploy/<TOKEN>   # el token esta en Dokploy → app web → Deployments
   ```
   El `{"message":"Application deployed successfully"}` es solo el acuse de que el
   build se ha encolado: el sitio viejo se sigue sirviendo ~20 s mas. Validar con
